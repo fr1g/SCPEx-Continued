@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "6DbbkhlcOag=",
+  "success": false,
+  "projectFilePath": "/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront/SCPExFront.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1301",
+      "level": "Error",
+      "message": "无法加载源 https://api.nuget.org/v3/index.json 的服务索引。\n  The SSL connection could not be established, see inner exception.\n  Received an unexpected EOF or 0 bytes from the transport stream.",
+      "libraryId": "Microsoft.AspNetCore.Components.WebAssembly"
+    }
+  ]
+}
