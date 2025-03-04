@@ -1,4 +1,4 @@
-package com.demo.playground.scpex.Models;
+package com.demo.playground.scpex.Models.Pojo;
 
 import com.demo.playground.scpex.Models.Enums.GeneralStatus;
 import com.demo.playground.scpex.Models.Enums.Type;
@@ -6,11 +6,9 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
     private String name;

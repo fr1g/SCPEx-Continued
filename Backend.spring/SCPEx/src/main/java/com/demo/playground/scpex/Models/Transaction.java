@@ -13,7 +13,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tr_id")
     private Long id;
- 
+
     @OneToMany(mappedBy = "transaction")
     private List<Trade> trades;
 

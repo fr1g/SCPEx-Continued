@@ -1,5 +1,6 @@
 package com.demo.playground.scpex.Models;
 
+import com.demo.playground.scpex.Models.Pojo.User;
 import jakarta.persistence.*;
 
 @Entity
