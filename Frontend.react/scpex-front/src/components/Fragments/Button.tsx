@@ -1,0 +1,12 @@
+import { ReactNode, MouseEventHandler } from "react";
+
+
+export default function Button(
+    {children, className, fix = false, borderless = false, paddingless = false, onClick = () => {console.error("[f]Unbinded click event.")}} : 
+    {children? : string | ReactNode | number, className? : string, fix? : boolean, borderless? : boolean, paddingless? : boolean, onClick? : MouseEventHandler<HTMLButtonElement>}){
+
+
+    return <button onClick={onClick} className={`transition ${className} ${fix ? 'translate-y-[3.5px]' : ''} ${borderless ? '' : 'border rounded shadow-md hover:shadow-lg active:shadow'} ${paddingless ? '' : "px-1 pr-2.5 py-0.5"}   cursor-pointer inline-block select-none  `}>
+        <i style={{fontStyle: "normal"}} className="inline-block -translate-y-[1px]">{children}</i>
+    </button>
+}
