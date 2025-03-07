@@ -65,11 +65,11 @@ export default function Header({ credential = null } : { credential: UserCredent
         </div>
         <div className="flex-grow"></div>
         <div className="text-lg ?font-semibold mb-1 mr-1 text-white ">
-            <Button  borderless paddingless onClick={switchTheme}>
+            <Button  borderless paddingless onClick={switchTheme} >
                 <Icon fix pua={ isDarkMode ? 'e706' : 'e708'} />
             </Button>
         </div>
-        <Button  className="text-white">
+        <Button  className="text-white bg-transparent hover:bg-blue-500/70 active:bg-blue-600/50 transition ">
             <Icon pua="e77b" spacing/>
             {credential?.name ?? "Login"}
         </Button>
