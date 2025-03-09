@@ -1,8 +1,5 @@
 package com.demo.playground.scpex.utils;
 
-import com.demo.playground.scpex.Models.Employee;
-import com.demo.playground.scpex.Models.IModelClass;
-import com.demo.playground.scpex.Repositories.RepoEmployee;
 import com.demo.playground.scpex.Shared.NullReferenceException;
 import com.demo.playground.scpex.Shared.SharedStatic;
 import org.springframework.data.domain.Page;
