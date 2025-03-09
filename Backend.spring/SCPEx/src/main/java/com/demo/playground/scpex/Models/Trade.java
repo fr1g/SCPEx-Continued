@@ -2,12 +2,14 @@ package com.demo.playground.scpex.Models;
 
 import com.demo.playground.scpex.Models.Enums.GeneralStatus;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.Date;
 
 // as a part of transaction, recording the exact product, price, amount and total price, discount and so on
 @Entity
-public class Trade {
+@Data
+public class Trade implements IModelClass{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 

@@ -2,19 +2,27 @@ package com.demo.playground.scpex.Models;
 
 import com.demo.playground.scpex.Models.Pojo.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 @Entity
-public class Trader extends User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "trader_id")
-    private Long traderId;
+@SuperBuilder
+@Data
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper=true)
+public class Trader extends User implements IModelClass{
 
-    private String locations; // json array string
+    @Column(columnDefinition = "text")
+    private String locations = "{\"prefers\":  []}"; // json array string
 
     @ManyToOne
-    @JoinColumn(name = "emp-id")
+    @JoinColumn(name = "registrar", nullable = false)
     private Employee registrar;
+
+    @Column(columnDefinition = "text")
+    private String preferJson = "{\"prefers\":  []}";
 
     public Trader() {}
 }

@@ -2,17 +2,25 @@ package com.demo.playground.scpex.Models;
 
 import com.demo.playground.scpex.Models.Pojo.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
+@AllArgsConstructor
 @Entity
-public class Employee extends User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long empId;
+@SuperBuilder
+public class Employee extends User implements IModelClass{
 
     public String JobTitle;
 
     @OneToMany(mappedBy = "registrar")
     private List<Trader> traders;
+
+    public Employee() {
+    }
 }

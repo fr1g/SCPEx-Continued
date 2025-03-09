@@ -2,19 +2,13 @@ package com.demo.playground.scpex.Models;
 
 import com.demo.playground.scpex.Models.Pojo.ProductInfo;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
-public class Product extends ProductInfo {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "record_id")
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "cat_id")
-    private Category category;
-
+@Data
+@EqualsAndHashCode(callSuper=true)
+public class Product extends ProductInfo implements IModelClass{
 
     private String size;
     private String weight;
