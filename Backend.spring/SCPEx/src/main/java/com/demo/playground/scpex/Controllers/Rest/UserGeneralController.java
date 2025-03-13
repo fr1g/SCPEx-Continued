@@ -20,6 +20,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/user")
 public class UserGeneralController {
+    /** TODO
+     *    - Customer.CartTemporary.Add
+     *    - Customer.CartTemporary.Remove
+     *    - Seller.CreateSellRequest
+     *    - Seller.CancelSellRequest
+     *    -
+     *
+     * */
     @Autowired
     private RepoTrader _trader;
 
