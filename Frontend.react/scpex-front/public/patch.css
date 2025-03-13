@@ -26,3 +26,7 @@ a.nav-link{
     pointer-events: none !important;
     cursor: not-allowed !important;
 }
+
+.grid-fill-paper{
+    /* min-height: calc(100vh - 4.5rem) !important; */
+}
