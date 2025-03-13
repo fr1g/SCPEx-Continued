@@ -22,8 +22,8 @@ public class EnhancedPageHelper <T, R extends JpaRepository<T, Long>>{
     public Pageable of(int page, int size, String sortName, String field) {
         return PageRequest.of(  page,
                                 (size <= 0 ? this.defaultPageSize : size),
-                                Sort.by(Sort.Direction.fromString((sortName.equals("default") ? "asc" : sortName)),
-                                (field.equals("default") ? "id" : field)));
+                                Sort.by(Sort.Direction.fromString(((sortName.equals("default") || sortName == null) ? "asc" : sortName)),
+                                ((field.equals("default") || field == null) ? "id" : field)));
     }
 
     public Pageable of(int page, int size, String field) {
