@@ -28,9 +28,15 @@ export default function Header({ credential = null } : { credential: UserCredent
     const themeDetector = useThemeDetector();
     const [isDarkMode, setDarkMode] = useState(themeDetector);
 
-    useEffect(() => {
+    useEffect(() => {    
         setDarkMode(!themeDetector);
-    }, [location.pathname, themeDetector]);
+        localStorage.theme = isDarkMode ? "dark" : "light";   
+        if (isDarkMode) {       
+            document.documentElement.setAttribute("class", "dark");
+            return;
+        }
+        document.documentElement.setAttribute("class", "");  
+    }, []);
 
     function switchTheme() {
         setDarkMode(!isDarkMode);
@@ -65,8 +71,8 @@ export default function Header({ credential = null } : { credential: UserCredent
         </div>
         <div className="flex-grow"></div>
         <div className="text-lg ?font-semibold mb-1 mr-1 text-white ">
-            <Button  borderless paddingless onClick={switchTheme} >
-                <Icon fix pua={ isDarkMode ? 'e706' : 'e708'} />
+            <Button  borderless paddingless onClick={switchTheme} >  
+                <Icon fix pua={ document.documentElement.classList.contains("dark") ? 'e706' : 'e708'} />
             </Button>
         </div>
         <Button  className="text-white bg-transparent hover:bg-blue-500/70 active:bg-blue-600/50 transition ">

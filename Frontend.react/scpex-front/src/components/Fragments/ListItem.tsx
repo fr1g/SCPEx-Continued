@@ -1,11 +1,11 @@
 import { Component, ReactNode } from "react";
 
 
+interface ListItemProps {
+    cover?: string;
+}
 
-
-export default class ListItem extends Component{
-
-
+export default class ListItem extends Component<ListItemProps>{
 
     render(): ReactNode {
         return (

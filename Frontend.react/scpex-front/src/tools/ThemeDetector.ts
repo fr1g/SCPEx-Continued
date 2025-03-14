@@ -7,7 +7,7 @@ export const useThemeDetector = () => {
     };
 
     const [isDarkTheme, setIsDarkTheme] = useState(getCurrentTheme());
-    const mqListener = (e: MediaQueryListEvent) => {
+    const mqListener = (e: MediaQueryListEvent) => { // mediaQueryListn
         setIsDarkTheme(e.matches);
         localStorage.theme = e.matches ? "dark" : "light";
         if (e.matches) {
@@ -24,7 +24,10 @@ export const useThemeDetector = () => {
         return () => darkThemeMq.removeEventListener("change", mqListener);
     }, []);
 
-    return localStorage.getItem("theme")! !== null // ...
-        ? localStorage.theme === "dark"
-        : isDarkTheme;
+    let val = (localStorage.getItem("theme")! !== null && localStorage.getItem("theme")! !== undefined) // ...
+    ? localStorage.theme === "dark"
+    : isDarkTheme
+
+    console.log(val)
+    return val;
 };
