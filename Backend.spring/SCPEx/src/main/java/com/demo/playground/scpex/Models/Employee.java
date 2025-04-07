@@ -1,6 +1,7 @@
 package com.demo.playground.scpex.Models;
 
 import com.demo.playground.scpex.Models.Pojo.User;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +20,8 @@ public class Employee extends User implements IModelClass{
     public String JobTitle;
 
     @OneToMany(mappedBy = "registrar")
-    private List<Trader> traders;
+    @jakarta.annotation.Nullable
+    transient private List<Trader> traders;
 
     public Employee() {
     }

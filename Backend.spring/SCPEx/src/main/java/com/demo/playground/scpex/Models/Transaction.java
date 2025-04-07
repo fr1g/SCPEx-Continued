@@ -1,6 +1,7 @@
 package com.demo.playground.scpex.Models;
 
 import com.demo.playground.scpex.Models.Enums.GeneralStatus;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,7 +18,8 @@ public class Transaction implements IModelClass{
     private Long id;
 
     @OneToMany(mappedBy = "transaction")
-    private List<Trade> trades;
+    @Nullable
+    transient private List<Trade> trades;
 
     @ManyToOne
     @JoinColumn(name = "trader_id")

@@ -23,7 +23,7 @@ public class ResponseHelper {
     }
 
     public static ResponseEntity<String> Return(Response r){
-        return ResponseEntity.status(r.getCode()).body((new Gson()).toJson(r));
+        return ResponseEntity.status(r.getCode()).body(r.json());
     }
 
 }

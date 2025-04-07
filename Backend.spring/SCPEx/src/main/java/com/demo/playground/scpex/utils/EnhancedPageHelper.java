@@ -42,6 +42,8 @@ public class EnhancedPageHelper <T, R extends JpaRepository<T, Long>>{
         return this.of(page, this.defaultPageSize, "asc", field);
     }
 
+    // --------------------- //
+
     public Page<T> getPage(int page, int size, String sortName, String field) {
         return this.repository.findAll(of(page, size, sortName, field));
     }
@@ -49,9 +51,14 @@ public class EnhancedPageHelper <T, R extends JpaRepository<T, Long>>{
     public Page<T> getPage(int page, String field) {
         return this.repository.findAll(of(page, field));
     }
+    // todo
 
     public Page<T> getPage(int page, String field, String sortName) {
         return this.repository.findAll(of(page, this.defaultPageSize, sortName, field));
+    }
+
+    public Page<T> getPage(int page){
+        return this.repository.findAll(of(page));
     }
 
 // ------------------------------------------------------------------------------------------------------------------ //
@@ -76,6 +83,10 @@ public class EnhancedPageHelper <T, R extends JpaRepository<T, Long>>{
         else throw new ClassNotFoundException("Error casting into Page<T> class: the returned value is not as expected.");
 
     }
+
+//    public Page<T> getPage(, int page, int size, String field, String sortName){
+//
+//    }
 
     /**
      * @param args the argument list of target function. make sure the target function accepts the Pageable at first, and do not occupy the first argument with null. Just ignore it.
@@ -117,6 +128,7 @@ public class EnhancedPageHelper <T, R extends JpaRepository<T, Long>>{
     }
 
     /**
+     * @param size to use default size, pass-in 0
      * @param candidate the key-value pair that ordered and presents types of method-args with values as the value. Use Paginated : null to give a space for appending the instance.
      * */
     public Page<T> getPage(String targetFunctionName,

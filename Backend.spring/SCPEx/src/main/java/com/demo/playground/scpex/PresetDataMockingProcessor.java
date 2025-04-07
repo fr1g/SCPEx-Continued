@@ -3,6 +3,7 @@ package com.demo.playground.scpex;
 import com.demo.playground.scpex.Models.Employee;
 import com.demo.playground.scpex.Models.Enums.GeneralStatus;
 import com.demo.playground.scpex.Models.Enums.Type;
+import com.demo.playground.scpex.Models.Trader;
 import com.demo.playground.scpex.Repositories.*;
 import com.demo.playground.scpex.Shared.SharedStatic;
 import org.springframework.boot.CommandLineRunner;
@@ -36,6 +37,16 @@ public class PresetDataMockingProcessor {
                 employee.save(Employee.builder().birth((new Date())).type(Type.WAREHOUSE).contact("325332671").name("Chulmann von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd("").note("no note").build());
                 employee.save(Employee.builder().birth((new Date())).type(Type.WAREHOUSE).contact("7355608").name("Helsinki von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd("").note("no note").build());
                 employee.save(Employee.builder().birth((new Date())).type(Type.WAREHOUSE).contact("33068080").name("Davon von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd("").note("no note").build());
+
+                Employee relatedChulmann = employee.findById(3l).orElse(null), relatedJaager = employee.findById(1l).orElse(null), relatedAziz = employee.findById(5l).orElse(null);
+
+                trader.save(Trader.builder().name("Aziz al-abdulah").birth((new Date())).contact("31313-73788497").passwd("").status(GeneralStatus.APPROVED).preferJson("{products: []}").type(Type.SELLER).registrar(relatedAziz).build());
+                trader.save(Trader.builder().name("Yahya al-Saif").birth((new Date())).contact("31313-73788497").passwd("").status(GeneralStatus.APPROVED).preferJson("{products: []}").type(Type.SELLER).registrar(relatedJaager).build());
+                trader.save(Trader.builder().name("Yenefa Ibrahin").birth((new Date())).contact("31313-73788497").passwd("").status(GeneralStatus.APPROVED).preferJson("{products: []}").type(Type.SELLER).registrar(relatedJaager).build());
+                trader.save(Trader.builder().name("Altair Ibn").birth((new Date())).contact("31313-73788497").passwd("").status(GeneralStatus.APPROVED).preferJson("{products: []}").type(Type.SELLER).registrar(relatedAziz).build());
+                trader.save(Trader.builder().name("Bin Nsibi").birth((new Date())).contact("31313-73788497").passwd("").status(GeneralStatus.APPROVED).preferJson("{products: []}").type(Type.SELLER).registrar(relatedChulmann).build());
+                trader.save(Trader.builder().name("Salam al-marin").birth((new Date())).contact("31313-73788497").passwd("").status(GeneralStatus.APPROVED).preferJson("{products: []}").type(Type.SELLER).registrar(relatedAziz).build());
+                trader.save(Trader.builder().name("Said al-abdulah").birth((new Date())).contact("31313-73788497").passwd("").status(GeneralStatus.APPROVED).preferJson("{products: []}").type(Type.SELLER).registrar(relatedChulmann).build());
             }
         };
     }

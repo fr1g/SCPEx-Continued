@@ -1,9 +1,8 @@
 package com.demo.playground.scpex.Models;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.io.Serializable;
 import java.util.List;
 
 // Each product got a cat.
@@ -25,6 +24,7 @@ public class Category implements IModelClass{
     private String note;
 
     @OneToMany(mappedBy = "category")
-    private List<Product> products;
+    @Nullable
+    transient private List<Product> products;
 
 }

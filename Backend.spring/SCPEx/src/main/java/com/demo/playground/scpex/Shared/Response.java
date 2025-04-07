@@ -62,4 +62,8 @@ public class Response {
     public int getCode() {
         return code;
     }
+
+    public String json(){
+        return SharedStatic.jsonHandler.toJson(this);
+    }
 }
