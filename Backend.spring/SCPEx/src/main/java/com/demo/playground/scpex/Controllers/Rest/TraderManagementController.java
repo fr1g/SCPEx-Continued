@@ -60,6 +60,15 @@ public class TraderManagementController {
 
             } else if(isExist){ // trader exists:
                 var redux = SharedStatic.jsonHandler.fromJson(info, OperationRequest.class);
+
+                /*  update object strategy
+                *   if EXIST on the GIVEN ID:
+                *       ! 增量更新法
+                *       ! 由于受到的来自前端的内容隐藏了部分内容
+                *       ! 为了避免隐藏值和空值错误地赋值到数据库 (比如 在前端的password字段将会是“hidden”)
+                *       ! 需要忽略特定值: 比如说, 将null忽略, 保留数据库值
+                *       ! 将“hidden”忽略, 继续使用数据库值
+                */
             }
         }catch (Exception ex){
 

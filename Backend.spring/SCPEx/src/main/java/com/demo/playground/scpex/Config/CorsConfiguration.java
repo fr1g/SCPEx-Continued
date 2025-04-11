@@ -3,6 +3,8 @@ package com.demo.playground.scpex.Config;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Scanner;
+
 public class CorsConfiguration implements WebMvcConfigurer {
 
     @Override
