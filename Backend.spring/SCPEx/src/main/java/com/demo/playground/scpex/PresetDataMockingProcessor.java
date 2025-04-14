@@ -57,7 +57,7 @@ public class PresetDataMockingProcessor {
 //                var rh = (new ReduxHelper<Trader>(trader, Trader.class));
 //                System.out.println(rh);
 
-                System.out.println(PropertyComparator.compare(new String("old"), new String("old")));
+//                System.out.println(PropertyComparator.compare(new String("old"), new String("old")));
             }
         };
     }

@@ -2,7 +2,7 @@
     - /users
         - /t
             - /{id} -> :Trader
-            - /browse
+            - /find
                 - /{resultPage}/$body
                 - /search/{name}/{resultPage}$body
 
@@ -10,7 +10,7 @@
         ----------------
         - /e
             - /{id} -> :Employee
-            - /browse
+            - /find
                 - /{resultPage}/$body
                 - /search/{name}/{resultPage}$body
 

@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import org.hibernate.sql.Update;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+@Deprecated
 public class ReduxHelper<T extends IModelClass> {
 
     Operation operation;
@@ -70,6 +71,7 @@ public class ReduxHelper<T extends IModelClass> {
     }
 }
 
+@Deprecated
 enum Operation{
     UPDATE, DELETE, CREATE;
 }

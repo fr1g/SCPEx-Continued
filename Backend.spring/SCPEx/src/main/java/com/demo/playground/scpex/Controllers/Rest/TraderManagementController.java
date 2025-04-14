@@ -1,6 +1,7 @@
 package com.demo.playground.scpex.Controllers.Rest;
 
 import com.demo.playground.scpex.Models.Pojo.OperationRequest;
+import com.demo.playground.scpex.Models.Pojo.PageRequest;
 import com.demo.playground.scpex.Models.Trader;
 import com.demo.playground.scpex.Repositories.RepoEmployee;
 import com.demo.playground.scpex.Repositories.RepoTrader;
@@ -9,6 +10,7 @@ import com.demo.playground.scpex.Shared.Response;
 import com.demo.playground.scpex.Shared.SharedStatic;
 import com.demo.playground.scpex.utils.ResponseHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +45,19 @@ public class TraderManagementController {
         result.secure();
         result.getRegistrar().secure();
         return ResponseHelper.Return(new Response(200, "success", SharedStatic.jsonHandler.toJson(result))); // 418
+    }
+
+    @PostMapping("/find/{page}")
+    public ResponseEntity<String> getTraders(@RequestHeader(HttpHeaders.AUTHORIZATION) String authToken, @PathVariable("page") String page, @RequestBody String body) {
+        System.out.println("header: " + authToken);
+        Page<Trader> result;
+        PageRequest pr = SharedStatic.jsonHandler.fromJson(body, PageRequest.class);
+        int toPage = Integer.parseInt(page);
+        result = _t.findAll(pr.toPageable(toPage));
+
+
+
+        return ResponseHelper.Return(new Response(200, "success", SharedStatic.jsonHandler.toJson(result)));
     }
 
     @PostMapping("/op")

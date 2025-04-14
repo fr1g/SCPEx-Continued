@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
 
+@Deprecated
 public class PropertyComparator {
     public static boolean isSameValue(Object sample, Object compare) {
         if (sample == null || compare == null)
