@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { UserCredential } from "../models/UserCredential";
 import Icon from "./Fragments/Icon";
 import Button from "./Fragments/Button";
 import { useThemeDetector } from "../tools/ThemeDetector.ts";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 /* Dark mode strategy:
     - If localStorage is empty: get the current system color scheme
@@ -25,6 +25,10 @@ export default function Header({ credential = null } : { credential: UserCredent
     
     const [darkMode, setDarkMode] = useState(true);
 
+    
+
+    let navto = useNavigate();
+
     function switchTheme (){
         setTheme(!darkMode);
     }
@@ -41,7 +45,7 @@ export default function Header({ credential = null } : { credential: UserCredent
         }
 
     }    
-
+    // next to implement: make the darkmode able to be back to "synced to the system" (always check if the theme  that is matched to current theme (check on load?))
     useEffect(() => {
         if(localStorage.theme == undefined || localStorage.theme == null){
         // if no value then use browser settings
@@ -65,6 +69,13 @@ export default function Header({ credential = null } : { credential: UserCredent
         //         setTheme(!e.matches);
         // });
     }, []);
+
+    function loginButtonHandler(){
+        if(credential == null){
+            navto("/auth")
+        }
+
+    }
 
     return <>
         <div className="fixed w-full p-2 bg-slate-600 flex flex-shrink px-5 gap-5 shadow-lg header z-very-top" >
@@ -92,7 +103,7 @@ export default function Header({ credential = null } : { credential: UserCredent
                 <Icon fix pua={ darkMode ? 'e706' : 'e708'} />
             </Button>
         </div>
-        <Button  className="text-white bg-transparent hover:bg-blue-500/70 active:bg-blue-600/50 transition ">
+        <Button onClick={loginButtonHandler}  className="text-white bg-transparent hover:bg-blue-500/70 active:bg-blue-600/50 transition ">
             <Icon pua="e77b" spacing/>
             {credential?.name ?? "Login"}
         </Button>
