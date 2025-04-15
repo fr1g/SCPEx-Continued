@@ -35,7 +35,7 @@ public class ReduxHelper<T extends IModelClass> {
     }
 
     public ReduxHelper<T> setup(OperationRequest op){
-        var code = op.operation.toLowerCase();
+        var code = op.operation().toLowerCase(); // x
         switch(code) {
             case "create", "cr":
                 this.operation = Operation.CREATE;
@@ -54,7 +54,7 @@ public class ReduxHelper<T extends IModelClass> {
             } break;
         }
         try{
-            this.payload = (T) (new Gson()).fromJson(op.payloadJson, this.type);
+            this.payload = (T) (new Gson()).fromJson(op.payloadJson(), this.type);
         }catch (Exception ex){
 
         }

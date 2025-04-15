@@ -39,11 +39,18 @@ public class Response {
             case 403:
                 this.title = "Forbidden";
                 break;
+            case 406:
+                this.title = "Not Acceptable";
+                break;
             case 514:
                 this.title = "Unprocessable Entity or Exception/conflict";
                 break;
             case 418:
                 this.title = "I'm a teapot";
+                break;
+            case 555:
+                this.title = "Critical server error";
+                this.content = "you see, the server cried! 555";
                 break;
 
             default:

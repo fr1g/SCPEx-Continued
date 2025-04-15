@@ -1,9 +1,11 @@
 package com.demo.playground.scpex;
 
 import com.demo.playground.scpex.Models.*;
+import com.demo.playground.scpex.Models.Pojo.OperationRequest;
 import com.demo.playground.scpex.Models.Pojo.ProductInfo;
 import com.demo.playground.scpex.Shared.SharedStatic;
 import com.demo.playground.scpex.utils.GsonDateHelper;
+import com.demo.playground.scpex.utils.GsonOperationRequestHelper;
 import com.demo.playground.scpex.utils.GsonSpringPageTypeAdaptHelper;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -24,7 +26,9 @@ public class ScpExApplication {
     public static void main(String[] args) {
 
         var builder = new GsonBuilder();
-        builder.registerTypeAdapter(Date.class, new GsonDateHelper());
+        builder
+                .registerTypeAdapter(Date.class, new GsonDateHelper())
+                .registerTypeAdapter(OperationRequest.class, new GsonOperationRequestHelper());
 
 //        builder.registerTypeAdapter( Employee.class, new GsonSpringPageTypeAdaptHelper<Employee>())
 //                .registerTypeAdapter( Category.class, new GsonSpringPageTypeAdaptHelper<Category>())

@@ -8,7 +8,9 @@ import com.demo.playground.scpex.Repositories.RepoTrader;
 import com.demo.playground.scpex.Shared.NullReferenceException;
 import com.demo.playground.scpex.Shared.Response;
 import com.demo.playground.scpex.Shared.SharedStatic;
+import com.demo.playground.scpex.utils.GeneralSpecificationHelper;
 import com.demo.playground.scpex.utils.ResponseHelper;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -53,40 +55,82 @@ public class TraderManagementController {
         Page<Trader> result;
         PageRequest pr = SharedStatic.jsonHandler.fromJson(body, PageRequest.class);
         int toPage = Integer.parseInt(page);
-        result = _t.findAll(pr.toPageable(toPage));
+        try{
+            if(pr.Field.equals("default") || pr.Field.equalsIgnoreCase("id"))
+                result = _t.findAll(pr.toPageable(toPage));
+            else
+                result = _t.findAll(
+                        (new GeneralSpecificationHelper<Trader>())
+                                .like(  pr.Field.toLowerCase(),
+                                        pr.Keyword.toLowerCase()  ),
+                    pr.toPageable(toPage)
+                );
+        }
+        catch (Exception ex){
+            System.out.println(ex.getMessage());
+            return ResponseHelper.Return(new Response(514, "Unknown, maybe not exist"));
+        }
 
-
+        for(var nx : result)
+            nx.secure();
 
         return ResponseHelper.Return(new Response(200, "success", SharedStatic.jsonHandler.toJson(result)));
     }
 
     @PostMapping("/op")
-    public ResponseEntity<String> createTrader(@RequestBody String info) {
-
+    public ResponseEntity<String> createTrader(
+            @RequestHeader(HttpHeaders.AUTHORIZATION)
+            String authToken,
+            @RequestBody
+            String info
+    ) {
+        // IN: JSON, of OperationRequest
         try {
-            Trader trader = SharedStatic.jsonHandler.fromJson(info, Trader.class);
+            OperationRequest or = SharedStatic.jsonHandler.fromJson(info, OperationRequest.class);
+            var target = SharedStatic.jsonHandler.fromJson(or.payloadJson(), Trader.class);
+            var isAlreadyExist = _t.existsById(target.getId());
+            switch (or.operation()){
+                case "add":
+                    if(isAlreadyExist)
+                        return ResponseHelper.Return(new Response(406));
+                    else if(!_e.existsById(target.getRegistrar().getId()))
+                        ResponseHelper.Return(new Response(406));
+                    else
+                        _t.save(target);
 
-            var isExist = _t.existsById(trader.getId());
-            if(trader == null || trader.getRegistrar() == null) throw new NullReferenceException("Trader or Registrar not found");
-            else // if trader already exists or the target registrar doesnt exist
-                if( !_e.existsById(trader.getRegistrar().getId())) {
-                // just wrong registrar:
-                trader.setRegistrar(_e.findById(0l).orElseThrow()); // todo every startup must check for default account exist or not
+                    break;
 
-            } else if(isExist){ // trader exists:
-                var redux = SharedStatic.jsonHandler.fromJson(info, OperationRequest.class);
+                case "upd":
+                    if(!isAlreadyExist) return ResponseHelper.Return(new Response(406, "Target not exist"));
+                    var original = _t.findById(target.getId()).orElseThrow(() -> new NullReferenceException("Trader not found: No such record."));
+                    target.setPasswd(original.getPasswd());
+                    _t.save(target);
+                    break;
 
-                /*  update object strategy
-                *   if EXIST on the GIVEN ID:
-                *       ! 增量更新法
-                *       ! 由于受到的来自前端的内容隐藏了部分内容
-                *       ! 为了避免隐藏值和空值错误地赋值到数据库 (比如 在前端的password字段将会是“hidden”)
-                *       ! 需要忽略特定值: 比如说, 将null忽略, 保留数据库值
-                *       ! 将“hidden”忽略, 继续使用数据库值
-                */
+                case "del":
+                    if(!isAlreadyExist) return ResponseHelper.Return(new Response(406, "Target not exist"));
+                    var o = _t.findById(target.getId()).orElseThrow(() -> new NullReferenceException("Trader not found: No such record."));
+                    _t.delete(o);
+                    break;
+
+                default:
+                    return ResponseHelper.Return(new Response(514, "Unknown operation"));
             }
-        }catch (Exception ex){
+                    /*  update object strategy
+                    *   if EXIST on the GIVEN ID:
+                    *       ! 增量更新法
+                    *       ! 由于受到的来自前端的内容隐藏了部分内容
+                    *       ! 为了避免隐藏值和空值错误地赋值到数据库 (比如 在前端的password字段将会是“hidden”)
+                    *       ! 需要忽略特定值: 比如说, 将null忽略, 保留数据库值
+                    *       ! 将“hidden”忽略, 继续使用数据库值
+                    */
 
+        }catch (NullReferenceException ex){
+            if(ex.getMessage().contains("NM")) return ResponseHelper.Return(new Response(500, "Not acceptable operation."));
+            else return ResponseHelper.Return(new Response(500, "Exception: " + ex.getMessage()));
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return ResponseHelper.Return(new Response(555));
         }
         return ResponseHelper.Return(new Response(200, "success"));
     }
