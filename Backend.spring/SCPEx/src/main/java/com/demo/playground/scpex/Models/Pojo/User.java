@@ -48,8 +48,12 @@ public class User {
     public User() {}
 
     public User secure(){
-
         this.passwd = "hidden";
+        return this;
+    }
+
+    public User withPasswd(String passwd) {
+        this.passwd = passwd;
         return this;
     }
 }

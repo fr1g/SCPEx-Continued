@@ -7,6 +7,7 @@ import com.demo.playground.scpex.Shared.SharedStatic;
 import com.demo.playground.scpex.utils.GsonDateHelper;
 import com.demo.playground.scpex.utils.GsonOperationRequestHelper;
 import com.demo.playground.scpex.utils.GsonSpringPageTypeAdaptHelper;
+import com.demo.playground.scpex.utils.GsonTraderVirtualEmployeeHelper;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.springframework.boot.SpringApplication;
@@ -28,7 +29,10 @@ public class ScpExApplication {
         var builder = new GsonBuilder();
         builder
                 .registerTypeAdapter(Date.class, new GsonDateHelper())
-                .registerTypeAdapter(OperationRequest.class, new GsonOperationRequestHelper());
+                .registerTypeAdapter(OperationRequest.class, new GsonOperationRequestHelper())
+                .registerTypeAdapter(Trader.class, new GsonTraderVirtualEmployeeHelper())
+        ;
+
 
 //        builder.registerTypeAdapter( Employee.class, new GsonSpringPageTypeAdaptHelper<Employee>())
 //                .registerTypeAdapter( Category.class, new GsonSpringPageTypeAdaptHelper<Category>())

@@ -25,4 +25,8 @@ public class Employee extends User implements IModelClass{
 
     public Employee() {
     }
+
+    public Employee(Long temporaryId) {
+        super.setId(temporaryId);
+    }
 }

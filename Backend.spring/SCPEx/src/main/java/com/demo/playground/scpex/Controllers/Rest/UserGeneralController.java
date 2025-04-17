@@ -7,6 +7,7 @@ import com.demo.playground.scpex.Repositories.RepoEmployee;
 import com.demo.playground.scpex.Repositories.RepoTrader;
 import com.demo.playground.scpex.Shared.Response;
 import com.demo.playground.scpex.Shared.SharedStatic;
+import com.demo.playground.scpex.utils.AuthHelper;
 import com.demo.playground.scpex.utils.EnhancedPageHelper;
 import com.demo.playground.scpex.utils.PageHelper;
 import com.demo.playground.scpex.utils.ResponseHelper;
@@ -29,6 +30,7 @@ public class UserGeneralController {
      *    - Seller.CreateSellRequest
      *    - Seller.CancelSellRequest
      *    -
+     *    -
      *
      * */
     @Autowired
@@ -36,6 +38,11 @@ public class UserGeneralController {
 
     @Autowired
     private RepoEmployee _employee;
+
+    @GetMapping("/passwd")
+    public ResponseEntity<String> getPasswd() {
+        return ResponseHelper.Return(new Response(200, "Password generated. Not via Caesar or Vigenère ", AuthHelper.generatePasswd()));
+    }
 
     @PostMapping("/t/{control}")
     public  ResponseEntity<String> acquireTraderInfoEnhanced(@PathVariable String control, @RequestBody String body) {

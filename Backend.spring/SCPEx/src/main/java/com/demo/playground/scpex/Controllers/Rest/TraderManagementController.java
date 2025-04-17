@@ -5,12 +5,15 @@ import com.demo.playground.scpex.Models.Pojo.PageRequest;
 import com.demo.playground.scpex.Models.Trader;
 import com.demo.playground.scpex.Repositories.RepoEmployee;
 import com.demo.playground.scpex.Repositories.RepoTrader;
+import com.demo.playground.scpex.Services.TraderSvc;
 import com.demo.playground.scpex.Shared.NullReferenceException;
 import com.demo.playground.scpex.Shared.Response;
 import com.demo.playground.scpex.Shared.SharedStatic;
+import com.demo.playground.scpex.utils.AuthHelper;
 import com.demo.playground.scpex.utils.GeneralSpecificationHelper;
+import com.demo.playground.scpex.utils.MD5Helper;
 import com.demo.playground.scpex.utils.ResponseHelper;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -22,20 +25,17 @@ import org.springframework.web.bind.annotation.*;
 public class TraderManagementController {
 
     @Autowired
-    private RepoTrader _t;
-
-    @Autowired
-    private RepoEmployee _e;
+    TraderSvc _s;
 
     @PostMapping("/{id}")
-    public ResponseEntity<String> getTrader(@PathVariable("id") Long id, @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken) {
+    public ResponseEntity<String> getTrader(@PathVariable("id") String id, @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken) {
         System.out.println("header: " + authToken);
 
         Trader result;
         Long target;
         try {
-            target = Long.parseLong(authToken);
-            result = _t.findById(target).orElseThrow(() -> new NullReferenceException("Trader not found"));
+            target = Long.parseLong(id);
+            result = _s.getObjectById(target);
         } catch (NullReferenceException e){
             return ResponseHelper.Return(new Response(200, "No Such User of Trader: " + id));
         } catch (NumberFormatException e) {
@@ -57,14 +57,10 @@ public class TraderManagementController {
         int toPage = Integer.parseInt(page);
         try{
             if(pr.Field.equals("default") || pr.Field.equalsIgnoreCase("id"))
-                result = _t.findAll(pr.toPageable(toPage));
+                result = _s.getPageObjects(pr, toPage);
             else
-                result = _t.findAll(
-                        (new GeneralSpecificationHelper<Trader>())
-                                .like(  pr.Field.toLowerCase(),
-                                        pr.Keyword.toLowerCase()  ),
-                    pr.toPageable(toPage)
-                );
+                result = _s.getSpecifiedPageObjects(pr, toPage);
+            // necessary?
         }
         catch (Exception ex){
             System.out.println(ex.getMessage());
@@ -82,35 +78,43 @@ public class TraderManagementController {
             @RequestHeader(HttpHeaders.AUTHORIZATION)
             String authToken,
             @RequestBody
-            String info
+            String info//,
+            // HttpServletRequest request ? using logged-in account force as registrar?
     ) {
         // IN: JSON, of OperationRequest
         try {
             OperationRequest or = SharedStatic.jsonHandler.fromJson(info, OperationRequest.class);
             var target = SharedStatic.jsonHandler.fromJson(or.payloadJson(), Trader.class);
-            var isAlreadyExist = _t.existsById(target.getId());
+            var isAlreadyExist = _s.isThisExist(target.getId());
+            if(
+                    target.getRegistrar() == null ||
+                    target.getRegistrar().getId() < 0 ||
+                    !_s.isRegistrarExist(target.getRegistrar().getId())
+                    // not exist
+            ){
+
+                return ResponseHelper.Return(new Response(406, "Registrar is null or not exist"));
+            }
             switch (or.operation()){
                 case "add":
                     if(isAlreadyExist)
-                        return ResponseHelper.Return(new Response(406));
-                    else if(!_e.existsById(target.getRegistrar().getId()))
-                        ResponseHelper.Return(new Response(406));
-                    else
-                        _t.save(target);
-
-                    break;
+                        return ResponseHelper.Return(new Response(406, "Trader already exists", "Use 0 for new user, or use \"upd\" to update this existed user."));
+                    else{
+                        target.setId(null);
+                        String originalPasswd = AuthHelper.generatePasswd();
+                        target.setPasswd(MD5Helper.encrypt(originalPasswd));
+                        _s.add(target);
+                        return ResponseHelper.Return(new Response(200, "success", SharedStatic.jsonHandler.toJson(target.withPasswd(originalPasswd))));
+                    }
 
                 case "upd":
                     if(!isAlreadyExist) return ResponseHelper.Return(new Response(406, "Target not exist"));
-                    var original = _t.findById(target.getId()).orElseThrow(() -> new NullReferenceException("Trader not found: No such record."));
-                    target.setPasswd(original.getPasswd());
-                    _t.save(target);
+                    _s.update(target);
                     break;
 
                 case "del":
                     if(!isAlreadyExist) return ResponseHelper.Return(new Response(406, "Target not exist"));
-                    var o = _t.findById(target.getId()).orElseThrow(() -> new NullReferenceException("Trader not found: No such record."));
-                    _t.delete(o);
+                    _s.delete(target);
                     break;
 
                 default:
