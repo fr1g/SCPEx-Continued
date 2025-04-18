@@ -9,6 +9,6 @@ export function getUserCredential(): UserCredential | null{
     else{
 
 
-        return new UserCredential('');
+        return new UserCredential('ForFrontTesting', "iadiuidsfie", "aminos@xx.aa");
     }
 }

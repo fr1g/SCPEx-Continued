@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront/SCPExFront.csproj": {}
+    "/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend.blazor/SCPExFront/SCPExFront.csproj": {}
   },
   "projects": {
-    "/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront/SCPExFront.csproj": {
+    "/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend.blazor/SCPExFront/SCPExFront.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront/SCPExFront.csproj",
+        "projectUniqueName": "/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend.blazor/SCPExFront/SCPExFront.csproj",
         "projectName": "SCPExFront",
-        "projectPath": "/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront/SCPExFront.csproj",
+        "projectPath": "/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend.blazor/SCPExFront/SCPExFront.csproj",
         "packagesPath": "/Users/feiron/.nuget/packages/",
-        "outputPath": "/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront/obj/",
+        "outputPath": "/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend.blazor/SCPExFront/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/feiron/.nuget/NuGet/NuGet.Config"

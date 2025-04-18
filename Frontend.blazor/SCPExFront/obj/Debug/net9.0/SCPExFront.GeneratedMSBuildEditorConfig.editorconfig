@@ -1,4 +1,8 @@
 is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = false
+build_property.IncludeAllContentForSelfExtract = 
 build_property.TargetFramework = net9.0
 build_property.TargetPlatformMinVersion = 
 build_property.UsingMicrosoftNETSdkWeb = 
@@ -6,44 +10,44 @@ build_property.ProjectTypeGuids =
 build_property.InvariantGlobalization = false
 build_property.PlatformNeutralAssembly = 
 build_property.EnforceExtendedAnalyzerRules = 
-build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = browser
 build_property.RootNamespace = SCPExFront
 build_property.RootNamespace = SCPExFront
-build_property.ProjectDir = /Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront/
+build_property.ProjectDir = /Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend.blazor/SCPExFront/
 build_property.EnableComHosting = 
-build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.EnableGeneratedComInterfaceComImportInterop = false
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront
+build_property.MSBuildProjectDirectory = /Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend.blazor/SCPExFront
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront/App.razor]
+[/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend.blazor/SCPExFront/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront/Pages/Counter.razor]
+[/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend.blazor/SCPExFront/Pages/Counter.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ291bnRlci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront/Pages/Home.razor]
+[/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend.blazor/SCPExFront/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSG9tZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront/Pages/Weather.razor]
+[/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend.blazor/SCPExFront/Pages/Weather.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvV2VhdGhlci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront/_Imports.razor]
+[/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend.blazor/SCPExFront/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront/Layout/MainLayout.razor]
+[/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend.blazor/SCPExFront/Layout/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = TGF5b3V0L01haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-q05zkh7hss
 
-[/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend/SCPExFront/Layout/NavMenu.razor]
+[/Users/feiron/Documents/homework/crossPlatfom/CONTINUE/repo/SCPEx-Continued/Frontend.blazor/SCPExFront/Layout/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = TGF5b3V0L05hdk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-whj854mewc

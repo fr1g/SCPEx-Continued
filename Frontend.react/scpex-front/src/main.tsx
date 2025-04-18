@@ -20,7 +20,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Routes>
                 <Route index element={<App />} />
                 <Route path='/search' element={<SearchGoods />} />
-                <Route path='/auth' element={<AuthLayout />} />
+                <Route path='/auth/*' element={<AuthLayout />} />
             </Routes>
         </BrowserRouter>
     </>
