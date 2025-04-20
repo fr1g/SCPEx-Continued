@@ -1,5 +1,5 @@
 // import { StrictMode } from 'react'
-import App from './App.tsx'
+import App from './App.tsx';
 
 // import React from "react";
 import {Context, createContext} from 'react';
@@ -10,6 +10,8 @@ import SearchGoods from './pages/General/SearchGoods.tsx';
 import AuthLayout from './pages/Auth/AuthLayout.tsx';
 import { UserCredential } from './models/UserCredential.ts';
 import {getUserCredential} from './tools/AuthTools.ts'
+import NoSuchPage from './pages/NoSuchPage.tsx';
+import About from './pages/About.tsx';
 
 const UserContext: Context<UserCredential | null>= createContext(getUserCredential());
 
@@ -21,6 +23,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                 <Route index element={<App />} />
                 <Route path='/search' element={<SearchGoods />} />
                 <Route path='/auth/*' element={<AuthLayout />} />
+                <Route path='/about' element={<About />} />
+
+                <Route path='/*' element={<NoSuchPage />} />
             </Routes>
         </BrowserRouter>
     </>

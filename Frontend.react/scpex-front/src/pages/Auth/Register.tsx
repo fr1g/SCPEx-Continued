@@ -57,13 +57,13 @@ export default function Register() {
 
         }
 
-   
+
 
         function submitHandler(e: React.FormEvent<HTMLFormElement>) {
             e.preventDefault();
-          
-            if(!agree){
-                setShowAlert({show: true, msg: `You MUST to agree to continue register. Or, farewell. (agree=${agree})`});
+
+            if (!agree) {
+                setShowAlert({ show: true, msg: `You MUST to agree to continue register. Or, farewell. (agree=${agree})` });
                 return;
             }
             let essentials = {
@@ -72,7 +72,7 @@ export default function Register() {
                 birth: (document.getElementById("birth")! as HTMLInputElement).value!,
                 typeEnum: selected.enum
             }
-            
+
             console.log(essentials);
         }
 
@@ -85,7 +85,7 @@ export default function Register() {
             <Dialog open={showAlert.show} as="div" className="relative z-10 focus:outline-none" onClose={() => setShowAlert({ show: false, msg: showAlert.msg })}>
                 <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
                     <div className="flex min-h-full items-center justify-center p-4">
-                        <DialogPanel 
+                        <DialogPanel
                             transition
                             className="w-full max-w-md rounded-xl shadow bg-slate-500/5 p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
                         >
@@ -166,7 +166,7 @@ export default function Register() {
                                                 >
                                                     {filtered.map((select: { id: number, enum: number, name: string }) => (
                                                         <ComboboxOption key={(select == null ? 5 : select.id)} value={select} className="data-[focus]:bg-blue-100 dark:data-[focus]:bg-slate-500 py-1.5 pr-8 pl-3 w-full border-none bg-white dark:bg-slate-800  text-black dark:text-white">
-                                                            {select.name}
+                                                            {select.name} <Icon pua="e73e" forceNoTranslate className={`${select.id == selected.id ? ' translate-y-0.5' : 'hidden!'}`} />
                                                         </ComboboxOption>
                                                     ))}
                                                 </ComboboxOptions>
@@ -242,7 +242,7 @@ export default function Register() {
                             <div className="my-auto">
                                 <Switch
                                     checked={agree}
-                                    
+
                                     onChange={() => setAgree(n => !n)}
                                     className="group inline-flex h-6 w-11 items-center rounded-full bg-gray-300 dark:bg-slate-700 transition data-[checked]:bg-blue-400"
                                 >

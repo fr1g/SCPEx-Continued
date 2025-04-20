@@ -3,17 +3,13 @@ package com.demo.playground.scpex.Controllers.Rest;
 import com.demo.playground.scpex.Models.Pojo.OperationRequest;
 import com.demo.playground.scpex.Models.Pojo.PageRequest;
 import com.demo.playground.scpex.Models.Trader;
-import com.demo.playground.scpex.Repositories.RepoEmployee;
-import com.demo.playground.scpex.Repositories.RepoTrader;
 import com.demo.playground.scpex.Services.TraderSvc;
 import com.demo.playground.scpex.Shared.NullReferenceException;
 import com.demo.playground.scpex.Shared.Response;
 import com.demo.playground.scpex.Shared.SharedStatic;
 import com.demo.playground.scpex.utils.AuthHelper;
-import com.demo.playground.scpex.utils.GeneralSpecificationHelper;
 import com.demo.playground.scpex.utils.MD5Helper;
 import com.demo.playground.scpex.utils.ResponseHelper;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -56,7 +52,7 @@ public class TraderManagementController {
         PageRequest pr = SharedStatic.jsonHandler.fromJson(body, PageRequest.class);
         int toPage = Integer.parseInt(page);
         try{
-            if(pr.Field.equals("default") || pr.Field.equalsIgnoreCase("id"))
+            if(pr.SortingField.equals("default") || pr.SortingField.equalsIgnoreCase("id"))
                 result = _s.getPageObjects(pr, toPage);
             else
                 result = _s.getSpecifiedPageObjects(pr, toPage);

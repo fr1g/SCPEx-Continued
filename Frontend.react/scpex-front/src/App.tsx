@@ -1,11 +1,36 @@
-import { useState } from 'react'
+import { useState } from 'react';
+import Slider from "react-slick";
+import Paper from './components/Fragments/Paper';
+import RecommendedItem from './models/RecommendItem';
 
 export default function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <div className='text-3xl'>aaa</div>
-    </>
-  )
+    const settings = {
+        className: "center",
+        centerMode: true,
+        infinite: true,
+        centerPadding: "60px",
+        slidesToShow: 3,
+        speed: 500
+    };
+
+    const recommendInCarousel: RecommendedItem[] = [
+
+    ];
+
+    const restRecommends: RecommendedItem[] = [
+
+    ];
+
+    return <>
+        <Paper>
+            <div className='min-h-max w-full'>
+                <Slider {...settings} >
+
+                </Slider>
+
+            </div>
+        </Paper>
+    </>;
+
 }

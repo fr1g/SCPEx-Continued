@@ -2,8 +2,8 @@ import { useState, useEffect, useContext } from "react";
 import { UserCredential } from "../models/UserCredential";
 import Icon from "./Fragments/Icon";
 import Button from "./Fragments/Button";
-import { useThemeDetector } from "../tools/ThemeDetector.ts";
 import { useLocation, useNavigate } from "react-router";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 /* Dark mode strategy:
     - If localStorage is empty: get the current system color scheme
@@ -18,95 +18,120 @@ import { useLocation, useNavigate } from "react-router";
 //     return localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches);
 // }
 
+export default function Header({ credential = null }: { credential: UserCredential | null }) {
+    const [state, setState] = useState(false);
+    const stateHasChanged = () => { setState(_ => !_) } // maybe useless, because after login the page has rerendered so the new state should be just applied as the new storaged info read.
 
 
 
-export default function Header({ credential = null } : { credential: UserCredential | null }){
-    
-    const [darkMode, setDarkMode] = useState(true);
+    const navBarLinks = [
+        { key: 1, title: "Goods", link: "/search", disabled: false },
+        { key: 11, title: "Cart", link: "/cart", disabled: credential == null },
+        { key: 111, title: "Contact Us!", link: "/about", disabled: false },
+    ];
 
-    
 
     let navto = useNavigate();
 
-    function switchTheme (){
-        setTheme(!darkMode);
-    }
+    const [darkMode, setDarkMode] = useState(true);
 
-    function setTheme (setAsDark: boolean){
-        if(setAsDark){
+    function switchTheme() { setTheme(!darkMode); }
+
+    function setTheme(setAsDark: boolean) {
+        if (setAsDark) {
             document.documentElement.setAttribute("class", "dark");
             localStorage.theme = "dark";
             setDarkMode(true);
-        }else{
+        } else {
             document.documentElement.setAttribute("class", "");
             localStorage.theme = "light";
             setDarkMode(false);
         }
 
-    }    
+    }
     // next to implement: make the darkmode able to be back to "synced to the system" (always check if the theme  that is matched to current theme (check on load?))
     useEffect(() => {
-        if(localStorage.theme == undefined || localStorage.theme == null){
-        // if no value then use browser settings
+        if (localStorage.theme == undefined || localStorage.theme == null) {
+            // if no value then use browser settings
             setTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
-        }else{
-        // if got value then apply the value
+        } else {
+            // if got value then apply the value
             setTheme(localStorage.theme == "dark");
         }
         // set up matches and update when preference changed
         window.matchMedia("(prefers-color-scheme: dark)")
             .addEventListener("change", (e: MediaQueryListEvent) => {
-            
+
                 console.log(`detected environment theme changed: dark`)
                 setTheme(e.matches);
-        });
+            });
 
         // window.matchMedia("(prefers-color-scheme: light)")
         //     .addEventListener("change", (e: MediaQueryListEvent) => {
-            
+
         //         console.log(`detected environment theme changed: light`)
         //         setTheme(!e.matches);
         // });
     }, []);
 
-    function loginButtonHandler(){
-        if(credential == null){
-            navto("/auth")
+    function loginButtonHandler() {
+        if (credential == null) {
+            navto("/auth");
         }
+        else navto("/me");
 
     }
 
     return <>
-        <div className="fixed w-full p-2 bg-slate-600 flex flex-shrink px-5 gap-5 shadow-lg header z-very-top" >
-        <div className="text-xl font-bold mb-1 text-white ">
-            <a className="w-full h-full opacity-80 hover:opacity-100 transition" href="/">O'Petova</a>
-        </div>
-        <div className="text-lg ?font-semibold mb-1? translate-y-[1px] text-white ">
-            <a className="w-full h-full border-b-0 hover:border-b-2 border-slate-100 transition nav-link" href="/search">
-                Goods
-            </a>
-        </div>
-        <div className={`${credential == null ? 'disabled' : ''} text-lg ?font-semibold mb-1? translate-y-[1px] text-white `}>
-            <a className="w-full h-full border-b-0 hover:border-b-2 border-slate-100 transition nav-link" href="/cart">
-                Cart
-            </a>
-        </div>
-        <div className="text-lg ?font-semibold mb-1? translate-y-[1px] text-white ">
-            <a className="w-full h-full border-b-0 hover:border-b-2 border-slate-100 transition nav-link" href="">
-                Contact Us!
-            </a>
-        </div>
-        <div className="flex-grow"></div>
-        <div className="text-lg ?font-semibold mb-1 mr-1 text-white ">
-            <Button  borderless paddingless onClick={switchTheme} >  
-                <Icon fix pua={ darkMode ? 'e706' : 'e708'} />
+        <div className="fixed w-full p-2 bg-slate-600 flex flex-shrink px-5 gap-3 md:gap-5 shadow-lg header z-very-top" >
+            <div className="text-xl font-bold mb-1 text-white translate-y-[1px]">
+                <a className="w-full h-full opacity-80 hover:opacity-100 transition " href="/">O'Petova</a>
+            </div>
+
+            {navBarLinks.map(x => {
+                return <div key={x.key} className={`${x.disabled ? 'disabled' : ''} text-lg hidden md:block ?font-semibold mb-1? translate-y-[3px] text-white `}>
+                    <a className="w-full h-full border-b-0 hover:border-b-2 border-slate-100 transition nav-link" href={x.link}>
+                        {x.title}
+                    </a>
+                </div>
+            })}
+
+
+            <div className="flex-grow"></div>
+
+            <div className="text-lg mb-1 mr-1 text-white block md:hidden">
+                <Menu>
+                    <MenuButton className="text-lg translate-y-[0.055rem] md:mb-1 mr-1 text-white ">
+                        <Icon fix pua="e700" />
+                    </MenuButton>
+
+                    <MenuItems
+                        transition
+                        anchor="bottom end"
+                        className="w-full mt-3.5 origin-top-right rounded-xl border border-white/15 bg-slate-600 z-10 p-1 text-sm/6 text-white transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+                    >
+                        {navBarLinks.map(x => {
+                            return <MenuItem key={x.key}>
+                                <div className={`${x.disabled ? 'disabled' : ''}   group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white `}>
+                                    <a className="w-full h-full border-b-0 hover:border-b-2 border-slate-100 transition nav-link" href={x.link}>
+                                        {x.title}
+                                    </a>
+                                </div>
+                            </MenuItem>
+                        })}
+                        
+                    </MenuItems>
+                </Menu>
+            </div>
+            <div className="text-lg translate-y-[0.055rem] md:mb-1 mr-1 text-white ">
+                <Button borderless paddingless onClick={switchTheme} >
+                    <Icon fix pua={darkMode ? 'e706' : 'e708'} />
+                </Button>
+            </div>
+            <Button onClick={loginButtonHandler} className="text-white bg-transparent hover:bg-blue-500/70 active:bg-blue-600/50 transition ">
+                <Icon pua="e77b" spacing />
+                {credential?.name ?? "Login"}
             </Button>
         </div>
-        <Button onClick={loginButtonHandler}  className="text-white bg-transparent hover:bg-blue-500/70 active:bg-blue-600/50 transition ">
-            <Icon pua="e77b" spacing/>
-            {credential?.name ?? "Login"}
-        </Button>
-    </div>
     </>
 }

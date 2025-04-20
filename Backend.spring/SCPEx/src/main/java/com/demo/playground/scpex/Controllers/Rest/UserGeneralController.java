@@ -1,6 +1,5 @@
 package com.demo.playground.scpex.Controllers.Rest;
 
-import com.demo.playground.scpex.Models.Employee;
 import com.demo.playground.scpex.Models.Pojo.PageRequest;
 import com.demo.playground.scpex.Models.Trader;
 import com.demo.playground.scpex.Repositories.RepoEmployee;
@@ -9,17 +8,12 @@ import com.demo.playground.scpex.Shared.Response;
 import com.demo.playground.scpex.Shared.SharedStatic;
 import com.demo.playground.scpex.utils.AuthHelper;
 import com.demo.playground.scpex.utils.EnhancedPageHelper;
-import com.demo.playground.scpex.utils.PageHelper;
 import com.demo.playground.scpex.utils.ResponseHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.LinkedHashMap;
-import java.util.List;
 
 @RestController
 @RequestMapping("/v0/user")
@@ -59,7 +53,7 @@ public class UserGeneralController {
             var epage = new EnhancedPageHelper<Trader, RepoTrader>(_trader, SharedStatic.pageSize);
             Page<Trader> result;
 
-            if(details.Field == "name"){
+            if(details.SortingField == "name"){
                 result = _trader.findByNameContaining(details.Keyword, epage.of(forPage, "name"));
             }
 //                result = epage.getPage("findByNameContain", new LinkedHashMap<Class<?>, Object>(){{

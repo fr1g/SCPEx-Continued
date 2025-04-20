@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from "react";
 
-export default function Paper({children, className, needRefresh = false} : {children : ReactNode | string | number, className : string, needRefresh?: boolean}){
+export default function Paper({children, className, needRefresh = false} : {children : ReactNode | string | number, className? : string, needRefresh?: boolean}){
     function renewHeight(padding: number = 15, px: number = 16){
         if(!needRefresh) return;
         const paper = document.getElementById("paper");

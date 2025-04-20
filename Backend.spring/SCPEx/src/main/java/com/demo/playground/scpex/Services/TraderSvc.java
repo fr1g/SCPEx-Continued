@@ -8,7 +8,6 @@ import com.demo.playground.scpex.Shared.NullReferenceException;
 import com.demo.playground.scpex.utils.GeneralSpecificationHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -40,9 +39,17 @@ public class TraderSvc implements IBaseService<Trader>{
 
     @Override
     public Page<Trader> getSpecifiedPageObjects(PageRequest pageRequest, int targetPage) {
+        String searchField;
+        if (pageRequest.SearchField == null || pageRequest.SearchField.isEmpty())
+            searchField = pageRequest.SortingField.toLowerCase();
+        else
+            searchField = pageRequest.SearchField.toLowerCase();
+
+        // TODO actually can be distracted as single individual method?
+
         return _t.findAll(
                 (new GeneralSpecificationHelper<Trader>())
-                        .like(  pageRequest.Field.toLowerCase(),
+                        .like(  searchField,
                                 pageRequest.Keyword.toLowerCase()  ),
                 pageRequest.toPageable(targetPage)
         );
