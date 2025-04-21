@@ -7,6 +7,8 @@ import Icon from "../../components/Fragments/Icon";
 import BasicStatistics from "../../components/Fragments/BasicStatistics";
 import List from "../../components/List";
 
+import { isDebug } from "../../env";
+
 export default function SearchGoods() {
     const [results, setResults] = useState<ListItem[]>([]);
     const [isNoResult, setIsNoResult] = useState(false);
@@ -68,7 +70,7 @@ export default function SearchGoods() {
                 </div>
 
 
-                { keyword !== "" && (results.length !== 0 || isNoResult) &&
+                { (keyword !== "" || isDebug) && (results.length !== 0 || isNoResult) &&
                     <div id="results" className="py-3 md:py-5" >
                         <p className="text-lg italic! mb-1 opacity-70">Results of "{keyword}":</p>
                         { results && 
