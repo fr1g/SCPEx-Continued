@@ -6,6 +6,7 @@ import RecommendedItem from './models/RecommendItem';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import RecommendedItemCard from './components/RecommendItemCard';
+import useLeaveAnimate from './tools/LeaveAnimate';
 
 export default function App() {
 
@@ -31,6 +32,8 @@ export default function App() {
     const restRecommends: RecommendedItem[] = [
 
     ];
+
+    // useLeaveAnimate();
 
     return <>
         <div  className='h-[48px]'></div>

@@ -2,8 +2,8 @@ import { useState, useEffect, useContext } from "react";
 import { UserCredential } from "../models/UserCredential";
 import Icon from "./Fragments/Icon";
 import Button from "./Fragments/Button";
-import { useLocation, useNavigate } from "react-router";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { useNavigate } from "react-router";
 
 /* Dark mode strategy:
     - If localStorage is empty: get the current system color scheme
@@ -30,8 +30,6 @@ export default function Header({ credential = null }: { credential: UserCredenti
         { key: 111, title: "Contact Us!", link: "/about", disabled: false },
     ];
 
-
-    let navto = useNavigate();
 
     const [darkMode, setDarkMode] = useState(true);
 
@@ -74,11 +72,13 @@ export default function Header({ credential = null }: { credential: UserCredenti
         // });
     }, []);
 
+    let nav = useNavigate();
+
     function loginButtonHandler() {
-        if (credential == null) {
-            navto("/auth");
-        }
-        else navto("/me");
+        if (credential == null) 
+            nav(`/auth`);
+        else 
+            nav(`/me`);
 
     }
 
@@ -90,7 +90,7 @@ export default function Header({ credential = null }: { credential: UserCredenti
 
             {navBarLinks.map(x => {
                 return <div key={x.key} className={`${x.disabled ? 'disabled' : ''} text-lg hidden md:block ?font-semibold mb-1? translate-y-[3px] text-white `}>
-                    <a className="w-full h-full border-b-0 hover:border-b-2 border-slate-100 transition nav-link" href={x.link}>
+                    <a className="w-full h-full border-b-0 hover:border-b-2 border-slate-100 transition nav-link"   onClick={() => {nav(x.link)}}>
                         {x.title}
                     </a>
                 </div>
@@ -113,7 +113,7 @@ export default function Header({ credential = null }: { credential: UserCredenti
                         {navBarLinks.map(x => {
                             return <MenuItem key={x.key}>
                                 <div className={`${x.disabled ? 'disabled' : ''}   group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white `}>
-                                    <a className="w-full h-full border-b-0 hover:border-b-2 border-slate-100 transition nav-link" href={x.link}>
+                                    <a className="w-full h-full border-b-0 hover:border-b-2 border-slate-100 transition nav-link"   onClick={() => {nav(x.link)}}>
                                         {x.title}
                                     </a>
                                 </div>
