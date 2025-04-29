@@ -1,6 +1,6 @@
 
-type employees = "admin" | "warehouse" | string;
-type traders = "seller" | "customer" | "hybrid";
+export type employees = "admin" | "warehouse" | string;
+export type traders = "seller" | "customer" | "hybrid";
 
 export class UserCredential {
     id!: number;

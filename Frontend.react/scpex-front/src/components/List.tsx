@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { Gen } from "../tools/UniqueGenerator";
 
 
-export default function List({ children, gap = 3, colsClassNames = '', className = '', useFilters = true }: { children: ReactNode, gap?: number, colsClassNames?: string, className?: string, useFilters?: boolean }) {
+export default function List({ children, gap = 3, colsClassNames = '', className = '', useFilters = false, filterSearch = false }: { children: ReactNode, gap?: number, colsClassNames?: string, className?: string, useFilters?: boolean, filterSearch?: boolean }) {
 
     let gene = Gen('soifhjioew');
     // REMINDER the product need some selling stastics, which updates each time trade completes. // wuh?

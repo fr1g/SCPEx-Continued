@@ -1,0 +1,40 @@
+{
+    "total": 1,
+    "content": [
+        {
+            "registrar": {
+                "JobTitle": "general",
+                "id": 3,
+                "name": "Herman von Schumal",
+                "contact": "233435",
+                "type": "WAREHOUSE",
+                "status": "APPROVED",
+                "birth": "Apr 16, 2025, 3:16:20 AM",
+                "passwd": "",
+                "note": "no note"
+            },
+            "preferJson": "{products: []}",
+            "id": 5,
+            "name": "Bin Nsibi",
+            "contact": "31313-73788497",
+            "type": "SELLER",
+            "status": "APPROVED",
+            "birth": "Apr 16, 2025, 3:16:20 AM",
+            "passwd": "hidden"
+        }
+    ],
+    "pageable": {
+        "sort": {
+            "orders": [
+                {
+                    "direction": "ASC",
+                    "property": "name",
+                    "ignoreCase": false,
+                    "nullHandling": "NATIVE"
+                }
+            ]
+        },
+        "pageNumber": 0,
+        "pageSize": 10
+    }
+}

@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 public class Trader extends User implements IModelClass{
 
     @Column(columnDefinition = "text")
-    private String locationJson = "{\"prefers\":  []}"; // json array string
+    private String locationJson = "{\"location\":  []}"; // json array string
 
     @ManyToOne
     @JoinColumn(name = "registrar", nullable = false)

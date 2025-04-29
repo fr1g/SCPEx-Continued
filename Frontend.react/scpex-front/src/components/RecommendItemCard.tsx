@@ -16,7 +16,7 @@ export default function RecommendedItemCard({ item, hero = false }: { item: Reco
             <div style={{ backgroundImage: `url(${item.cover})` }}
                 className={`${hero ? 'aspect-[16/11] md:aspect-[16/6] w-screen bg-center bg-cover bg-no-repeat' : 'h-32 w-32 '}  relative  pointer-fill`} >
                 {hero && <GradientText
-                    colors={["#90ffaa", "#9079ff", "#70ffaa", "#6079ff", "#50ffaa"]}
+                    colors={["#eeeeee", "#cccccc", "#ffffff", "#cdcdcd", "#eeeeee"]}
                     animationSpeed={3}
                     showBorder={false}
                     className="absolute! block! left-3 bottom-0 md:left-8 md:bottom-7 p-3 text-3xl md:text-6xl font-semibold   scale-x-110 " 
