@@ -1,0 +1,20 @@
+/api -> default ResultJson
+    - /users
+        - /t
+            - /{id} -> :Trader
+            - /find
+                - /{resultPage}/$body
+                - /search/{name}/{resultPage}$body
+
+            - /op -> :generatedPasswd
+        ----------------
+        - /e
+            - /{id} -> :Employee
+            - /find
+                - /{resultPage}/$body
+                - /search/{name}/{resultPage}$body
+
+            - /op
+                - /state/{(int)state}
+                - /create$body -> :generatedPasswd
+                - /update/{id}$newDataJson
