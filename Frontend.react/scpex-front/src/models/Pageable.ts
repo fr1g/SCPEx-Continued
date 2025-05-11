@@ -1,4 +1,5 @@
 export default class Pageable{
+    // well, actually this is Page<>.
     total: number;
     content: any[];
     pageable: PageInfo;

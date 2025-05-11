@@ -14,7 +14,10 @@ import NoSuchPage from './pages/NoSuchPage.tsx';
 import About from './pages/About.tsx';
 import { Outlet } from 'react-router';
 import { AnimatePresence } from 'framer-motion';
-
+import User from './pages/Param/User.tsx';
+import ViewLayout from './pages/View/ViewLayout.tsx';
+import { Provider } from 'react-redux';
+import { store } from './tools/Redux.ts';
 
 const UserContext: Context<UserCredential | null> = createContext(getUserCredential());
 
@@ -23,10 +26,18 @@ const routes = createBrowserRouter([
         element: <Layout />,
         children: [{ index: true, element: <App /> },
 
+        // defaults
         { path: '/search', element: <SearchGoods /> },
-        { path: '/auth/*', element: <AuthLayout /> },
         { path: '/about', element: <About /> },
+        
+        // layouts
+        { path: '/auth/*', element: <AuthLayout /> },
+        { path: '/view/*', element: <ViewLayout /> },
+        
+        // paramables
+        { path: '/user/:selector?', element: <User /> },
 
+        // fallbacks
         { path: '/*', element: <NoSuchPage /> },]
     }
 ]);
@@ -47,4 +58,8 @@ function Entrance() {
     </AnimatePresence>
 }
 
-ReactDOM.createRoot(document.getElementById("root")!).render(<Entrance />);
+ReactDOM.createRoot(document.getElementById("root")!).render(
+    <Provider store={store}>
+        <Entrance />
+    </Provider>
+);

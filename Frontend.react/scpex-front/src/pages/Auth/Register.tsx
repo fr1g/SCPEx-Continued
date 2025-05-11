@@ -43,7 +43,7 @@ export default function Register() {
                 return type.name.toLowerCase().includes(query.toLowerCase());
             });
 
-        let isAdmin = true;
+        let isAdmin = true; // test
 
 
         function afterProcess() {

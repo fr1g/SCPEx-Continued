@@ -13,7 +13,7 @@ export default function List({ children, gap = 3, colsClassNames = '', className
         <div id={`List--@${gene}`}>
             { useFilters &&
                 <div className="@FILTERS w-full grid grid-cols-6 gap-1.5">
-
+                    
                 </div>
             }
             <div id={`List--cont--@${gene}`} className={`grid ${colsClassNames == '' ? 'grid-cols-' : colsClassNames}  ${className} gap-${gap}`}>
