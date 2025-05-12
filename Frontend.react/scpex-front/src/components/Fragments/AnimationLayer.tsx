@@ -1,6 +1,7 @@
 import { motion } from "framer-motion"
 import { ReactNode } from "react"
 
+// fvcking vseless
 export default function AnimationLayer({children} : {children: ReactNode | string | number}){
     if( true) return <>{children}</>
     return <motion.div

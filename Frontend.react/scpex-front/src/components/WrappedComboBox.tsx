@@ -6,7 +6,7 @@ import clsx from "clsx";
 import Selectable from "../models/Selectable";
 
 
-export default function WrappedComboBox({ enums, onChange = (o: Selectable, n: Selectable) => {} }: { enums: Selectable[], onChange: Function | null | undefined}) {
+export default function WrappedComboBox({ enums, onChange = (o: Selectable, n: Selectable) => {} }: { enums: Selectable[], onChange?: Function | null | undefined}) {
 
     const [selected, setSelectedX] = useState(enums[0]);
     const [query, setQuery] = useState('');

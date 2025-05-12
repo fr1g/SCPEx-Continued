@@ -1,6 +1,10 @@
 import WrappedComboBox from "../../components/WrappedComboBox";
 import Selectable from "../../models/Selectable";
 
+import { slices } from "../../tools/ReduceHelper";
+
+const changeSelected = slices.warehouseOperations.actions.changeSelection;
+const updateSelectables = slices.warehouseOperations.actions.updateSelectables;
 
 export default function WarehouseMgr(){
 
