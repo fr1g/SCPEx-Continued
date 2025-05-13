@@ -37,8 +37,8 @@ public class TraderSvc implements IBaseService<Trader>{
     }
 
 
-    @Override
     public Page<Trader> getSpecifiedPageObjects(PageRequest pageRequest, int targetPage) {
+        // this is for
         String searchField;
         if (pageRequest.SearchField == null || pageRequest.SearchField.isEmpty())
             searchField = pageRequest.SortingField.toLowerCase();
@@ -82,4 +82,7 @@ public class TraderSvc implements IBaseService<Trader>{
     public void delete(Trader object) {
         delete(object.getId());
     }
+
+
+
 }

@@ -37,6 +37,11 @@ public class Category implements IModelClass{
     @Nullable
     transient private List<Product> products;
 
+    public Category(String name, String note){
+        this.name = name;
+        this.note = note;
+    }
+
     public Category() {
 
     }

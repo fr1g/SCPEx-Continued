@@ -13,7 +13,7 @@ public interface IBaseService<T> {
     boolean isThisExist(Long id);
     T getObjectById(Long id);
     Page<T> getPageObjects(PageRequest pageRequest, int targetPage);
-    public Page<Trader> getSpecifiedPageObjects(PageRequest pageRequest, int targetPage);
+//    public Page<Trader> getSpecifiedPageObjects(PageRequest pageRequest, int targetPage);
     
     void add(T object);
     void update(T object) throws IOException;
