@@ -10,13 +10,8 @@ import com.demo.playground.scpex.utils.GsonTraderVirtualEmployeeHelper;
 import com.google.gson.GsonBuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.domain.Page;
-
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Date;
-import java.util.HashMap;
+
 
 //@ComponentScan(basePackages = {"com.demo.playground.scpex.Controllers.Rest"})
 @SpringBootApplication
@@ -35,8 +30,8 @@ public class ScpExApplication {
 //        builder.registerTypeAdapter( Employee.class, new GsonSpringPageTypeAdaptHelper<Employee>())
 //                .registerTypeAdapter( Category.class, new GsonSpringPageTypeAdaptHelper<Category>())
 //                .registerTypeAdapter( Product.class, new GsonSpringPageTypeAdaptHelper<Product>())
-//                .registerTypeAdapter( Trade.class, new GsonSpringPageTypeAdaptHelper<Trade>())
 //                .registerTypeAdapter( Transaction.class, new GsonSpringPageTypeAdaptHelper<Transaction>())
+//                .registerTypeAdapter( Trade.class, new GsonSpringPageTypeAdaptHelper<Trade>())
 //                .registerTypeAdapter( Trader.class, new GsonSpringPageTypeAdaptHelper<Trader>());
         // oj zrja!
 

@@ -1,48 +1,34 @@
 package com.demo.playground.scpex.Models;
 
 import com.demo.playground.scpex.Models.Enums.GeneralStatus;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 
 import java.util.Date;
+import java.util.List;
 
-// as a part of transaction, recording the exact product, price, amount and total price, discount and so on
+// Each transaction have multiple transactions
 @Entity
 @Data
-@AllArgsConstructor
-@Getter
 public class Trade implements IModelClass{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "trade_id")
+    private Long id;
 
-    private long Id;
+    @OneToMany(mappedBy = "transaction")
+    @Nullable
+    transient private List<Transaction> transactions;
 
     @ManyToOne
-    @JoinColumn(name = "record_id")
-    private Product product;
+    @JoinColumn(name = "trader_id")
+    private Trader trader;
 
-    @ManyToOne
-    @JoinColumn(name = "tr_id")
-    private Transaction transaction;
-
-    private int amount;
-    private double price;
-    private float discount = 1f;
-    private String warehouse = "#main"; // todo: can be a warehouse's unique name, or just refer onto the usertype@warehouse
-    private String logisticLink;
     private GeneralStatus status = GeneralStatus.PENDING;
     private Date dateCreated;
     private Date dateUpdated;
-    private String note;
 
-    public Long getId(){
-        return this.Id;
-    }
+    private double totalPrice;
 
-
-    public Trade() {
-
-    }
 }

@@ -32,24 +32,6 @@ public class ProductSvc implements IBaseService{
     }
 
     @Override
-    public Page<Product> getSpecifiedPageObjects(PageRequest pageRequest, int targetPage) {
-        String searchField;
-        if (pageRequest.SearchField == null || pageRequest.SearchField.isEmpty())
-            searchField = pageRequest.SortingField.toLowerCase();
-        else
-            searchField = pageRequest.SearchField.toLowerCase();
-
-        // TODO actually can be distracted as single individual method?
-
-        return _p.findAll(
-                (new GeneralSpecificationHelper<Trader>())
-                        .like(  searchField,
-                                pageRequest.Keyword.toLowerCase()  ),
-                pageRequest.toPageable(targetPage)
-        );
-    }
-
-    @Override
     public void add(Object object) {
 
     }

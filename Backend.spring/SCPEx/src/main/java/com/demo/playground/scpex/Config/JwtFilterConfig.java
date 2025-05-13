@@ -1,7 +1,9 @@
 package com.demo.playground.scpex.Config;
 
 import com.demo.playground.scpex.utils.JwtHelper;
+import org.hibernate.annotations.Filter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,10 +17,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component
+//@Filter(name = "JWTFilter")
+@Configuration
 public class JwtFilterConfig extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final JwtHelper jwtUtil;
+
+//    @Bean
+    public static JwtFilterConfig CreateJwtConfig(UserDetailsService userDetailsService, JwtHelper jwtUtil) {
+        var jwt = new JwtFilterConfig(userDetailsService, jwtUtil);
+        return jwt;
+    }
 
     public JwtFilterConfig(UserDetailsService userDetailsService, JwtHelper jwtUtil) {
         this.userDetailsService = userDetailsService;
@@ -30,8 +39,7 @@ public class JwtFilterConfig extends OncePerRequestFilter {
             throws ServletException, IOException {
         final String authorizationHeader = request.getHeader("Authorization");
 
-        String username = null;
-        String jwt = null;
+        String username = null, jwt = null;
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
@@ -59,6 +67,7 @@ public class JwtFilterConfig extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 
+    // interupter
     private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
