@@ -1,10 +1,10 @@
 package com.demo.playground.scpex.Config;
 
+import com.demo.playground.scpex.Models.Pojo.User;
+import com.demo.playground.scpex.Services.UserDetailSvc;
 import com.demo.playground.scpex.utils.JwtHelper;
-import org.hibernate.annotations.Filter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,18 +18,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 //@Filter(name = "JWTFilter")
-@Configuration
+@Component
 public class JwtFilterConfig extends OncePerRequestFilter {
-    private final UserDetailsService userDetailsService;
+    private final UserDetailSvc userDetailsService;
     private final JwtHelper jwtUtil;
 
-//    @Bean
-    public static JwtFilterConfig CreateJwtConfig(UserDetailsService userDetailsService, JwtHelper jwtUtil) {
-        var jwt = new JwtFilterConfig(userDetailsService, jwtUtil);
-        return jwt;
-    }
-
-    public JwtFilterConfig(UserDetailsService userDetailsService, JwtHelper jwtUtil) {
+    public JwtFilterConfig(UserDetailSvc userDetailsService, JwtHelper jwtUtil) {
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
     }
@@ -44,7 +38,7 @@ public class JwtFilterConfig extends OncePerRequestFilter {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             try {
-                username = jwtUtil.getUsernameFromToken(jwt);
+                username = jwtUtil.getUsernameFromToken(jwt); // got username with head
             } catch (Exception e) {
                 sendErrorResponse(response, "Invalid Token");
                 return;
@@ -53,7 +47,8 @@ public class JwtFilterConfig extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            if (jwtUtil.validateToken(jwt)) {
+            boolean isUserAsCustomer = userDetails.getAuthorities().contains(new SimpleGrantedAuthority("PERMISSION_PURCHASE"));
+            if (jwtUtil.validateToken(jwt, isUserAsCustomer)) {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

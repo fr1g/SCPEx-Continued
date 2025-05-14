@@ -7,7 +7,7 @@ const internal = s.internal.actions,
       warehouse = s.warehouseOperations.actions;  
 
 export const sagas = {
-    actInternal: function*(){
+    actInternal: function*(): any{
         try {
             let current: any = yield select((state) => state.internal.bucket) as unknown as any;
             yield call(() => console.log(current))

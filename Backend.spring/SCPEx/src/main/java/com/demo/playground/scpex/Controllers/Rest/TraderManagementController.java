@@ -24,8 +24,8 @@ public class TraderManagementController {
     TraderSvc _s;
 
     @PostMapping("/{id}")
-    public ResponseEntity<String> getTrader(@PathVariable("id") String id, @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken) {
-        System.out.println("header: " + authToken);
+    public ResponseEntity<String> getTrader(@PathVariable("id") String id) {
+//        System.out.println("header: " + authToken);
 
         Trader result;
         Long target;
@@ -46,8 +46,8 @@ public class TraderManagementController {
     }
 
     @PostMapping("/find/{page}")
-    public ResponseEntity<String> getTraders(@RequestHeader(HttpHeaders.AUTHORIZATION) String authToken, @PathVariable("page") String page, @RequestBody String body) {
-        System.out.println("header: " + authToken);
+    public ResponseEntity<String> getTraders(@PathVariable("page") String page, @RequestBody String body) {
+//        System.out.println("header: " + authToken);
         Page<Trader> result;
         PageRequest pr = SharedStatic.jsonHandler.fromJson(body, PageRequest.class);
         int toPage = Integer.parseInt(page);
@@ -71,8 +71,6 @@ public class TraderManagementController {
 
     @PostMapping("/op")
     public ResponseEntity<String> createTrader(
-            @RequestHeader(HttpHeaders.AUTHORIZATION)
-            String authToken,
             @RequestBody
             String info//,
             // HttpServletRequest request ? using logged-in account force as registrar?

@@ -18,5 +18,7 @@ public interface RepoTrader extends JpaRepository<Trader, Long>, JpaSpecificatio
 {
     Page<Trader> findByNameContaining(String name, Pageable page);
 
+    @Query("SELECT e FROM Trader e WHERE e.contact = :cont")
+    Trader findByContact(@Param("cont") String contact);
 
 }

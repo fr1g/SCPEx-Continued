@@ -1,5 +1,6 @@
 package com.demo.playground.scpex.utils;
 
+import com.demo.playground.scpex.Models.Pojo.User;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,26 +11,25 @@ import java.util.Map;
 
 @Component
 public class JwtHelper {
-    @Value("${jwt.secret}")
-    private String secret;
+//    @Value("${jwt.secret}")
+    private String secret = "Thisisasecret";
 
-    @Value("${jwt.expiration}")
-    private Long expiration;
+    private final Long expiration = 43200L;
 
-    // 生成Token
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(User userDetails, boolean remember) {
+        System.out.println("Remember: " + remember);
         Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(/*(userDetails.isTrader() ? "t/" : "e/") + */ // not needed: the front-end passes login with the required form.
+                        userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000 * (remember ? 20 : 1)))
+                .signWith(SignatureAlgorithm.HS512, secret) // ignoring deprecated method. my time is not enough.
                 .compact();
     }
 
-    // 验证Token
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, boolean isTrader) {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
@@ -38,7 +38,6 @@ public class JwtHelper {
         }
     }
 
-    // 从Token中获取用户名
     public String getUsernameFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)
