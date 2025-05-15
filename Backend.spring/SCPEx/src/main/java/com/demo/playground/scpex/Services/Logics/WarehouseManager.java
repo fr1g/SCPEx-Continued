@@ -1,4 +1,4 @@
-package com.demo.playground.scpex.Services;
+package com.demo.playground.scpex.Services.Logics;
 
 import com.demo.playground.scpex.Models.Category;
 import com.demo.playground.scpex.Models.Employee;
@@ -14,7 +14,13 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Service
-public class WarehouseMgr {
+public class WarehouseManager {
+    /*
+    todo:
+        - CRUD categories
+        - CRUD products
+        - UPDATE trade/tran
+     */
     @Autowired
     RepoCategory _c;
 

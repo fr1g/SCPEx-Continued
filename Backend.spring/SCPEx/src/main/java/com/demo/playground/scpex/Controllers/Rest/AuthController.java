@@ -7,18 +7,13 @@ import com.demo.playground.scpex.Models.Trader;
 import com.demo.playground.scpex.Services.UserDetailSvc;
 import com.demo.playground.scpex.Shared.Response;
 import com.demo.playground.scpex.utils.JwtHelper;
-import com.demo.playground.scpex.utils.MD5Helper;
 import com.demo.playground.scpex.utils.ResponseHelper;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -26,11 +21,8 @@ public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private UserDetailSvc _u;
-    @Autowired
-    private MD5Helper passwdEncoder;
     @Autowired
     private JwtHelper jwtHelper;
 
@@ -62,5 +54,12 @@ public class AuthController {
         }
 
         return ResponseHelper.Return(new Response(403, "invalid"));
+    }
+
+    @PostMapping("logoff")
+    public ResponseEntity<String> logout(@RequestHeader(name = "Authorization") String token) {
+        // only can logoff-self.
+        jwtHelper.invalidateToken(token);
+        return ResponseHelper.Return(new Response(200, "logged out"));
     }
 }

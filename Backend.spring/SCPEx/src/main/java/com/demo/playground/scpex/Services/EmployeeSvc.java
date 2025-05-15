@@ -18,8 +18,6 @@ public class EmployeeSvc implements IBaseService<Employee>{
     @Autowired
     RepoEmployee _e;
 
-    @Autowired
-    RepoTrader _t;
 
     @Override
     public boolean isThisExist(Long id) {

@@ -20,6 +20,7 @@ public class UserDetailSvc implements UserDetailsService {
     RepoTrader _t;
 
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         String[] arguments = username.split("#");

@@ -1,3 +1,5 @@
+// this file defines each privilege nodes.
+
 ADMIN:
     PERMISSION_MANAGE_USERS
     PERMISSION_MANAGE_INVENTORY

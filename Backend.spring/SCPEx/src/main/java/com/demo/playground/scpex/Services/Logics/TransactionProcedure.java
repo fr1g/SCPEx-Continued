@@ -1,10 +1,11 @@
-package com.demo.playground.scpex.Services;
+package com.demo.playground.scpex.Services.Logics;
 
 import com.demo.playground.scpex.Models.Trade;
 import com.demo.playground.scpex.Models.Transaction;
 import com.demo.playground.scpex.Repositories.RepoTrade;
 import com.demo.playground.scpex.Repositories.RepoTrader;
 import com.demo.playground.scpex.Repositories.RepoTransaction;
+import com.demo.playground.scpex.Services.TransactionSvc;
 import com.demo.playground.scpex.Shared.NullReferenceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,9 @@ import java.util.List;
 @Service
 public class TransactionProcedure {
     /* todo
-    - create transaction ()
-    - create transactions (by list)
-    -
+        - create transaction ()
+        - create transactions (by list)
+        -
 
      */
     @Autowired

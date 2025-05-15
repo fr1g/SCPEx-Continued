@@ -25,7 +25,7 @@ public class PresetDataMockingProcessor {
     }
     
     @Bean
-    public CommandLineRunner initData(  RepoCategory category,
+    public CommandLineRunner testMocking(  RepoCategory category,
                                         RepoEmployee employee,
                                         RepoProduct product,
                                         RepoTrade trade,
@@ -35,10 +35,10 @@ public class PresetDataMockingProcessor {
         return args -> {
             if(!SharedStatic.usingMockData) return;
             else{
-                employee.save(Employee.builder().birth((new Date())).type(Type.WAREHOUSE).contact("114514").name("Aziz von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
+                employee.save(Employee.builder().birth((new Date())).type(Type.ADMIN).contact("114514").name("Aziz von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
                 employee.save(Employee.builder().birth((new Date())).type(Type.WAREHOUSE).contact("1919810").name("Volschtagen von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
-                employee.save(Employee.builder().birth((new Date())).type(Type.WAREHOUSE).contact("233435").name("Herman von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
-                employee.save(Employee.builder().birth((new Date())).type(Type.WAREHOUSE).contact("asdw114").name("Adolph von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
+                employee.save(Employee.builder().birth((new Date())).type(Type.REGISTRAR).contact("233435").name("Herman von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
+                employee.save(Employee.builder().birth((new Date())).type(Type.DEFAULT).contact("asdw114").name("Adolph von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
                 employee.save(Employee.builder().birth((new Date())).type(Type.WAREHOUSE).contact("663634").name("Jaager von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
                 employee.save(Employee.builder().birth((new Date())).type(Type.WAREHOUSE).contact("12244").name("Wilber von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
                 employee.save(Employee.builder().birth((new Date())).type(Type.WAREHOUSE).contact("1667714").name("Canser von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
