@@ -1,6 +1,7 @@
 package com.demo.playground.scpex.Services;
 
 import com.demo.playground.scpex.Models.Pojo.PageRequest;
+import com.demo.playground.scpex.Models.Pojo.ProductInfo;
 import com.demo.playground.scpex.Models.Product;
 import com.demo.playground.scpex.Models.Trader;
 import com.demo.playground.scpex.Repositories.RepoProduct;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-public class ProductSvc implements IBaseService{
+public class ProductSvc implements IBaseService<Product>{
 
     @Autowired
     RepoProduct _p;
@@ -32,12 +33,12 @@ public class ProductSvc implements IBaseService{
     }
 
     @Override
-    public void add(Object object) {
+    public void add(Product object) {
 
     }
 
     @Override
-    public void update(Object object) throws IOException {
+    public void update(Product object) throws IOException {
 
     }
 
@@ -47,7 +48,7 @@ public class ProductSvc implements IBaseService{
     }
 
     @Override
-    public void delete(Object object) {
+    public void delete(Product object) {
 
     }
 }

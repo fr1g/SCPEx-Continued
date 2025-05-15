@@ -25,7 +25,9 @@ public class JwtHelper {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(/*(userDetails.isTrader() ? "t/" : "e/") + */ // not needed: the front-end passes login with the required form.
-                        userDetails.getUsername())
+                        // well actually required. the login will be reformed internal.
+                        (userDetails.isTrader() ? "t#" : "e#") + "cont#" + userDetails.getUsername()
+                )
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000 * (remember ? 20 : 1)))
                 .signWith(secret) // ignoring deprecated method. my time is not enough.

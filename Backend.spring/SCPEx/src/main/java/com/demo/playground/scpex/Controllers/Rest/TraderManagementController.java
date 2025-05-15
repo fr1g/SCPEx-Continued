@@ -14,15 +14,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users/t")
 public class TraderManagementController {
 
+    // todo: traders cannot get other traders' info. need some way to prevent.
+    // candidate 1: check if id equals to requiring trader
+    // candidate 2: recommended: make
+
     @Autowired
     TraderSvc _s;
 
+    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_REGISTRAR', 'PERMISSION_MANAGE_CUSTOMERS', 'PERMISSION_MANAGE_USERS')")
     @PostMapping("/{id}")
     public ResponseEntity<String> getTrader(@PathVariable("id") String id) {
 //        System.out.println("header: " + authToken);
@@ -45,6 +51,7 @@ public class TraderManagementController {
         return ResponseHelper.Return(new Response(200, "success", SharedStatic.jsonHandler.toJson(result))); // 418
     }
 
+    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_REGISTRAR', 'PERMISSION_MANAGE_CUSTOMERS', 'PERMISSION_MANAGE_USERS')")
     @PostMapping("/find/{page}")
     public ResponseEntity<String> getTraders(@PathVariable("page") String page, @RequestBody String body) {
 //        System.out.println("header: " + authToken);
@@ -69,6 +76,7 @@ public class TraderManagementController {
         return ResponseHelper.Return(new Response(200, "success", SharedStatic.jsonHandler.toJson(result)));
     }
 
+    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_REGISTRAR', 'PERMISSION_MANAGE_CUSTOMERS', 'PERMISSION_MANAGE_USERS')")
     @PostMapping("/op")
     public ResponseEntity<String> createTrader(
             @RequestBody
