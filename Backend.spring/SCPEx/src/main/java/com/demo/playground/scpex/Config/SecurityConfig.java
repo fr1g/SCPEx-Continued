@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -40,20 +41,33 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(r -> r.requestMatchers("/api/auth/**").permitAll().anyRequest().authenticated())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(
+                        r ->   r
+                                .requestMatchers(HttpMethod.POST, "/api/auth/**")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/auth/login")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated()
+                )
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(authenticationEntryPoint())
                         .accessDeniedHandler(accessDeniedHandler())
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//                .addFilterAt(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        ;
 
         return http.build();
     }
 
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
+        System.out.println("passed through");
         return (request, response, authException) -> {
+            authException.printStackTrace();
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
             response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"Authentication is required\"}");
@@ -98,14 +112,14 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config,
-            DaoAuthenticationProvider authenticationProvider // 注入自定义的 Provider
+            DaoAuthenticationProvider authenticationProvider
     ) throws Exception {
-        return new ProviderManager(authenticationProvider); // 使用自定义 Provider 构建 AuthenticationManager
+        return new ProviderManager(authenticationProvider);
     }
 
 //
 //    @Bean
 //    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-//        return config.getAuthenticationManager(); // authController todo: maybe not using this, but using other instance as it.
+//        return config.getAuthenticationManager(); // authController todo: [TRUTH]  ::  maybe not using this, but using other instance as it.
 //    }
 }

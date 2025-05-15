@@ -46,6 +46,7 @@ public class JwtFilterConfig extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            // user name not constructed as type-contained.
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
             boolean isUserAsCustomer = userDetails.getAuthorities().contains(new SimpleGrantedAuthority("PERMISSION_PURCHASE"));
             if (jwtUtil.validateToken(jwt, isUserAsCustomer)) {
