@@ -17,7 +17,7 @@ import { AnimatePresence } from 'framer-motion';
 import User from './pages/Param/User.tsx';
 import ViewLayout from './pages/View/ViewLayout.tsx';
 import { Provider } from 'react-redux';
-import { store } from './tools/Redux.ts';
+import store from './tools/Redux.ts';
 
 const UserContext: Context<UserCredential | null> = createContext(getUserCredential());
 

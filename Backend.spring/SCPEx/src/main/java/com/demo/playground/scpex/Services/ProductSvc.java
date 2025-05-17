@@ -34,21 +34,23 @@ public class ProductSvc implements IBaseService<Product>{
 
     @Override
     public void add(Product object) {
-
+        _p.save(object);
     }
 
     @Override
-    public void update(Product object) throws IOException {
-
+    public void update(Product object) throws IOException, NullReferenceException {
+        if(!isThisExist(object.getId())) throw new NullReferenceException("Not found");
+        _p.save(object);
     }
 
-    @Override
-    public void delete(Long id) {
-
+    @Override @Deprecated
+    public void delete(Long id) throws NullReferenceException {
+        if(!isThisExist(id)) throw new NullReferenceException("Not found");
+        _p.deleteById(id);
     }
 
-    @Override
+    @Override @Deprecated
     public void delete(Product object) {
-
+        delete(object.getId());
     }
 }

@@ -23,8 +23,7 @@ public class Employee extends User implements IModelClass{
     @jakarta.annotation.Nullable
     transient private List<Trader> traders;
 
-    public Employee() {
-    }
+    public Employee() { }
 
     public Employee(Long temporaryId) {
         super.setId(temporaryId);

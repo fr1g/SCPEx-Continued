@@ -15,10 +15,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmployeeManagement {
+
     @Autowired
     EmployeeSvc _s;
 
-    public ResponseEntity<String> createTrader(Employee target, boolean isAlreadyExist) {
+    public ResponseEntity<String> createEmployee(Employee target, boolean isAlreadyExist) {
         if(isAlreadyExist)
             return ResponseHelper.Return(new Response(406, "Employee already exists", "Use 0 for new user, or use \"upd\" to update this existed user."));
         else{

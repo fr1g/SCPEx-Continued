@@ -74,8 +74,10 @@ public class TraderManagementController {
             return ResponseHelper.Return(new Response(514, "Unknown, maybe not exist"));
         }
 
-        for(var nx : result)
+        for(var nx : result){
             nx.secure();
+            nx.getRegistrar().secure();
+        }
 
         return ResponseHelper.Return(new Response(200, "success", SharedStatic.jsonHandler.toJson(result)));
     }

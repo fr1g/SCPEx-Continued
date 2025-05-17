@@ -3338,6 +3338,7 @@ snapshots:
   scpex-front@file:(@types/react@19.0.10)(jquery@3.7.1)(vite@6.1.1(jiti@2.4.2)(lightningcss@1.29.1)):
     dependencies:
       '@headlessui/react': 2.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@reduxjs/toolkit': 2.8.1(react-redux@9.2.0(@types/react@19.0.10)(react@19.0.0)(redux@5.0.1))(react@19.0.0)
       '@tailwindcss/vite': 4.0.7(vite@6.1.1(jiti@2.4.2)(lightningcss@1.29.1))
       clsx: 2.1.1
       framer-motion: 12.7.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)

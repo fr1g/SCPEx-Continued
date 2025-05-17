@@ -1,6 +1,7 @@
 package com.demo.playground.scpex.Models.Pojo;
 
 import com.demo.playground.scpex.Models.Category;
+import com.demo.playground.scpex.Models.Enums.GeneralStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,6 +17,10 @@ public class ProductInfo {
     @ManyToOne
     @JoinColumn(name = "cat_id")
     public Category category;
+
+    @Enumerated(EnumType.ORDINAL)
+    GeneralStatus status;
+    // todo maybe not completely processed.
 
     public String barcode;
     public double singlePrice;

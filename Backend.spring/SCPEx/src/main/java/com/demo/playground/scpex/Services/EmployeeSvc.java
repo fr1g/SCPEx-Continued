@@ -12,12 +12,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Service
 public class EmployeeSvc implements IBaseService<Employee>{
 
     @Autowired
     RepoEmployee _e;
-
 
     @Override
     public boolean isThisExist(Long id) {
@@ -34,15 +35,20 @@ public class EmployeeSvc implements IBaseService<Employee>{
         return _e.findAll(pageRequest.toPageable(targetPage));
     }
 
-
     @Override
     public void add(Employee object) {
         _e.save(object);
     }
 
     @Override
-    public void update(Employee object) {
-        _e.save(object);
+    public void update(Employee object) throws IOException {
+        try {
+            var original = getObjectById(object.getId());
+            object.setPasswd(original.getPasswd());
+            _e.save(object);
+        }catch (Exception ex){
+            throw new IOException("Exception happened during UPDATE on Trader. Nested: " + ex.getMessage());
+        }
     }
 
     @Override
