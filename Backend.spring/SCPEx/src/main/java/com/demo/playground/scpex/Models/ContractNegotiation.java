@@ -18,7 +18,7 @@ public class ContractNegotiation {
     String description;
 
     @ManyToOne
-    @JoinColumn(name = "sender", nullable = false)
+    @JoinColumn(name = "contract_sender", nullable = false)
     Trader sender;
 
     public ContractNegotiation() { }

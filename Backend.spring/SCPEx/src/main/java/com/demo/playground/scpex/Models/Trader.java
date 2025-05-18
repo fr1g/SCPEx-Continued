@@ -29,5 +29,5 @@ public class Trader extends User implements IModelClass{
     @OneToMany(mappedBy = "sender")
     transient private List<ContractNegotiation> contractNegotiations;
 
-    public Trader() {}
+    public Trader() { }
 }

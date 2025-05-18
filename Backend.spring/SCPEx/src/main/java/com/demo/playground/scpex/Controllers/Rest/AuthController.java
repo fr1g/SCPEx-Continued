@@ -58,8 +58,24 @@ public class AuthController {
 
     @PostMapping("logoff")
     public ResponseEntity<String> logout(@RequestHeader(name = "Authorization") String token) {
+        // I HOPE: todo THE USER WITH DIFFERENT IP WILL AUTOMATICALLY LOG-OFF.
+        // but i have no time to do so. that's a pity...
         // only can logoff-self.
         jwtHelper.invalidateToken(token);
         return ResponseHelper.Return(new Response(200, "logged out"));
+    }
+
+    @PostMapping("getme")
+    public ResponseEntity<String> getMe(@RequestHeader(name = "Authorization") String token) {
+        if(!jwtHelper.validateToken(token)) return ResponseHelper.Return(new Response(403, "invalid token"));
+
+        var revealedUserName = jwtHelper.getUsernameFromToken(token);
+        var revealedUser = (User)_u.loadUserByUsername(revealedUserName);
+        var isUserATrader = revealedUser.isTrader();
+        if(isUserATrader){
+            return ResponseHelper.Return(new Response(200, "TRA logged in", (new Gson()).toJson((Trader)revealedUser)));
+        }
+        else return ResponseHelper.Return(new Response(200, "EMP logged in", (new Gson()).toJson((Employee)revealedUser)));
+        // seriously???
     }
 }

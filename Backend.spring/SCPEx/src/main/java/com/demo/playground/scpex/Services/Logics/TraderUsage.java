@@ -28,9 +28,11 @@ public class TraderUsage {
     @Autowired
     RepoProduct _p;
 
-    public void addToCart(Long traderId, Long productId) {
+    public void addToCart(Long traderId, Long productId, int quantity) {
         try {
             var product = _p.findById(productId).orElseThrow(() -> new NullReferenceException("Product not found"));
+            product.setAmount(quantity);
+
             // whatever.
             var trader = _t.findById(traderId).orElseThrow(() -> new NullReferenceException("Trader not found"));
 
@@ -57,8 +59,6 @@ public class TraderUsage {
             ex.printStackTrace();
         }
     }
-
-
 
     public void updateLocation(Long traderId, String newStateJson) { // directly pass the new address book.
         try {

@@ -17,7 +17,7 @@ public class Trade implements IModelClass{
     @Column(name = "trade_id")
     private Long id;
 
-    @OneToMany(mappedBy = "transaction")
+    @OneToMany(mappedBy = "trade")
     @Nullable
     transient private List<Transaction> transactions;
 
@@ -31,4 +31,10 @@ public class Trade implements IModelClass{
 
     private double totalPrice;
 
+    public boolean isAllStatusSame(GeneralStatus status) {
+        for(var sub : this.transactions) {
+            if(!sub.getStatus().equals(status)) return false;
+        }
+        return true;
+    }
 }

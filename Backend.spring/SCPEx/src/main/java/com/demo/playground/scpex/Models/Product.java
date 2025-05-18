@@ -13,6 +13,7 @@ public class Product extends ProductInfo implements IModelClass{
     private String size;
     private String weight;
     private String feature;
+    private int amount;
     private float discount;
     private String warehouse; // todo also warehouse
     private String note;

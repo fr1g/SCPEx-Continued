@@ -16,7 +16,6 @@ import java.util.Date;
 public class Transaction implements IModelClass{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private long Id;
 
     @ManyToOne
@@ -30,6 +29,7 @@ public class Transaction implements IModelClass{
     private int amount;
     private double price;
     private float discount = 1f;
+
     private String warehouse = "#main"; // todo: can be a warehouse's unique name, or just refer onto the usertype@warehouse
     private String logisticLink;
     private GeneralStatus status = GeneralStatus.PENDING;

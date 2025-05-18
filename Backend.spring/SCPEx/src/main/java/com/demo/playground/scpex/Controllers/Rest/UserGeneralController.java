@@ -15,17 +15,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Deprecated
 @RestController
 @RequestMapping("/v0/user")
 public class UserGeneralController {
     /** TODO
-     *    - Customer.CartTemporary.Add
-     *    - Customer.CartTemporary.Remove
-     *    - Seller.CreateSellRequest
-     *    - Seller.CancelSellRequest
-     *    -
-     *    -
-     *
+     *    - this one has given up.
      * */
     @Autowired
     private RepoTrader _trader;

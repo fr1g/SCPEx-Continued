@@ -2,14 +2,10 @@ package com.demo.playground.scpex.Services;
 
 import com.demo.playground.scpex.Models.Employee;
 import com.demo.playground.scpex.Models.Pojo.PageRequest;
-import com.demo.playground.scpex.Models.Trader;
 import com.demo.playground.scpex.Repositories.RepoEmployee;
-import com.demo.playground.scpex.Repositories.RepoTrader;
 import com.demo.playground.scpex.Shared.NullReferenceException;
-import com.demo.playground.scpex.utils.GeneralSpecificationHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
