@@ -91,6 +91,8 @@ public class User implements UserDetails {
         return this.type.equals(Type.CUSTOMER) || this.type.equals(Type.SELLER);
     }
 
+    public boolean isCustomer() { return this.type.equals(Type.CUSTOMER); }
+
     @Override
     public String getPassword() {
         return this.passwd;

@@ -1,13 +1,16 @@
 package com.demo.playground.scpex.Controllers.Rest;
 
+import com.demo.playground.scpex.Models.ContractNegotiation;
 import com.demo.playground.scpex.Models.Pojo.PageRequest;
 import com.demo.playground.scpex.Models.Pojo.User;
 import com.demo.playground.scpex.Models.Trade;
 import com.demo.playground.scpex.Models.Trader;
 import com.demo.playground.scpex.Models.Transaction;
+import com.demo.playground.scpex.Repositories.RepoCN;
 import com.demo.playground.scpex.Services.Logics.TraderUsage;
 import com.demo.playground.scpex.Services.Logics.TransactionProcedure;
 import com.demo.playground.scpex.Services.TraderSvc;
+import com.demo.playground.scpex.Services.TransactionSvc;
 import com.demo.playground.scpex.Services.UserDetailSvc;
 import com.demo.playground.scpex.Shared.NullReferenceException;
 import com.demo.playground.scpex.Shared.Response;
@@ -15,6 +18,7 @@ import com.demo.playground.scpex.utils.JwtHelper;
 import com.demo.playground.scpex.utils.ResponseHelper;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +43,12 @@ public class TradeController {
     @Autowired
     TraderUsage _t_u;
 
+    @Autowired
+    RepoCN _cn;
+
+    @Autowired
+    TransactionSvc _trans;
+
     @PostMapping("/trades/query/{page}")
     @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')")
     public ResponseEntity<String> queryTrades(@RequestHeader(name = "Authorization") String token, @RequestBody String pageReq, @PathVariable("page") int pageNum){
@@ -56,17 +66,49 @@ public class TradeController {
     }
     // todo: update transaction by id; else.
     @PostMapping("/trades/update/{transactionId}")
-    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')")
-    public ResponseEntity<String> updateTransaction(@RequestBody String newTransactionStateJson, @PathVariable("transactionId") int targetId) {
+    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')") // only warehouse and admin.
+    public ResponseEntity<String> updateTransaction(@RequestBody String newTransactionStateJson, @PathVariable("transactionId") long targetId) {
         try {
             var newState = (new Gson()).fromJson(newTransactionStateJson, Transaction.class);
+            if(!_trans.isThisExist(targetId)) throw new NullReferenceException("No such transaction");
+            _trans.update(newState);
+            return ResponseHelper.Return(new Response(200, "done"));
         }catch (Exception ex){
-
+            return ResponseHelper.Return(new Response(404, "Failed to update.", ex.getMessage()));
         }
-        return null; // temp
     }
 
-        @PostMapping("/create")
+    @PostMapping("/cn/create")
+    @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')")
+    public ResponseEntity<String> createContractNegotiation(@RequestHeader(name = "Authorization") String token, @RequestBody String cnJson) {
+        try {
+            var revealedUser = (User)_us.loadUserByUsername(jwtHelper.getUsernameFromToken(token));
+            if(revealedUser.isCustomer())
+                throw new PermissionDeniedDataAccessException("This is not for normal customer. ", new Exception("[NSP] No sufficient permission "));
+
+            var cn = new Gson().fromJson(cnJson, ContractNegotiation.class);
+            cn.setSender((Trader)revealedUser);
+            var submittedId = _cn.saveAndFlush(cn);
+            return ResponseHelper.Return(new Response(200, "We got you", "" + submittedId));
+        }catch (Exception ex){
+            return ResponseHelper.Return(new Response(403, "Not allowed. ", ex.getMessage()));
+        }
+    }
+
+    @PostMapping("/cn/list/{pageNum}")
+    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')") // only warehouse and admin.
+    public ResponseEntity<String> getPagedCNs(@RequestBody String pageReqJson, @PathVariable("pageNum") int pageNum) {
+        try {
+            var pageable = (new Gson()).fromJson(pageReqJson, PageRequest.class).toPageable(pageNum);
+            
+        }catch (Exception ex){
+            return ResponseHelper.Return(new Response(403, "Not allowed. ", ex.getMessage()));
+        }
+    }
+
+
+
+    @PostMapping("/create")
     @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')")
     public ResponseEntity<String> createTrade(@RequestHeader(name = "Authorization") String token, @RequestBody String chosenAddressJson){
         //  using current cart to create trade

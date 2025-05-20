@@ -42,10 +42,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
-                        r ->   r
+                        r ->   r // /api/products
                                 .requestMatchers(HttpMethod.POST, "/api/auth/**")
                                 .permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/auth/login")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/products/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
@@ -93,7 +95,7 @@ public class SecurityConfig {
         var encoder = md5Helper;
 //        var encoder = new MD5Helper();
         encoders.put("noop", NoOpPasswordEncoder.getInstance());
-        encoders.put(prefix, encoder); // 注册自定义 PasswordEncoder
+        encoders.put(prefix, encoder);
         //        dele.setDefaultPasswordEncoderForMatches(encoder);
         return new DelegatingPasswordEncoder(prefix, encoders);
     }

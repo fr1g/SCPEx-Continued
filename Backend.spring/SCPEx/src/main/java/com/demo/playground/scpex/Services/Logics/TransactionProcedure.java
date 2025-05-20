@@ -44,7 +44,11 @@ public class TransactionProcedure {
           related todo: GETTING ONE'S TRADES(BASIC INFO) AND PAGED RELATED TRANSACTIONS(MAIN)
      */
     public Page<Trade>getPagedTrades(Pageable pageable, Trader acquirer) {
-        return _trade.findAllOfTrader(pageable, acquirer.getId());
+        var result = _trade.findAllOfTrader(pageable, acquirer.secure().getId());
+        return result.map(x -> {
+            x.setTrader((Trader)x.getTrader().secure());
+            return x;
+        });
     }
 
     // okay why not use trader typed acquirer? what was i thought bout'?
