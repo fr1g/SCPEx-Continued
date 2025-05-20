@@ -6,6 +6,7 @@ import com.demo.playground.scpex.Models.Pojo.User;
 import com.demo.playground.scpex.Models.Trader;
 import com.demo.playground.scpex.Services.UserDetailSvc;
 import com.demo.playground.scpex.Shared.Response;
+import com.demo.playground.scpex.utils.AuthHelper;
 import com.demo.playground.scpex.utils.JwtHelper;
 import com.demo.playground.scpex.utils.ResponseHelper;
 import com.google.gson.Gson;
@@ -78,4 +79,10 @@ public class AuthController {
         else return ResponseHelper.Return(new Response(200, "EMP logged in", (new Gson()).toJson((Employee)revealedUser)));
         // seriously???
     }
+
+    @GetMapping("/passwd")
+    public ResponseEntity<String> getPasswd() {
+        return ResponseHelper.Return(new Response(200, "Password generated. Not via Caesar or Vigenère ", AuthHelper.generatePasswd()));
+    }
+
 }

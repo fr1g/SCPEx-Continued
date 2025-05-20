@@ -32,6 +32,24 @@ public class ProductSvc implements IBaseService<Product>{
         return _p.findAll(pageRequest.toPageable(targetPage));
     }
 
+    public Page<Product> getSpecifiedPageObjects(PageRequest pageRequest, int targetPage) {
+        // this is for
+        String searchField;
+        if (pageRequest.SearchField == null || pageRequest.SearchField.isEmpty())
+            searchField = pageRequest.SortingField.toLowerCase();
+        else
+            searchField = pageRequest.SearchField.toLowerCase();
+
+        // TODO actually can be distracted as single individual method?
+
+        return _p.findAll(
+                (new GeneralSpecificationHelper<Product>())
+                        .like(  searchField,
+                                pageRequest.Keyword.toLowerCase()  ), // is this part alike?
+                pageRequest.toPageable(targetPage)
+        );
+    }
+
     @Override
     public void add(Product object) {
         _p.save(object);

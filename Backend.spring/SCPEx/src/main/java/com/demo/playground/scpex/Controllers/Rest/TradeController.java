@@ -1,6 +1,7 @@
 package com.demo.playground.scpex.Controllers.Rest;
 
 import com.demo.playground.scpex.Models.ContractNegotiation;
+import com.demo.playground.scpex.Models.Enums.Type;
 import com.demo.playground.scpex.Models.Pojo.PageRequest;
 import com.demo.playground.scpex.Models.Pojo.User;
 import com.demo.playground.scpex.Models.Trade;
@@ -96,13 +97,34 @@ public class TradeController {
     }
 
     @PostMapping("/cn/list/{pageNum}")
-    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')") // only warehouse and admin.
-    public ResponseEntity<String> getPagedCNs(@RequestBody String pageReqJson, @PathVariable("pageNum") int pageNum) {
+    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY', 'PERMISSION_PURCHASE')") // maybe the creator also?
+    public ResponseEntity<String> getPagedCNs(@RequestHeader(name = "Authorization") String token, @RequestBody String pageReqJson, @PathVariable("pageNum") int pageNum) {
         try {
+            var revealedUser = (User)_us.loadUserByUsername(jwtHelper.getUsernameFromToken(token));
+            if((revealedUser.isCustomer() || !revealedUser.isTrader() && !(revealedUser.getType().equals(Type.WAREHOUSE) || revealedUser.getType().equals(Type.ADMIN))))
+                // is !(warehouse, seller, admin) // if something bad happened, try to replace with it.
+                return ResponseHelper.Return(new Response(403, "Insufficient permission."));
+
             var pageable = (new Gson()).fromJson(pageReqJson, PageRequest.class).toPageable(pageNum);
-            
+            var result = ((revealedUser.isTrader()) ? _cn.findAllOfSeller(revealedUser.getId(), pageable) : _cn.findAll(pageable)).map(x -> {
+                // todo maybe cause error: else not need to secure, maybe the returned data never contains any need-to-secure stuff?
+                ((ContractNegotiation)x).setSender((Trader) ((ContractNegotiation)x).getSender().secure());
+                return x;
+            });
+            return ResponseHelper.Return(new Response(200, "Result Presented", (new Gson()).toJson(result)));
         }catch (Exception ex){
             return ResponseHelper.Return(new Response(403, "Not allowed. ", ex.getMessage()));
+        }
+    }
+
+    @PostMapping("/cn/update")
+    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')")
+    public ResponseEntity<String> updateCN(@RequestBody String cnJson) {
+        try{
+            _cn.saveAndFlush(new Gson().fromJson(cnJson, ContractNegotiation.class));
+            return ResponseHelper.Return(new Response(200, "done"));
+        }catch (Exception ex){
+            return ResponseHelper.Return(new Response(403, "Sth wrong happened. ", ex.getMessage()));
         }
     }
 
