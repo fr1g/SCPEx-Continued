@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/users/t")
 public class TraderManagementController {
 
-    // todo: traders cannot get other traders' info. need some way to prevent.
+    // SOLVED: traders cannot get other traders' info. need some way to prevent.
     // candidate 1: check if id equals to requiring trader
     // candidate 2: recommended: make every request being strict under privs. [SELECTED]
 

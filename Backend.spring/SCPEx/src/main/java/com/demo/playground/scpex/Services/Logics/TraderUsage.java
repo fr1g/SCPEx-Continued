@@ -28,7 +28,7 @@ public class TraderUsage {
     @Autowired
     RepoProduct _p;
 
-    public void addToCart(Long traderId, Long productId, int quantity) {
+    public Trader addToCart(Long traderId, Long productId, int quantity) {
         try {
             var product = _p.findById(productId).orElseThrow(() -> new NullReferenceException("Product not found"));
             product.setAmount(quantity);
@@ -38,7 +38,7 @@ public class TraderUsage {
 
             var newJsonString = JsonManualArrayPushHelper.push(trader.getPreferJson(), (new Gson()).toJson(product), "prefers");
 
-            updateCart(traderId, newJsonString);
+            return updateCart(traderId, newJsonString);
             /* format:
                 {
                     "prefers": [..., + ]
@@ -46,29 +46,35 @@ public class TraderUsage {
              */
         }catch (Exception ex){
             ex.printStackTrace();
+            return null;
         }
 
     }
 
-    public void updateCart(Long traderId, String newStateCartJson) { // directly
+    public Trader updateCart(Long traderId, String newStateCartJson) { // directly
         try {
             var proccTarget = _t.findById(traderId).orElseThrow(() -> new NullReferenceException("Trader not found"));
             proccTarget.setPreferJson(newStateCartJson);
             _ts.update(proccTarget);
+            return proccTarget;
         }catch (Exception ex){
             ex.printStackTrace();
+            return null;
         }
     }
 
-    public void updateLocation(Long traderId, String newStateJson) { // directly pass the new address book.
+    public Trader updateLocation(Long traderId, String newStateJson) { // directly pass the new address book.
         try {
             var trader = _t.findById(traderId).orElseThrow(() -> new NullReferenceException("Trader not found"));
 
             trader.setLocationJson(newStateJson);
             _ts.update(trader);
 
+            return trader;
+
         }catch (Exception ex){
             ex.printStackTrace();
+            return null;
         }
     }
 

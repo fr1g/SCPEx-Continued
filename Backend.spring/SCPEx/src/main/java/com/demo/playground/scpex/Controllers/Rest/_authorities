@@ -18,3 +18,5 @@ CUSTOMER, SELLER:
 
 others:
     none
+
+// @RequestHeader(name = "Authorization") String token

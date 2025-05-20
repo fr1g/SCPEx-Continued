@@ -32,7 +32,10 @@ public class Transaction implements IModelClass{
 
     private String warehouse = "#main"; // todo: can be a warehouse's unique name, or just refer onto the usertype@warehouse
     private String logisticLink;
+
+    @Enumerated(EnumType.ORDINAL)
     private GeneralStatus status = GeneralStatus.PENDING;
+
     private Date dateCreated;
     private Date dateUpdated;
     private String note;

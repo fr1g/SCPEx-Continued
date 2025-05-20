@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TraderManagement {
-    // so high coupling inside this series of modules... fvck.  
+    // so high coupling inside this series of modules... fvck.
 
     @Autowired
     TraderSvc _s;

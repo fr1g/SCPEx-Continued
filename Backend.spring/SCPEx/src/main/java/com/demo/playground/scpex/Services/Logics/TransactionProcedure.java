@@ -3,6 +3,7 @@ package com.demo.playground.scpex.Services.Logics;
 import com.demo.playground.scpex.Models.Enums.GeneralStatus;
 import com.demo.playground.scpex.Models.Product;
 import com.demo.playground.scpex.Models.Trade;
+import com.demo.playground.scpex.Models.Trader;
 import com.demo.playground.scpex.Models.Transaction;
 import com.demo.playground.scpex.Repositories.RepoProduct;
 import com.demo.playground.scpex.Repositories.RepoTrade;
@@ -40,7 +41,13 @@ public class TransactionProcedure {
 
     /*
           get paged of transactions under the trade
+          related todo: GETTING ONE'S TRADES(BASIC INFO) AND PAGED RELATED TRANSACTIONS(MAIN)
      */
+    public Page<Trade>getPagedTrades(Pageable pageable, Trader acquirer) {
+        return _trade.findAllOfTrader(pageable, acquirer.getId());
+    }
+
+    // okay why not use trader typed acquirer? what was i thought bout'?
     public Page<Transaction> getPagedTransactions(Pageable pageable, Long requiringTradeId, Long acquirer) {
         var target = _trade.findById(requiringTradeId).orElseThrow(() -> new NullReferenceException("No trade found with id " + requiringTradeId));
         if(!target.getTrader().getId().equals(acquirer)) throw new NullReferenceException("Trader acquired but not acquirer");
@@ -49,6 +56,7 @@ public class TransactionProcedure {
 
     /*
           update transaction: for updating status
+          related todo: UPDATE STATUS OF TRADE/TRANSACTION
      */
 
     public Trade updateTransaction(Long tid, int statusEnumIndex) {

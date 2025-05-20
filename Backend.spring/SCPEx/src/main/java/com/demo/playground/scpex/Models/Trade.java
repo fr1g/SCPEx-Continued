@@ -25,7 +25,9 @@ public class Trade implements IModelClass{
     @JoinColumn(name = "trader_id")
     private Trader trader;
 
+    @Enumerated(EnumType.ORDINAL)
     private GeneralStatus status = GeneralStatus.PENDING;
+
     private Date dateCreated;
     private Date dateUpdated;
 
