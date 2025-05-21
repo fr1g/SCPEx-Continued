@@ -30,7 +30,7 @@ public class EmployeeManagementController {
 
     @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_USERS')")
     @PostMapping("/{id}")
-    public ResponseEntity<String> getTrader(@PathVariable("id") String id) {
+    public ResponseEntity<String> getEmployee(@PathVariable("id") String id) {
         Employee result;
         Long target;
         try {
@@ -50,7 +50,7 @@ public class EmployeeManagementController {
 
     @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_USERS')")
     @PostMapping("/find/{page}")
-    public ResponseEntity<String> getTraders(@PathVariable("page") String page, @RequestBody String body) {
+    public ResponseEntity<String> getEmployees(@PathVariable("page") String page, @RequestBody String body) {
 //        System.out.println("header: " + authToken);
         Page<Employee> result;
         PageRequest pr = SharedStatic.jsonHandler.fromJson(body, PageRequest.class);

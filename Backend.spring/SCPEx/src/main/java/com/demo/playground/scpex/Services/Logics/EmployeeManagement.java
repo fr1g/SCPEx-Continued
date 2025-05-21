@@ -20,7 +20,7 @@ public class EmployeeManagement {
     EmployeeSvc _s;
 
     public ResponseEntity<String> createEmployee(Employee target, boolean isAlreadyExist) {
-        if(isAlreadyExist)
+        if(isAlreadyExist) // ... why did i do that. this is really not necessary or should never do like that,,.,
             return ResponseHelper.Return(new Response(406, "Employee already exists", "Use 0 for new user, or use \"upd\" to update this existed user."));
         else{
             target.setId(null);

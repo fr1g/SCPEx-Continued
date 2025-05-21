@@ -1,5 +1,6 @@
 package com.demo.playground.scpex.Models;
 
+import com.demo.playground.scpex.Models.Enums.GeneralStatus;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,9 @@ public class Category implements IModelClass{
     @Column(nullable = true)
     private String zone;
     private String note;
+
+    @Enumerated(EnumType.ORDINAL)
+    private GeneralStatus status;
 
     @OneToMany(mappedBy = "category")
     @Nullable

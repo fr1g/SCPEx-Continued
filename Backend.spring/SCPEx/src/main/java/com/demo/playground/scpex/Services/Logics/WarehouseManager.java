@@ -2,10 +2,12 @@ package com.demo.playground.scpex.Services.Logics;
 
 import com.demo.playground.scpex.Models.Category;
 import com.demo.playground.scpex.Models.Employee;
+import com.demo.playground.scpex.Models.Enums.GeneralStatus;
 import com.demo.playground.scpex.Models.Product;
 import com.demo.playground.scpex.Repositories.RepoCategory;
 import com.demo.playground.scpex.Repositories.RepoEmployee;
 import com.demo.playground.scpex.Repositories.RepoProduct;
+import com.demo.playground.scpex.Shared.NullReferenceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,9 +37,22 @@ public class WarehouseManager {
         return result;
     }
 
-    public void addCategory(String categoryName, Employee operator) {
-        _c.saveAndFlush(new Category(categoryName, ("Category created by " + operator.getName() + ", id: " + operator.getId() + " at time: " + (new Date()).getTime())));
+    public Product createProduct(Product product) {
+        return _p.save(product);
     }
 
+    public Category addCategory(Category newCat, Employee operator) {
+        var modified = newCat;
+        modified.setStatus(GeneralStatus.APPROVED);
+        modified.setNote(("Category created by " + operator.getName() + ", id: " + operator.getId() + " at time: " + (new Date()).getTime()));
+        return _c.saveAndFlush(modified);
+    }
+
+    public void disableCategory(Category cat, Employee operator) {
+        var modified = _c.findById(cat.getId()).orElseThrow(() -> new NullReferenceException("no such existing cat"));
+        modified.setNote(modified.getNote() + "$$$ disabled: " + " by " + operator.getName() + ", id: " + operator.getId() + " at time: " + (new Date()).getTime());
+        modified.setStatus(GeneralStatus.REJECTED);
+        _c.saveAndFlush(modified);
+    }
 
 }
