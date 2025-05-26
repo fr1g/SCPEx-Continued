@@ -11,4 +11,11 @@ export default class Warehouse{ // which defines what will be returned from back
         this.uniqueName = name;
         this.fetchedRecords = recs;
     }
+
+    o(){
+        return {
+            uniqueName: this.uniqueName,
+            fetchedRecords: this.fetchedRecords
+        }
+    }
 }

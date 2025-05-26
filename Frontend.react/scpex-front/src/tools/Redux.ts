@@ -11,7 +11,8 @@ const store = configureStore(
     {
         reducer: {
             internal: s.internal.reducer,
-            warehouseOperations: s.warehouseOperations.reducer
+            warehouseOperations: s.warehouseOperations.reducer,
+            auth: s.auths.reducer
         },
         middleware: (getDefaultMiddleware) => {
             return getDefaultMiddleware().concat(saga);

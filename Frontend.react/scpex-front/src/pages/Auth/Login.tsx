@@ -5,10 +5,14 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 import Icon from "../../components/Fragments/Icon";
 import { motion, AnimatePresence } from "framer-motion";
+import { useForm } from 'react-hook-form';
+import { LoginDataTransfer } from "../../models/LoginDataTransfer";
+import { useDispatch } from "react-redux";
+import { slices as s } from "../../tools/ReduceHelper";
 
 const traderTypes = [
-    { id: 0, enum: 2, name: "Customer/Merchant" },
-    { id: 1, enum: 1, name: "Seller/M.Factory" },
+    { id: 0, enum: 2, name: "Merchant/Producer" },
+    { id: 1, enum: 1, name: "Employee" },
     // null
 ]
 
@@ -16,7 +20,8 @@ export default function Login() {
     let [rememberMe, setRememberMe] = useState(false);
     const [query, setQuery] = useState('');
     const [selected, setSelected] = useState(traderTypes[0]);
-    
+    const { register, handleSubmit, formState: { errors } } = useForm();
+    const dispatch = useDispatch();
 
     const filtered = query === ''
         ? traderTypes
@@ -26,19 +31,25 @@ export default function Login() {
 
 
     useEffect(() => {
-        document.getElementById("login-form")?.addEventListener("submit", (e) => {
-            e.preventDefault();
-            let n = new FormData(e.target! as unknown as HTMLFormElement);
-            console.log(n);
-        });
+        // document.getElementById("login-form")?.addEventListener("submit", (e) => {
+        //     e.preventDefault();
+        //     let n = new FormData(e.target! as unknown as HTMLFormElement);
+        //     console.log(n);
+        // });
     });
+
+    const onSubmit = (data: any) => {
+        let req = new LoginDataTransfer(`${selected.id == 1 ? 'e' : 't'}#cont#${data.contact}`, data.passwd, rememberMe);
+        console.log(req); // !
+        dispatch(s.auths.actions.login(req.o()));
+    };
 
     return <>
         <div>
             <p className="mb-3 text-xl">If you have no account of our membership yet, please go to <Link className="text-blue-400 hover:text-blue-300 active:text-blue-500 visited:text-sky-400/80 underline" to="/auth/register">Register</Link></p>
-            <form id="login-form" className="grid grid-cols-1 gap-3" >
-                <Input name="contact" className="s font-xl p-2 bg-slate-50 dark:bg-slate-700 w-full outline-0 border-2 border-slate-200/80 dark:border-slate-500 transition rounded-lg shadow-md hover:shadow-sm focus:shadow-lg focus:border-slate-400" type="text" placeholder="Contact" />
-                <Input name="passwd" className="s font-xl p-2 bg-slate-50 dark:bg-slate-700 w-full outline-0 border-2 border-slate-200/80 dark:border-slate-500 transition rounded-lg shadow-md hover:shadow-sm focus:shadow-lg focus:border-slate-400" type="password" placeholder="Password" />
+            <form onSubmit={handleSubmit(onSubmit)} id="login-form" className="grid grid-cols-1 gap-3" >
+                <Input {...register("contact", {required: true, maxLength: 80})} name="contact" className="s font-xl p-2 bg-slate-50 dark:bg-slate-700 w-full outline-0 border-2 border-slate-200/80 dark:border-slate-500 transition rounded-lg shadow-md hover:shadow-sm focus:shadow-lg focus:border-slate-400" type="text" placeholder="Contact" />
+                <Input {...register("passwd", {required: true, maxLength: 80})} name="passwd" className="s font-xl p-2 bg-slate-50 dark:bg-slate-700 w-full outline-0 border-2 border-slate-200/80 dark:border-slate-500 transition rounded-lg shadow-md hover:shadow-sm focus:shadow-lg focus:border-slate-400" type="password" placeholder="Password" />
                 <div> As Role...
                     <div className="bg-gray-200/50 inline-block mx-3.5 rounded-lg shadow font-semibold text-lg">
                         <Combobox immediate

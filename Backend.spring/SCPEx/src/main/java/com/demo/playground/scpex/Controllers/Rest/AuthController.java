@@ -4,14 +4,18 @@ import com.demo.playground.scpex.Models.Employee;
 import com.demo.playground.scpex.Models.Pojo.LoginCredentials;
 import com.demo.playground.scpex.Models.Pojo.User;
 import com.demo.playground.scpex.Models.Trader;
+import com.demo.playground.scpex.Services.EmployeeSvc;
+import com.demo.playground.scpex.Services.TraderSvc;
 import com.demo.playground.scpex.Services.UserDetailSvc;
 import com.demo.playground.scpex.Shared.Response;
 import com.demo.playground.scpex.utils.AuthHelper;
 import com.demo.playground.scpex.utils.JwtHelper;
+import com.demo.playground.scpex.utils.MD5Helper;
 import com.demo.playground.scpex.utils.ResponseHelper;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +30,12 @@ public class AuthController {
     private UserDetailSvc _u;
     @Autowired
     private JwtHelper jwtHelper;
+
+    @Autowired
+    EmployeeSvc _e;
+
+    @Autowired
+    TraderSvc _t;
 
     @PostMapping("login")
     public ResponseEntity<String> login(@RequestBody String body) {
@@ -84,5 +94,29 @@ public class AuthController {
     public ResponseEntity<String> getPasswd() {
         return ResponseHelper.Return(new Response(200, "Password generated. Not via Caesar or Vigenère ", AuthHelper.generatePasswd()));
     }
+
+    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_USERS')")
+    @PostMapping("/reset/{uid}")
+    public ResponseEntity<String> newPasswd(@PathVariable("uid") long uid, @RequestBody String info) {
+        try {
+            if(info.equals("e")){
+                Employee e = _e.getObjectById(uid);
+                var originalPasswd = AuthHelper.generatePasswd();
+                e.setPasswd(MD5Helper.encrypt(originalPasswd));
+                _e.update(e);
+                return ResponseHelper.Return(new Response(200, originalPasswd));
+            }else{
+                Trader t = _t.getObjectById(uid);
+                var originalPasswd = AuthHelper.generatePasswd();
+                t.setPasswd(MD5Helper.encrypt(originalPasswd));
+                _t.update(t);
+                return ResponseHelper.Return(new Response(200, originalPasswd));
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return ResponseHelper.Return(new Response(403, "invalid, maybe not exist"));
+        }
+    }
+
 
 }

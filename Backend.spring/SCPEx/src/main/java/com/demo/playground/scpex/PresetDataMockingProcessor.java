@@ -1,6 +1,5 @@
 package com.demo.playground.scpex;
 
-import com.demo.playground.scpex.Models.Category;
 import com.demo.playground.scpex.Models.Employee;
 import com.demo.playground.scpex.Models.Enums.GeneralStatus;
 import com.demo.playground.scpex.Models.Enums.Type;
@@ -8,9 +7,6 @@ import com.demo.playground.scpex.Models.Trader;
 import com.demo.playground.scpex.Repositories.*;
 import com.demo.playground.scpex.Shared.SharedStatic;
 import com.demo.playground.scpex.utils.MD5Helper;
-import com.demo.playground.scpex.utils.PropertyComparator;
-import com.demo.playground.scpex.utils.ReduxHelper;
-import com.google.gson.Gson;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,9 +29,12 @@ public class PresetDataMockingProcessor {
                                         RepoTransaction transaction
     ) {
         return args -> {
+            if(!employee.existsById(1L))
+                employee.save(Employee.builder().birth((new Date())).type(Type.ADMIN).contact("_root").name("_root").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("laterihopeitcanbechangedviaconfig")).note("preset default super user").build());
+
             if(!SharedStatic.usingMockData) return;
             else{
-                employee.save(Employee.builder().birth((new Date())).type(Type.ADMIN).contact("114514").name("Aziz von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
+
                 employee.save(Employee.builder().birth((new Date())).type(Type.WAREHOUSE).contact("1919810").name("Volschtagen von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
                 employee.save(Employee.builder().birth((new Date())).type(Type.REGISTRAR).contact("233435").name("Herman von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
                 employee.save(Employee.builder().birth((new Date())).type(Type.DEFAULT).contact("asdw114").name("Adolph von Schumal").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
