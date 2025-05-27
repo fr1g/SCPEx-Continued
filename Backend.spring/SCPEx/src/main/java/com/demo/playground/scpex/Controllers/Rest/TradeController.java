@@ -102,7 +102,7 @@ public class TradeController {
         try {
             var revealedUser = (User)_us.loadUserByUsername(jwtHelper.getUsernameFromToken(token));
             if((revealedUser.isCustomer() || !revealedUser.isTrader() && !(revealedUser.getType().equals(Type.WAREHOUSE) || revealedUser.getType().equals(Type.ADMIN))))
-                // is !(warehouse, seller, admin) // if something bad happened, try to replace with it.
+                // is !(warehouse, seller, admin) // todo if something bad happened, try to replace with it.
                 return ResponseHelper.Return(new Response(403, "Insufficient permission."));
 
             var pageable = (new Gson()).fromJson(pageReqJson, PageRequest.class).toPageable(pageNum);
@@ -166,6 +166,7 @@ public class TradeController {
         }
     }
 
+    // in product's page
     @PostMapping("/cart/add")
     @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')")
     public ResponseEntity<String> addToCart(@RequestHeader(name = "Authorization") String token,
@@ -192,6 +193,7 @@ public class TradeController {
         }
     }
 
+    // in cart management page
     @PostMapping("/cart/update")
     @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')")
     public ResponseEntity<String> updateCart(@RequestHeader(name = "Authorization") String token,

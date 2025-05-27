@@ -1,6 +1,7 @@
 package com.demo.playground.scpex.Controllers.Rest;
 
 import com.demo.playground.scpex.Models.Employee;
+import com.demo.playground.scpex.Models.Enums.GeneralStatus;
 import com.demo.playground.scpex.Models.Pojo.LoginCredentials;
 import com.demo.playground.scpex.Models.Pojo.User;
 import com.demo.playground.scpex.Models.Trader;
@@ -51,6 +52,8 @@ public class AuthController {
         );
         if(auth.isAuthenticated()){ // if authenticated, then the user must be existing.
             User u = (User)auth.getPrincipal();
+            if(u.getStatus().equals(GeneralStatus.CANCELED) || u.getStatus().equals(GeneralStatus.REJECTED))
+                return ResponseHelper.Return(new Response(403, "Not allowed: Banned"));
             String token = jwtHelper.generateToken(u, loginRequest.remember);
             User realUser = (User)_u.loadUserByUsername(loginRequest.username);
             if(realUser.isTrader()){
