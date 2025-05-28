@@ -1,0 +1,10 @@
+
+
+
+
+cart content: prefer: list of products, that:
+    - including the actual amount;
+    - including the real price and discount
+
+address book is not tightly binded to backend, it's only a string of json, that contains:
+    - many json objects.

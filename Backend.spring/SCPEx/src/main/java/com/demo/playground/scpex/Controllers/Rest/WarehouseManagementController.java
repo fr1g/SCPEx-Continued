@@ -61,8 +61,8 @@ public class WarehouseManagementController {
     }
 
     @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')")
-    @PostMapping("/find/{page}")
-    public ResponseEntity<String> getTraders(@PathVariable("page") String page, @RequestBody String body) {
+    @PostMapping("/find/{page}") // ?
+    public ResponseEntity<String> getPagedProds(@PathVariable("page") String page, @RequestBody String body) {
 //        System.out.println("header: " + authToken);
         Page<Product> result;
         PageRequest pr = SharedStatic.jsonHandler.fromJson(body, PageRequest.class);
@@ -159,7 +159,7 @@ public class WarehouseManagementController {
         }
     }
 
-    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')")
+    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')") //
     @PostMapping("/cat/disable/{id}")
     public ResponseEntity<String> giveUpCat(@PathVariable("id") long id, @RequestHeader(name = "Authorization") String token) {
         try{

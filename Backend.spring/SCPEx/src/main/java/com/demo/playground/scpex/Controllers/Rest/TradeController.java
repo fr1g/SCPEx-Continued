@@ -1,6 +1,7 @@
 package com.demo.playground.scpex.Controllers.Rest;
 
 import com.demo.playground.scpex.Models.ContractNegotiation;
+import com.demo.playground.scpex.Models.Enums.GeneralStatus;
 import com.demo.playground.scpex.Models.Enums.Type;
 import com.demo.playground.scpex.Models.Pojo.PageRequest;
 import com.demo.playground.scpex.Models.Pojo.User;
@@ -128,6 +129,18 @@ public class TradeController {
         }
     }
 
+    @PostMapping("/cn/cancel/{cnId}")
+    @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')")
+    public ResponseEntity<String> cancelCN(@PathVariable long cnId) {
+        try{
+            var operating = _cn.findById(cnId).orElseThrow(() -> new NullReferenceException("No such item. "));
+            operating.setStatus(GeneralStatus.CANCELED);
+            _cn.saveAndFlush(operating);
+            return ResponseHelper.Return(new Response(200, "done"));
+        }catch (Exception ex){
+            return ResponseHelper.Return(new Response(403, "Sth wrong happened. ", ex.getMessage()));
+        }
+    }
 
 
     @PostMapping("/create")

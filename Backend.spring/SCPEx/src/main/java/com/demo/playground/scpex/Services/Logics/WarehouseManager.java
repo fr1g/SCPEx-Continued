@@ -4,6 +4,7 @@ import com.demo.playground.scpex.Models.Category;
 import com.demo.playground.scpex.Models.Employee;
 import com.demo.playground.scpex.Models.Enums.GeneralStatus;
 import com.demo.playground.scpex.Models.Product;
+import com.demo.playground.scpex.Models.Trader;
 import com.demo.playground.scpex.Repositories.RepoCategory;
 import com.demo.playground.scpex.Repositories.RepoEmployee;
 import com.demo.playground.scpex.Repositories.RepoProduct;
