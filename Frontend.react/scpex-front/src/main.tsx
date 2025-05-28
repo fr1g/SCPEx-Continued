@@ -1,5 +1,6 @@
 // import { StrictMode } from 'react'
 import App from './App.tsx';
+import 'url-polyfill';
 
 // import React from "react";
 import { Context, createContext } from 'react';

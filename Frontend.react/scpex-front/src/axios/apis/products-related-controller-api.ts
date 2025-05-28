@@ -12,7 +12,7 @@
  */
 
 
-import * as globalImportUrl from 'url';
+import * as globalImportUrl  from 'url-polyfill';
 import globalAxios, { AxiosPromise, AxiosInstance } from 'axios';
 import { Configuration } from '../configuration';
 // Some imports not used depending on template conditions

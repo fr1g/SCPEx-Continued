@@ -71,6 +71,9 @@ importers:
       three:
         specifier: ^0.167.1
         version: 0.167.1
+      url-polyfill:
+        specifier: ^1.1.13
+        version: 1.1.13
     devDependencies:
       '@eslint/js':
         specifier: ^9.19.0
@@ -1817,6 +1820,9 @@ packages:
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
 
+  url-polyfill@1.1.13:
+    resolution: {integrity: sha512-tXzkojrv2SujumYthZ/WjF7jaSfNhSXlYMpE5AYdL2I3D7DCeo+mch8KtW2rUuKjDg+3VXODXHVgipt8yGY/eQ==}
+
   use-sync-external-store@1.5.0:
     resolution: {integrity: sha512-Rb46I4cGGVBmjamjphe8L/UnvJD+uPPtTkNvX5mZgqdbavhI4EbgIWJiIHXJ8bc/i9EQGPRh4DwEURJ552Do0A==}
     peerDependencies:
@@ -3555,6 +3561,7 @@ snapshots:
       '@headlessui/react': 2.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@reduxjs/toolkit': 2.8.1(react-redux@9.2.0(@types/react@19.0.10)(react@19.0.0)(redux@5.0.1))(react@19.0.0)
       '@tailwindcss/vite': 4.0.7(vite@6.1.1(@types/node@22.15.21)(jiti@2.4.2)(lightningcss@1.29.1))
+      '@types/node': 22.15.21
       axios: 1.9.0
       clsx: 2.1.1
       framer-motion: 12.7.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -3712,6 +3719,8 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
+
+  url-polyfill@1.1.13: {}
 
   use-sync-external-store@1.5.0(react@19.0.0):
     dependencies:

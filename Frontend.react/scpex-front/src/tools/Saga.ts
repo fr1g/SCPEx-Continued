@@ -5,15 +5,14 @@ import { all } from 'redux-saga/effects';
 import { LoginDataTransfer } from '../models/LoginDataTransfer.ts';
 import createConf from './ApiHelper.ts';
 import { DefaultApi } from '../axios/api.ts';
+import { api } from '../axios/services.ts';
 
 type AnyAction = {type: string, [key: string]: any}
 
 const methods = {
     login: function(info: LoginDataTransfer){
         console.log("fired login method inside")
-        let conf = createConf();
-        const loginApi = new DefaultApi(conf);
-        let res = loginApi.apiAuthLoginPost(JSON.stringify(info));
+        let res = api.default.apiAuthLoginPost(JSON.stringify(info));
         console.log("RES ", res)
         return res;
     }
@@ -68,7 +67,7 @@ export const actionListeners = {
     }, 
 
     watchLogin: function* (){
-        yield takeLatest("auths/login", sagas.auth.login)
+        yield takeLatest(s.auths.actions.login.type, sagas.auth.login)
     }
 }
 
