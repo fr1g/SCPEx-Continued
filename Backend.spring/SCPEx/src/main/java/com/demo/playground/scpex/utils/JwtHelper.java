@@ -38,7 +38,10 @@ public class JwtHelper {
                 .compact();
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String rawToken) {
+        String token = rawToken;
+        if(token.contains("Bearer "))
+            token = token.substring(7);
         if(invalidated.containsValue(token))
             return false;
 
@@ -64,6 +67,7 @@ public class JwtHelper {
     }
 
     public String getUsernameFromToken(String token) {
+        System.out.println("token " + token);
         return Jwts.parserBuilder()
                 .setSigningKey(secret).build()
                 .parseClaimsJws(token)

@@ -4,7 +4,7 @@ import { bear } from '../tools/AuthTools.ts';
 import { LoginDataTransfer } from '../models/LoginDataTransfer.ts';
 
 export default {
-    getMe: (token: string) => {
+    getMe: async (token: string): Promise<any>  => {
 
         let data, config = {
             method: 'post',
@@ -14,20 +14,19 @@ export default {
             }
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     },
-    generatePasswd: () => {
+    generatePasswd: async (): Promise<any>  => {
 
         let data, config = {
             method: 'get',
@@ -35,20 +34,19 @@ export default {
             headers: {}
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     },
-    login: (loginRequest: LoginDataTransfer) => {
+    login: async (loginRequest: LoginDataTransfer): Promise<any> => {
 
         let data, config = {
             method: 'post',
@@ -59,19 +57,18 @@ export default {
             data: JSON.stringify(loginRequest)
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
     },
-    logout: (token: string) => {
+    logout: async (token: string): Promise<any>  => {
 
         let data, config = {
             method: 'post',
@@ -81,17 +78,16 @@ export default {
             }
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     }
 

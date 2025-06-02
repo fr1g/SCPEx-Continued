@@ -5,30 +5,29 @@ import { bear } from '../tools/AuthTools.ts';
 import { Operation } from '../models/Operation.ts';
 
 export default {
-    getTrader: (token: string, id: number | string) => { // very example
+    getTrader: async (token: string, id: number | string): Promise<any>  => { // very example
 
         let data, config = {
             method: 'post',
             url: base + '/api/users/t/' + id,
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': bear(token)
             }
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
     },
 
-    getListedTraders: (token: string, page: PageRequest, pageNumber: number) => {
+    getListedTraders: async (token: string, page: PageRequest, pageNumber: number): Promise<any>  => {
 
         let data, config = {
             method: 'post',
@@ -40,19 +39,18 @@ export default {
             data: JSON.stringify(page)
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
     },
-    traderOperate: (token: string, operation: Operation) => {
+    traderOperate: async (token: string, operation: Operation): Promise<any>  => {
         
         let data, config = {
             method: 'post',
@@ -64,17 +62,16 @@ export default {
             data: JSON.stringify(operation)
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     }
 }

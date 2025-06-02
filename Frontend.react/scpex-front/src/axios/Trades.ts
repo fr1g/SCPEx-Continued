@@ -6,8 +6,7 @@ import { Address } from '../models/Address.ts';
 import { Product } from '../models/Product.ts';
 
 export default {
-    getTrades: (pageNum: number, page: PageRequest, token: string) => {
-
+    getTrades: async (pageNum: number, page: PageRequest, token: string): Promise<any>  => {
 
         let data, config = {
             method: 'post',
@@ -19,20 +18,19 @@ export default {
             data: JSON.stringify(page)
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     },
-    updateTransaction: (token: string, target: number | string, newObj: any) => {
+    updateTransaction: async (token: string, target: number | string, newObj: any): Promise<any>  => {
 
 
         let data, config = {
@@ -45,21 +43,20 @@ export default {
             data: JSON.stringify(newObj)
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     },
 
-    createContractNegotiation: (token: string, newObj: any) => {
+    createContractNegotiation: async (token: string, newObj: any): Promise<any>  => {
         let data, config = {
             method: 'post',
             url: base + '/api/trade/cn/create',
@@ -70,21 +67,20 @@ export default {
             data: JSON.stringify(newObj)
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     },
 
-    getListedCoNes: (pageNum: number, token: string, page: PageRequest) => {
+    getListedCoNes: async (pageNum: number, token: string, page: PageRequest): Promise<any>  => {
 
         let data, config = {
             method: 'post',
@@ -96,21 +92,20 @@ export default {
             data: JSON.stringify(page)
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     },
 
-    updateCoNe: (newObj: any, token: string) => {
+    updateCoNe: async (newObj: any, token: string): Promise<any>  => {
 
 
         let data, config = {
@@ -123,20 +118,19 @@ export default {
             data: JSON.stringify(newObj)
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     },    
-    cancelCoNe: (id: number, token: string) => {
+    cancelCoNe: async (id: number, token: string): Promise<any>  => {
 
 
         let data, config = {
@@ -147,21 +141,20 @@ export default {
             },
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     },
 
-    createTrade: (token: string, address: Address) => {
+    createTrade: async (token: string, address: Address): Promise<any>  => {
 
         let data, config = {
             method: 'post',
@@ -173,21 +166,20 @@ export default {
             data: JSON.stringify(address)
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     },
 
-    updateTraderAddresss: (addresses: Address[], token: string) => {
+    updateTraderAddresss: async (addresses: Address[], token: string): Promise<any>  => {
 
         let data, config = {
             method: 'post',
@@ -199,21 +191,20 @@ export default {
             data: JSON.stringify(addresses)
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     },
 
-    addToCart: (token: string, productId: number, productAmount: number) => {
+    addToCart: async (token: string, productId: number, productAmount: number): Promise<any>  => {
 
         let data, config = {
             method: 'post',
@@ -225,22 +216,21 @@ export default {
             data: `${productId},${productAmount}`
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     },
 
 
-    updateEntireCart: (token: string, cart: Product[]) => {
+    updateEntireCart: async (token: string, cart: Product[]): Promise<any>  => {
         
         let data, config = {
            method: 'post',
@@ -252,13 +242,16 @@ export default {
            data : JSON.stringify(cart)
         };
         
-        axios(config)
-        .then(function (response) {
-           console.log(JSON.stringify(response.data));
-        })
-        .catch(function (error) {
-           console.log(error);
-        });
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
+                data = response.data;
+            })
+            .catch(error => err = error);
+
+        if(err) throw err;
+        else return data;
 
     }
 

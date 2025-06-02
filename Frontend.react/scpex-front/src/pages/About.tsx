@@ -5,6 +5,9 @@ export default function About() {
 
     return <>
         <Paper className="text-black dark:text-white" >
+            <div className="text-center">
+                <img src="/favicon.png" alt="logo" className="inline-block scale-50 rounded-full transition hover:scale-[60%] shadow-xl" />
+            </div>
             <h1 className="text-3xl font-semibold ">About O'Petova</h1>
             <p className="text-lg">
                 This is a massive Wholesale Center's Online Trading site. You can buy or sell products from or to the Center.

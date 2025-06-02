@@ -6,7 +6,7 @@ import { Operation } from '../models/Operation.ts';
 import { Category } from '../models/Category.ts';
 
 export default {
-    search: (page: PageRequest, pageNum: number) => {
+    search: async (page: PageRequest, pageNum: number): Promise<any>  => {
 
         let data, config = {
             method: 'post',
@@ -17,20 +17,19 @@ export default {
             data: JSON.stringify(page)
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     },
-    getProdInfo: (id: number) => {
+    getProdInfo: async (id: number): Promise<any>  => {
 
         let data, config = {
             method: 'post',
@@ -38,21 +37,20 @@ export default {
             headers: {}
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     },
 
-    prodOps: (token: string, op: Operation) => {
+    prodOps: async (token: string, op: Operation): Promise<any>  => {
 
         let data, config = {
             method: 'post',
@@ -64,20 +62,19 @@ export default {
             data: JSON.stringify(op)
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
     },
 
-    newCat: (token: string, cat: Category) => {
+    newCat: async (token: string, cat: Category): Promise<any>  => {
 
         let data, config = {
             method: 'post',
@@ -89,20 +86,19 @@ export default {
             data: JSON.stringify(cat)
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
     },
 
-    getCat: (token: string, catId: number) => {
+    getCat: async (token: string, catId: number): Promise<any>  => {
 
         let data, config = {
             method: 'post',
@@ -112,20 +108,19 @@ export default {
             }
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
     },
 
-    listCat: (token: string) => { // this is all list without pagination
+    listCat: async (token: string): Promise<any>  => { // this is all list without pagination
 
         let data, config = {
             method: 'post',
@@ -135,21 +130,20 @@ export default {
             }
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
 
     },
 
-    giveUpCat: (token: string, catId: number) => {
+    giveUpCat: async (token: string, catId: number): Promise<any>  => {
 
         let data, config = {
             method: 'post',
@@ -159,17 +153,16 @@ export default {
             }
         };
 
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
                 data = response.data;
             })
-            .catch(function (error) {
-                console.log(error);
-                throw error;
-            });
+            .catch(error => err = error);
 
-        return data;
+        if(err) throw err;
+        else return data;
     }
 
 

@@ -1,14 +1,17 @@
 import { Input, Switch, Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Button from "../../components/Fragments/Button";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import Icon from "../../components/Fragments/Icon";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from 'react-hook-form';
 import { LoginDataTransfer } from "../../models/LoginDataTransfer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { slices as s } from "../../tools/ReduceHelper";
+import Toast from "../../components/Fragments/Toast";
+import { UserCredential } from "../../models/UserCredential";
+import { api } from "../../axios";
 
 const traderTypes = [
     { id: 0, enum: 2, name: "Merchant/Producer" },
@@ -22,6 +25,11 @@ export default function Login() {
     const [selected, setSelected] = useState(traderTypes[0]);
     const { register, handleSubmit, formState: { errors } } = useForm();
     const dispatch = useDispatch();
+    let toast = useRef(null);
+    const navigate = useNavigate();
+
+    const {userInfo} = useSelector((state: any) => state.auth);
+
 
     const filtered = query === ''
         ? traderTypes
@@ -29,18 +37,54 @@ export default function Login() {
             return type.name.toLowerCase().includes(query.toLowerCase());
         });
 
+    useEffect( () => {
+        async function runCheck() {
+            let token: string | null = null;
+            if(localStorage.jumpMessage) localStorage.removeItem('jumpMessage');
+            try {
+                let cred = userInfo as UserCredential;
+                console.log(cred.token);
+                if(cred.token){
+                    token = cred.token
+                    let res = await api.Auth.getMe(cred.token);
+                    let userInfo = JSON.parse(res.content)
 
-    useEffect(() => {
-        // document.getElementById("login-form")?.addEventListener("submit", (e) => {
-        //     e.preventDefault();
-        //     let n = new FormData(e.target! as unknown as HTMLFormElement);
-        //     console.log(n);
-        // });
-    });
+                    if(res.title.includes("logged") && cred.contact == userInfo.contact && cred.id == userInfo.id ){
+                        localStorage.jumpMessage = "You're already logged in!"
+                        navigate("/");
+                    }
+                    else {
+                        dispatch(s.auths.actions.loginFailure(null));
+                        localStorage.removeItem('credential');
+                    }
+
+                }
+            } catch (error: any) {
+                if(error.message.includes("bject]") || error.message.includes('is not valid JSON')){
+                    console.log("invalid credential");
+                    dispatch(s.auths.actions.loginFailure(null));
+                    localStorage.removeItem('credential');
+                    return;
+                }
+                if(error.message.includes('401')){
+                    console.log("Not authenticated token");
+                    dispatch(s.auths.actions.loginFailure(null));
+                    localStorage.removeItem('credential');
+                    return;
+                }
+                console.log(error, ' inLoginExcept')
+
+            }
+        }
+
+        runCheck();
+    }, []); 
+
 
     const onSubmit = (data: any) => {
+        // if(data.contact)
+
         let req = new LoginDataTransfer(`${selected.id == 1 ? 'e' : 't'}#cont#${data.contact}`, data.passwd, rememberMe);
-        console.log(req); // !
         dispatch(s.auths.actions.login(req.o()));
     };
 
@@ -57,7 +101,7 @@ export default function Login() {
                             onClose={() => setQuery('')}
 
                             onChange={(val: { id: number, enum: number, name: string }) => { setSelected(val); }}
-                        >
+                        > 
                             {({ open }) => (
                                 <>
                                     <div className="relative">
@@ -110,9 +154,9 @@ export default function Login() {
                     <span className="p-1 inline-block translate-x-1.5 -translate-y-0.5">Remember Me</span>
                 </div>
                 <input type="submit" id="login-form-submit" className="hidden" />
-                <Button className="text-xl font-semibold py-2" onClick={() => document.getElementById("login-form-submit")!.click()}>Login</Button>
+                <Button id="LoginButton" className="text-xl font-semibold py-2" onClick={() => document.getElementById("login-form-submit")!.click()}>Login</Button>
             </form>
         </div>
-
+        <Toast ref={toast} />
     </>
 }

@@ -3,7 +3,8 @@ export default function Icon({pua, className, spacing = false, fix = false, forc
 
     return (
         <span 
-            className={`${className} ${spacing ? 'mx-1' : ''} ${fix ? (forceNoTranslate ? '' : 'translate-y-[5px]') : (forceNoTranslate ? '' : 'translate-y-[3.5px]')}   inline-block select-none max-h-min`} 
+            className={`${className} ${spacing ? 'mx-1' : ''} ${fix ? (forceNoTranslate ? '  [fix+FNT]  ' : 'translate-y-[5px] [fix] ') : (forceNoTranslate ? '  [FNT]   ' : 'translate-y-[3px]  default[]   ')}   inline-block select-none max-h-min`} 
+            style={{fontFamily: 'sfi'}}
             dangerouslySetInnerHTML={{__html: `&#x${pua};`}}
         ></span>
     );

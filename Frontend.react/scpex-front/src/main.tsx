@@ -3,7 +3,7 @@ import App from './App.tsx';
 import 'url-polyfill';
 
 // import React from "react";
-import { Context, createContext } from 'react';
+import { Context, createContext, useEffect, useRef } from 'react';
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider, useLocation } from "react-router";
 import Header from './components/Header.tsx';
@@ -19,6 +19,11 @@ import User from './pages/Param/User.tsx';
 import ViewLayout from './pages/View/ViewLayout.tsx';
 import { Provider } from 'react-redux';
 import store from './tools/Redux.ts';
+import GlobalModal from './components/Fragments/GlobalModal.tsx';
+import Toast from './components/Fragments/Toast.tsx';
+import Button from './components/Fragments/Button.tsx';
+import Pheebo from './pages/General/Pheebo.tsx';
+
 
 const UserContext: Context<UserCredential | null> = createContext(getUserCredential());
 
@@ -30,6 +35,7 @@ const routes = createBrowserRouter([
         // defaults
         { path: '/search', element: <SearchGoods /> },
         { path: '/about', element: <About /> },
+        { path: '/pheebo', element: <Pheebo /> },
         
         // layouts
         { path: '/auth/*', element: <AuthLayout /> },
@@ -45,11 +51,26 @@ const routes = createBrowserRouter([
 
 function Layout() {
     const location = useLocation();
+    const toast = useRef<any>(null);
+
+    useEffect(() => {
+        // console.log(toast.current, ' statt')
+        if(localStorage.jumpMessage && toast.current){
+            toast.current.PushToast(localStorage.jumpMessage, "bg-white");
+            localStorage.removeItem('jumpMessage');
+        }
+    });
+
+    // const pushToast = (messsage = "testing", color = "bg-white") => toast.current.PushToast(messsage, color);
+
     return <>
         <Header credential={null} />
         <AnimatePresence mode="wait" >
             <Outlet key={location.key} /> {/* 关键：传递 location */}
         </AnimatePresence>
+        <GlobalModal />
+        <Toast ref={toast} />
+        {/* <Button onClick={_ => pushToast()}>try toast</Button> */}
     </>;
 }
 

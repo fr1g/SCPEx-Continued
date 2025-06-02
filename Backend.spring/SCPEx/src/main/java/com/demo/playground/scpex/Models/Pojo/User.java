@@ -42,6 +42,7 @@ public class User implements UserDetails {
     private Date birth;
 
     private String passwd;
+    // todo got risk of double-tag of encrypt {gabxd}
 
     public String note;
 

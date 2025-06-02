@@ -4,6 +4,7 @@ import Icon from "./Fragments/Icon";
 import Button from "./Fragments/Button";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 
 /* Dark mode strategy:
     - If localStorage is empty: get the current system color scheme
@@ -18,11 +19,11 @@ import { useNavigate } from "react-router";
 //     return localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches);
 // }
 
-export default function Header({ credential = null }: { credential: UserCredential | null }) {
+export default function Header({ credentialDepr = null }: { credentialDepr: UserCredential | null }) {
     const [state, setState] = useState(false);
     const stateHasChanged = () => { setState(_ => !_) } // maybe useless, because after login the page has rerendered so the new state should be just applied as the new storaged info read.
 
-
+    let { credential } = useSelector((s: any) => s.auth);
 
     const navBarLinks = [
         { key: 1, title: "Goods", link: "/search", disabled: false },
@@ -128,8 +129,8 @@ export default function Header({ credential = null }: { credential: UserCredenti
                     <Icon fix pua={darkMode ? 'e706' : 'e708'} />
                 </Button>
             </div>
-            <Button onClick={loginButtonHandler} className="text-white bg-transparent hover:bg-blue-500/70 active:bg-blue-600/50 transition ">
-                <Icon pua="e77b" spacing />
+            <Button onClick={loginButtonHandler} className="text-white use-icon bg-transparent hover:bg-blue-500/70 active:bg-blue-600/50 transition ">
+                <Icon pua="e77b" spacing  />
                 {credential?.name ?? "Login"}
             </Button>
         </div>

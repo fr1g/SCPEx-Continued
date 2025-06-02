@@ -3,23 +3,27 @@ import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects';
 import {slices as s} from './ReduceHelper.ts';
 import { all } from 'redux-saga/effects';
 import { LoginDataTransfer } from '../models/LoginDataTransfer.ts';
-import createConf from './ApiHelper.ts';
-import { DefaultApi } from '../axios/api.ts';
-import { api } from '../axios/services.ts';
+import { api } from '../axios/index.ts';
+import { register } from 'module';
+import { Operation } from '../models/Operation.ts';
+import { title } from 'process';
 
 type AnyAction = {type: string, [key: string]: any}
 
 const methods = {
-    login: function(info: LoginDataTransfer){
+    login: async function(info: LoginDataTransfer){
         console.log("fired login method inside")
-        let res = api.default.apiAuthLoginPost(JSON.stringify(info));
+        let res = await api.Auth.login(info);
+        return res;
+    },
+    register: async function(info: Operation){ // for trader regist only
+        if(localStorage.credential == null) throw new Error();
+        let res = await 
+            api.TraderManage.traderOperate(localStorage.credential.token, info);
         console.log("RES ", res)
         return res;
     }
 }
-
-// const internal = s.internal.actions,
-//       warehouse = s.warehouseOperations.actions;  
 
 export const sagas = {
     actInternal: function*(): any{
@@ -40,18 +44,42 @@ export const sagas = {
 
     auth:{
         login: function* (act: any): any{
-            console.log(111);
+            // console.log(111);
+            try {
+                document.getElementById("LoginButton")?.classList.add("loadingButton");
+                document.getElementById("LoginButton")!.firstElementChild!.innerHTML = "...";
+
+                let payload = act.payload;
+                const userInfo = yield call(methods.login, payload);
+                console.log(userInfo)
+                yield put(s.auths.actions.loginSuccess(userInfo)); 
+
+                document.getElementById("LoginButton")?.classList.remove("loadingButton");
+                document.getElementById("LoginButton")!.firstElementChild!.innerHTML = "Login";
+                
+            } catch (error: any) {
+                yield call(() => console.log(error.message, ' errpos1'))
+                yield put(s.auths.actions.loginFailure(error.message)); 
+                let revealedError = error.message;
+                if(`${error.message}`.includes('40')) revealedError = "No such user matched with this user contact, or password incorrect."
+                yield put(s.globalModal.actions.showModal({
+                    title: "Error",
+                    message: revealedError,
+                }));
+
+                document.getElementById("LoginButton")?.classList.remove("loadingButton");
+                document.getElementById("LoginButton")!.firstElementChild!.innerHTML = "Login";
+            }
+        },
+        register: function* (act: any): any{
             try {
                 let payload = act.payload;
-                console.log(payload, " pay");
-                let n = methods.login(payload);
-                console.log("nnn ", n)
-                const userInfo = yield call(methods.login, payload); // 调用 API
-
-                yield put(s.auths.actions.loginSuccess(userInfo)); // 成功后更新状态
+                const userInfo = yield call(methods.register, payload); // 调用 API
+                console.log(userInfo)
+                yield put(s.auths.actions.regSuccess(userInfo)); // 成功后更新状态
             } catch (error: any) {
-                yield call(() => console.log(error))
-                yield put(s.auths.actions.loginFailure(error.message)); // 捕获错误
+                yield call(() => console.log(error, ' errpos2'))
+                yield put(s.auths.actions.regFailure(error.message)); // 捕获错误
             }
         }
     }
