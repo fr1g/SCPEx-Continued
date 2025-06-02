@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import Button from "../../components/Fragments/Button"
 import { useNavigate } from "react-router"
 
@@ -5,6 +6,7 @@ import { useNavigate } from "react-router"
 export default function AuthBase(){
 
     let redirect = useNavigate();
+    // const {userInfo} = useSelector((s: any) => s.auth) // well mistake,,,,,
 
     function toLogin() { redirect("/auth/login"); }
     function toRegist() { redirect("/auth/register"); }

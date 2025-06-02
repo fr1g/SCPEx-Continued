@@ -1,5 +1,5 @@
 
-export type employees = "admin" | "warehouse" | string;
+export type employees = "admin" | "warehouse" | "registrar" | string;
 export type traders = "seller" | "customer" | "hybrid";
 
 export class UserCredential {
@@ -30,7 +30,7 @@ export class UserCredential {
         createdDate: Date = new Date(Date.now()),
         isPrime: boolean = false,
         status: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 = 0,
-        note: string = ""
+        note: string = "nothing."
       ) {
         this.id = id;
         this.name = name;

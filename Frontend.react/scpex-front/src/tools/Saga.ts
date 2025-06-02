@@ -56,7 +56,10 @@ export const sagas = {
 
                 document.getElementById("LoginButton")?.classList.remove("loadingButton");
                 document.getElementById("LoginButton")!.firstElementChild!.innerHTML = "Login";
+
+                localStorage.jumpMessage = "Successfully logged in!"
                 
+                window.location.replace("/user");
             } catch (error: any) {
                 yield call(() => console.log(error.message, ' errpos1'))
                 yield put(s.auths.actions.loginFailure(error.message)); 

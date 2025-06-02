@@ -3,8 +3,9 @@ import { UserCredential } from "../models/UserCredential";
 import Icon from "./Fragments/Icon";
 import Button from "./Fragments/Button";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
+import { slices as s } from "../tools/ReduceHelper";
 
 /* Dark mode strategy:
     - If localStorage is empty: get the current system color scheme
@@ -19,11 +20,13 @@ import { useSelector } from "react-redux";
 //     return localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches);
 // }
 
-export default function Header({ credentialDepr = null }: { credentialDepr: UserCredential | null }) {
+export default function Header() {
     const [state, setState] = useState(false);
     const stateHasChanged = () => { setState(_ => !_) } // maybe useless, because after login the page has rerendered so the new state should be just applied as the new storaged info read.
 
-    let { credential } = useSelector((s: any) => s.auth);
+    let { userInfo } = useSelector((s: any) => s.auth);
+    let credential = userInfo as UserCredential;
+    let location = useLocation();
 
     const navBarLinks = [
         { key: 1, title: "Goods", link: "/search", disabled: false },
@@ -50,6 +53,7 @@ export default function Header({ credentialDepr = null }: { credentialDepr: User
     }
     // next to implement: make the darkmode able to be back to "synced to the system" (always check if the theme  that is matched to current theme (check on load?))
     useEffect(() => {
+        console.log(credential)
         if (localStorage.theme == undefined || localStorage.theme == null) {
             // if no value then use browser settings
             setTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -73,13 +77,21 @@ export default function Header({ credentialDepr = null }: { credentialDepr: User
         // });
     }, []);
 
+    useEffect(() => {
+        // {credential} = useSelector((s: any) => s.auth)
+        console.log(credential, ' by header');
+        
+    }, [location])
+
     let nav = useNavigate();
 
     function loginButtonHandler() {
-        if (credential == null) 
-            nav(`/auth`);
+
+
+        if (credential != null && !(credential.userClass == "registrar" || credential.userClass == "admin")) 
+            nav(`/user`); // the non-registrar should be pointed to the user info page
         else 
-            nav(`/me`);
+            nav(`/auth`);
 
     }
 

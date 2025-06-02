@@ -51,7 +51,7 @@ export default function Login() {
 
                     if(res.title.includes("logged") && cred.contact == userInfo.contact && cred.id == userInfo.id ){
                         localStorage.jumpMessage = "You're already logged in!"
-                        navigate("/");
+                        navigate("/user");
                     }
                     else {
                         dispatch(s.auths.actions.loginFailure(null));

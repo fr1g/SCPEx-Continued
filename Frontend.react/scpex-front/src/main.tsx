@@ -64,7 +64,7 @@ function Layout() {
     // const pushToast = (messsage = "testing", color = "bg-white") => toast.current.PushToast(messsage, color);
 
     return <>
-        <Header credential={null} />
+        <Header />
         <AnimatePresence mode="wait" >
             <Outlet key={location.key} /> {/* 关键：传递 location */}
         </AnimatePresence>

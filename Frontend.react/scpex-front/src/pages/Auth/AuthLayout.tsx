@@ -12,6 +12,7 @@ export default function AuthLayout(){
 
     let location = useLocation();
     let [variate, setVariate] = useState('');
+    
 
     useEffect(() => {
         switch(location.pathname){

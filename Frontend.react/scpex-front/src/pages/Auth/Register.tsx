@@ -8,6 +8,8 @@ import Icon from "../../components/Fragments/Icon";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from 'clsx';
 import Markdown from 'react-markdown';
+import { useSelector } from "react-redux";
+import { isatty } from "tty";
 
 
 // difference of register 
@@ -37,6 +39,8 @@ export default function Register() {
         const [query, setQuery] = useState('');
         let [agree, setAgree] = useState(false);
 
+        let {userInfo} = useSelector((s: any) => s.auth);
+
         const filtered = query === ''
             ? traderTypes
             : traderTypes.filter((type) => {
@@ -44,7 +48,14 @@ export default function Register() {
             });
 
         let isAdmin = true; // test
+        if(userInfo == null) isAdmin = false;
+        if(userInfo.userClass == "admin" || userInfo.userClass == "registrar") isAdmin = true;
+        else isAdmin = false;
 
+        // let isVerificated = false;
+        // if(!isAdmin && !isVerificated) 
+
+        
 
         function afterProcess() {
             // send request

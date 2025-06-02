@@ -32,7 +32,7 @@ public class PresetDataMockingProcessor {
     ) {
         return args -> {
             if(!employee.existsById(1L))
-                employee.save(Employee.builder().birth((new Date())).type(Type.ADMIN).contact("_root").name("_root").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter(inConfigDefaultPasswd)).note("preset default super user").build());
+                employee.save(Employee.builder().birth((new Date())).type(Type.ADMIN).contact("_root").name("Root Super User").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter(inConfigDefaultPasswd)).note("preset default super user").build());
 
             if(!SharedStatic.usingMockData) return;
             else{

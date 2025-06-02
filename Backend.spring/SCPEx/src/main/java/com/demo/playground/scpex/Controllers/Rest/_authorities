@@ -16,6 +16,6 @@ CUSTOMER, SELLER:
     // treat as same, but customer wont be able to apply CN.
 
 others:
-    none
+    none // (able to search items)
 
 // @RequestHeader(name = "Authorization") String token
