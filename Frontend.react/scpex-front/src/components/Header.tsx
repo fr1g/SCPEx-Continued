@@ -79,7 +79,7 @@ export default function Header() {
 
     useEffect(() => {
         // {credential} = useSelector((s: any) => s.auth)
-        console.log(credential, ' by header');
+        console.log(' header changed dir ');
         
     }, [location])
 

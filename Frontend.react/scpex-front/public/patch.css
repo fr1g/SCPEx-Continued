@@ -133,6 +133,10 @@ input.fade-au::placeholder {
     user-select: auto !important;
 }
 
+.st{
+    user-select: text !important;
+}
+
 a.nav-link {
     vertical-align: bottom;
     user-select: none !important;

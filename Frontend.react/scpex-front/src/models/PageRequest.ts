@@ -7,7 +7,7 @@ export default class PageRequest{
 
     KeyWord: string;
 
-    constructor(keyword: string, searchField = "name", sortingField = "id", sortingMethod: "asc" | "desc" = "asc"){
+    constructor(keyword = "", searchField = "name", sortingField = "id", sortingMethod: "asc" | "desc" = "asc"){
         this.KeyWord = keyword;
         this.SearchField = searchField;
         this.SortingField = sortingField;

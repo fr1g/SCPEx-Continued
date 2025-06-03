@@ -6,9 +6,13 @@ import { api } from "../../axios";
 import { useDispatch, useSelector } from "react-redux";
 import { slices as s } from "../../tools/ReduceHelper";
 import Button from "../../components/Fragments/Button";
+import Employee from "../../models/UserType/Employee";
+import Trader from "../../models/UserType/Trader";
+import User from "../../models/UserType/User";
+import { isUserTrader } from "../../tools/AuthTools";
 
 
-export default function User() {
+export default function User_() { // as default export, regardless the name?
 
     let { selector } = useParams();
 
@@ -22,16 +26,17 @@ export default function User() {
     const dispatch = useDispatch();
 
     const [confirmLogoff, setConfirmLogoff] = useState(false);
-    const [logoffButtonText, setLogoffButtonText] = useState('Log Off');
+    
+    let [currUser, setCurrUser] = useState<Employee | Trader | null>(null);
 
     useEffect(
         () => {
-            console.log(userInfo, ' uinfo')
             if (userTarget == "this") {
-                async () => {
+                (async () => {
                     try {
                         let res = await api.Auth.getMe(userInfo.token);
-                        let cred = JSON.parse(res.content);
+                        let cred = JSON.parse(res.content) as User;
+                        console.log(res, ' res')
                         if (res.title.includes("logged") && cred.contact == userInfo.contact && cred.id == userInfo.id) {
                             // actually do nothing... maybe need to quit early
                             userInfo.note = cred.note ?? 'Nothing';
@@ -40,7 +45,10 @@ export default function User() {
                                 userInfo.note = 'Nothing';
                             }
 
-                            console.log(userInfo)
+                            console.log(userInfo);
+                            if(isUserTrader(cred))
+                                setCurrUser(res as Trader);
+                            else setCurrUser(res as Employee);
                         }
                         else {
                             dispatch(s.auths.actions.loginFailure(null));
@@ -50,8 +58,14 @@ export default function User() {
                         }
                     } catch (error: any) {
                         console.log(error.message)
+                        if(error.message.includes("401")){
+                            dispatch(s.auths.actions.loginFailure(null));
+                            localStorage.removeItem('credential');
+                            localStorage.jumpMessage = "Please login.";
+                            navigate('/auth/login');
+                        }
                     }
-                }
+                })()
             }
         }
     )

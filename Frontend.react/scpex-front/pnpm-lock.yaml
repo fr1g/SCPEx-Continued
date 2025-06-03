@@ -3578,6 +3578,7 @@ snapshots:
       slick-carousel: 1.8.1(jquery@3.7.1)
       tailwindcss: 4.0.7
       three: 0.167.1
+      url-polyfill: 1.1.13
     transitivePeerDependencies:
       - '@emotion/is-prop-valid'
       - '@types/react'

@@ -6,15 +6,18 @@ import clsx from "clsx";
 import Selectable from "../models/Selectable";
 
 
-export default function WrappedComboBox({ enums, onChange = (o: Selectable, n: Selectable) => {} }: { enums: Selectable[], onChange?: Function | null | undefined}) {
+export default function WrappedComboBox({ enums, className, selectedIndex = 0, onChange = (o: Selectable, n: Selectable) => {}, getter, setter }: { enums: Selectable[], className?: string, selectedIndex?: number, onChange?: Function | null | undefined, getter?: any, setter?: Function}) {
 
-    const [selected, setSelectedX] = useState(enums[0]);
+    if(selectedIndex >= enums.length) 
+        selectedIndex = (enums.length - 1)
+    const [selected, setSelectedX] = useState(getter ?? enums[selectedIndex]);
     const [query, setQuery] = useState('');
 
     function setSelected(val: Selectable){
         let was = selected;
         setSelectedX(val);
         if(onChange) onChange(was, val);
+        if(setter) setter(val);
     }
 
     const filtered = query === ''
@@ -25,7 +28,7 @@ export default function WrappedComboBox({ enums, onChange = (o: Selectable, n: S
 
 
     return <>
-        <div className="bg-gray-200/50 inline-block mx-3.5 rounded-lg shadow font-semibold text-lg">
+        <div className={`bg-gray-200/50 inline-block mx-3.5 rounded-lg shadow font-semibold text-lg   WCB//  ${className}`}>
             <Combobox immediate
                 value={selected}
                 onClose={() => setQuery('')}

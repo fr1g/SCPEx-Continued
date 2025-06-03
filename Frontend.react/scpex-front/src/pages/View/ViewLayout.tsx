@@ -7,7 +7,6 @@ import WarehouseMgr from "./WarehouseMgr";
 export default function ViewLayout(){
 
 
-
     return <>
         <Paper>
             <div>
