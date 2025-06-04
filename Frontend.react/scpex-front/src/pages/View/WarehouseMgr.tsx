@@ -34,15 +34,15 @@ export default function WarehouseMgr(){
 
 
     // refresh logics
-    let products: any[];
 
     
     async function refresh(page = 0){
         let pr = new PageRequest();
 
         try {
-            products = await api.Stock.search(pr, page);
-            console.log('should run now')
+            let products = await api.Stock.search(pr, page);
+            console.log('should run now', products)
+            setPageContent(JSON.parse(products.content))
         } catch (error: any) {
             if(error.message.includes("401")){
                 doInvalidCredentialAction(dispatch, navigate);
