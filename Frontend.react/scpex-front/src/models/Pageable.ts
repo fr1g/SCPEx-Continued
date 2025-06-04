@@ -4,6 +4,11 @@ export default class Pageable{
     content: any[];
     pageable: PageInfo;
 
+    // getTotalPages(): number {
+    //     if (this.total === 0) return 0;
+    //     return Math.ceil(this.total / this.pageable.pageSize);
+    // }
+
     constructor(total: number, content: any[], pageable: PageInfo){
         this.pageable = pageable;
         this.content = content;
@@ -13,13 +18,13 @@ export default class Pageable{
 
 export class PageInfo{
     sort: SortInfo;
-    paggeNumber: number;
+    pageNumber: number;
     pageSize: number;
 
     constructor(sort: SortInfo, pn: number, ps: number){
         this.sort = sort;
         this.pageSize = ps;
-        this.paggeNumber = pn;
+        this.pageNumber = pn;
     }
 }
 
@@ -32,13 +37,14 @@ class SortInfo{
 }
 
 export class Order{
-    direction: "ASC" | "DESC";
+    // todo maybe not appliable?
+    direction: "asc" | "desc";
     property: string;
     ignoreCase: boolean;
     nullHandling: string;
 
-    constructor(dir: "ASC" | "DESC", prop: string, ic: boolean, nullHandle: string){
-        this.direction = dir;
+    constructor(dir: "asc" | "desc" | "ASC" | "DESC", prop: string, ic: boolean, nullHandle: string){
+        this.direction = dir.toLowerCase() as "asc" | "desc";
         this.ignoreCase = ic;
         this.nullHandling = nullHandle;
         this.property = prop;

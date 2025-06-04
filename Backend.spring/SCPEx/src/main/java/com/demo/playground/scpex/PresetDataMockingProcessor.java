@@ -60,11 +60,30 @@ public class PresetDataMockingProcessor {
 
                 Product p = new Product();
                 p.setAmount(1);
+                p.setSinglePrice(100);
                 p.setStatus(GeneralStatus.APPROVED);
                 p.setDiscount(1);
                 p.setCategory(cat);
                 p.setName("Testing product");
                 product.save(p);
+
+                Product p1 = new Product();
+                p1.setAmount(1);
+                p1.setSinglePrice(12);
+                p1.setStatus(GeneralStatus.APPROVED);
+                p1.setDiscount(1);
+                p1.setCategory(cat);
+                p1.setName("Dozen of product");
+                product.save(p1);
+
+                Product p2 = new Product();
+                p2.setAmount(100);
+                p2.setSinglePrice(1999);
+                p2.setStatus(GeneralStatus.APPROVED);
+                p2.setDiscount(0.9f);
+                p2.setCategory(cat);
+                p2.setName("Hyawr!");
+                product.save(p2);
 
 //                product.save((Product) (ProductInfo.build().));
 //                var rh = (new ReduxHelper<Trader>(trader, Trader.class));

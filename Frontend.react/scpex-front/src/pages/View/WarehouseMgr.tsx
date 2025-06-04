@@ -14,37 +14,41 @@ import { api } from "../../axios";
 import EAUProducts from "../../components/EasyAUs/EasyAddUpdateProduct";
 import { Product } from "../../models/Product";
 import { Category } from "../../models/Category";
+import EAUCategory from "../../components/EasyAUs/EasyAddUpdateCategory";
+import { Input } from "@headlessui/react";
+import Button from "../../components/Fragments/Button";
+import { inputClassNames } from "../../env";
+import Icon from "../../components/Fragments/Icon";
 
 const changeSelected = slices.warehouseOperations.actions.changeSelection;
 const updateSelectables = slices.warehouseOperations.actions.updateSelectables;
 
-export default function WarehouseMgr(){
-
-    let gotManageableWarehouses: Selectable[] = [
-        new Selectable(0, "Warehouse1"),
-        new Selectable(1, "Warehouse2"),
-        new Selectable(2, "Warehouse Kalifornя"),
-    ]; 
+export default function WarehouseMgr() {
 
     const [pageContent, setPageContent] = useState<Pageable | null>(null);
     const [curr, setCurr] = useState<Product | null>(null);
-    const {userInfo} : {userInfo: UserCredential} = useSelector((s: any) => s.auth);
+    const { userInfo }: { userInfo: UserCredential } = useSelector((s: any) => s.auth);
+    const [sorting, setSorting] = useState<'asc' | 'desc'>('asc');
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const [stateHasChanged, setStateHasChanged] = useState(false);
+    const [pr, setPr] = useState<PageRequest>(new PageRequest());
+    const [pageNum, setPageNum] = useState(0);
+    const [searchText, setST] = useState("");
 
     // refresh logics
+    // one per page for testing.
 
-    
-    async function refresh(page = 0){
-        let pr = new PageRequest();
+    async function refresh(page = 0) {
 
         try {
+            console.log(pr)
             let products = await api.Stock.search(pr, page);
             console.log('should run now', products)
             setPageContent(JSON.parse(products.content))
         } catch (error: any) {
-            if(error.message.includes("401")){
+            if (error.message.includes("401")) {
                 doInvalidCredentialAction(dispatch, navigate);
             }
             else console.error(error);
@@ -53,8 +57,14 @@ export default function WarehouseMgr(){
     }
 
     useEffect(() => {
+        setPr((_: PageRequest) => {
+            _.PageSize = 2; // testing.
+            _.SearchField = "name";
+            return _;
+        });
+    
 
-        if(isCredTrader(userInfo))
+        if (isCredTrader(userInfo))
             insufficientHandler(navigate)
 
         refresh();
@@ -62,17 +72,57 @@ export default function WarehouseMgr(){
 
     }, []);
 
-    return <> 
-        <h1 className="text-3xl font-semibold">Warehouse: </h1>
-        <div className="flex items-end justify-items-center gap-1 flex-wrap">
-            <p>Select managable warehouse:</p>
-            <WrappedComboBox enums={gotManageableWarehouses} />
+    function switchAscDesc(){
+        if(sorting == 'asc') setSorting('desc');
+        else setSorting('asc');
+        setPr((_: PageRequest) => {
+            _.SortingMethod = sorting;
+            return _;
+        });
+        refresh(pageNum);
+    }
+
+    function getNewPage(inPageNum: number){
+        setPageNum(inPageNum);
+        refresh(inPageNum); // 改为立即使用新页码
+    }
+
+    function commitSearch(){
+        setPageNum(0);
+        setPr((_: PageRequest) => {
+            _.Keyword = searchText;
+            return _;
+        })
+        refresh(pageNum);
+    }
+    
+    useEffect(() => {
+        setStateHasChanged(_ => !_);
+        setPageContent(pageContent);
+        console.log("SSHC")
+    }, [pageContent])
+
+    return <>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-1.5 md:gap-3.5">
+            <div className="col-span-1 md:col-span-3">
+                <h1 className="text-3xl font-semibold">In Stock: </h1>
+
+                {/* <i>{JSON.stringify(curr)}</i> */}
+                <EAUProducts setItem={setCurr} item={curr} />
+                <br />
+                <div className="flex w-full flex-col? gap-3">
+                    <Input onChange={(e) => {setST(e.target.value)}} className={"grow block! " + inputClassNames} placeholder="Search by name" />
+                    <Button className="block! px-3.5! rounded-lg!" onClick={switchAscDesc} ><Icon pua="e8ab" className="rotate-90" /></Button>
+                    <Button className="block! px-3.5! rounded-lg!" onClick={commitSearch} ><Icon pua="e721" /></Button>
+                </div>
+                <br />
+                <PageableList page={pageContent} askNewPage={getNewPage} ></PageableList>
+            </div>
+            <div>
+                <h1 className="text-3xl font-semibold">Cats: </h1>
+
+                <EAUCategory st={stateHasChanged} stc={setStateHasChanged} />
+            </div>
         </div>
-        <i>{JSON.stringify(curr)}</i>
-        <EAUProducts setItem={setCurr} item={curr} />
-        <div>
-            {JSON.stringify(pageContent)}
-        </div>
-        <PageableList page={pageContent}></PageableList>
     </>
 }

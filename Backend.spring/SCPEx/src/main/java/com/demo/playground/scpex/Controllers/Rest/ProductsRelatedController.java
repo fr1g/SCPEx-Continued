@@ -26,7 +26,9 @@ public class ProductsRelatedController {
     public ResponseEntity<String> search(@RequestBody String paged, @PathVariable(required = false) String page) {
         try{
             var pageInt = (page.isEmpty() || page == null) ? 0 : Integer.parseInt(page);
-            var result = _p.getSpecifiedPageObjects((new Gson()).fromJson(paged, PageRequest.class), pageInt);
+            var pr = (new Gson()).fromJson(paged, PageRequest.class);
+            System.out.println(pr.Keyword + " -- recv kw");
+            var result = _p.getSpecifiedPageObjects(pr, pageInt);
 
             return ResponseHelper.Return(new Response(200, "success", (new Gson()).toJson(result)));
 

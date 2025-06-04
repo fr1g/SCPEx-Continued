@@ -30,7 +30,7 @@ export default function Header() {
 
     const navBarLinks = [
         { key: 1, title: "Goods", link: "/search", disabled: false },
-        { key: 11, title: "Cart", link: "/cart", disabled: credential == null },
+        { key: 11, title: "MGR", link: "/view", disabled: credential == null },
         { key: 111, title: "Contact Us!", link: "/about", disabled: false },
     ];
 

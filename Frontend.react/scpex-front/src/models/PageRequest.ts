@@ -5,10 +5,10 @@ export default class PageRequest{
     SortingField: string = "id";
     SortingMethod: "asc" | "desc" = "asc";
 
-    KeyWord: string;
+    Keyword: string;
 
     constructor(keyword = "", searchField = "name", sortingField = "id", sortingMethod: "asc" | "desc" = "asc"){
-        this.KeyWord = keyword;
+        this.Keyword = keyword;
         this.SearchField = searchField;
         this.SortingField = sortingField;
         this.SortingMethod = sortingMethod;

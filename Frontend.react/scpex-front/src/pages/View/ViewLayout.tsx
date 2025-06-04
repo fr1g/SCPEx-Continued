@@ -7,11 +7,11 @@ import EmployeeMgr from "./EmployeeMgr";
 import TraderMgr from "./TraderMgr";
 import ViewNavigation from "./ViewNavigation";
 
-export default function ViewLayout() {
+export default function ViewLayout({cancelMf} : {cancelMf?: boolean}) {
   return (
     <>
-      <Paper>
-        <ViewNavigation />
+      <Paper className="w-full" mfStyle={cancelMf ? {} : undefined}>
+        <ViewNavigation  />
         <div>
           <Routes>
             <Route path="/employee-management" element={<EmployeeMgr />} />
