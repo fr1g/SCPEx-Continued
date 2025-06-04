@@ -64,9 +64,9 @@ export const sagas = {
                 yield call(() => console.log(error.message, ' errpos1'))
                 yield put(s.auths.actions.loginFailure(error.message)); 
                 let revealedError = error.message;
-                if(`${error.message}`.includes('403')) revealedError = "The requested account is disabled."
+                if(`${error.message}`.includes('401')) revealedError = "The requested account is disabled."
                 else if(`${error.message}`.includes('40')) revealedError = "No such user matched with this user contact, or password incorrect."
-                yield put(s.globalModal.actions.showModal({
+                yield put(s.globalModal.actions.showModal({ 
                     title: "Error",
                     message: revealedError,
                 }));

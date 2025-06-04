@@ -21,7 +21,7 @@ import java.util.Date;
 public class PresetDataMockingProcessor {
 
     static String encrypter(String raw){
-        return "{gabxd}" + MD5Helper.encrypt(raw);
+        return "" + MD5Helper.encrypt(raw);
     }
 
     String inConfigDefaultPasswd = "000000";

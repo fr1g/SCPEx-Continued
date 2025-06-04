@@ -93,7 +93,7 @@ public class TraderManagementController {
     @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_REGISTRAR', 'PERMISSION_MANAGE_CUSTOMERS', 'PERMISSION_MANAGE_USERS')")
     @PostMapping("/op")
     public ResponseEntity<String> traderControls(
-            @RequestHeader(name = "Authorization") String token,
+            @RequestHeader(name = "Authorization") String tokenRaw,
             @RequestBody
             String info//,
     ) {
@@ -112,7 +112,7 @@ public class TraderManagementController {
 
                 return ResponseHelper.Return(new Response(406, "Registrar is null or not exist"));
             }
-
+            String token = AuthHelper.unbear(tokenRaw);
             if(!jwtHelper.validateToken(token)) return ResponseHelper.Return(new Response(403, "invalid token"));
             var revealedUserName = jwtHelper.getUsernameFromToken(token);
             var revealedUser = (Employee)userDetailSvc.loadUserByUsername(revealedUserName);

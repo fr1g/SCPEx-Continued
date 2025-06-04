@@ -56,7 +56,7 @@ public class AuthController {
             if(auth.isAuthenticated()){ // if authenticated, then the user must be existing.
                 User u = (User)auth.getPrincipal();
                 if(u.getStatus().equals(GeneralStatus.CANCELED) || u.getStatus().equals(GeneralStatus.REJECTED))
-                    return ResponseHelper.Return(new Response(403, "Not allowed: Banned"));
+                    return ResponseHelper.Return(new Response(401, "Not allowed: Banned"));
                 String token = jwtHelper.generateToken(u, loginRequest.remember);
                 User realUser = (User)_u.loadUserByUsername(loginRequest.username);
                 if(realUser.isTrader()){

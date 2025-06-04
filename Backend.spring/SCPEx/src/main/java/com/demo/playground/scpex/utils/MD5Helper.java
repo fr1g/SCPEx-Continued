@@ -27,14 +27,13 @@ public class MD5Helper implements PasswordEncoder {
     @Override
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
         System.out.println(rawPassword + " ENCODED AS: " + encodedPassword);
-        if (!encodedPassword.startsWith(PREFIX)) {
-            return false;
-        }
+
         // todo if correct passwd cannot be verified correctly then come back remove the prefix
 //        int times = encodedPassword.split(PREFIX).length - 1;
 //        var realEncodedPassword = encodedPassword.substring(PREFIX.length() * times);
 //        System.out.println(realEncodedPassword);
-        boolean isPassed = verify(rawPassword.toString(), encodedPassword);
+        System.out.println("REAL ENCODE: " + encrypt(rawPassword.toString()));
+        boolean isPassed = verify(rawPassword.toString(), PREFIX + encodedPassword);
         System.out.println("isPassed: " + isPassed);
         return isPassed;
     }

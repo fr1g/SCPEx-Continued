@@ -1,5 +1,5 @@
 import { Input, ComboboxButton, Disclosure, DisclosureButton, Dialog, DialogPanel, DialogTitle, DisclosurePanel, Switch, Combobox, ComboboxOption, ComboboxOptions, ComboboxInput } from "@headlessui/react";
-import { Route, Routes, useLocation, Link } from 'react-router';
+import { Route, Routes, useLocation, Link, useNavigate } from 'react-router';
 import AfterRegister from "./AfterRegister";
 import { UserCredential } from "../../models/UserCredential";
 import { useState, useEffect } from "react";
@@ -35,15 +35,17 @@ export default function Register() {
      * GOTO /register/done PASS-IN created info
      * done
      */
-    let [createdUser, setCreatedUser] = useState<UserCredential | null>(new UserCredential("Front Testing", "tokentext", "aminos@gola.xx"));
+    let [createdUser, setCreatedUser] = useState<Trader | null>(null);
+    const navigate = useNavigate();
 
     function Registering() {
         let [showAlert, setShowAlert] = useState({ show: false, msg: "" });
         const [selected, setSelected] = useState(traderTypes[0]);
         const [query, setQuery] = useState('');
         let [agree, setAgree] = useState(false);
+        const [submit, setSubmit] = useState(0);
 
-        let { userInfo } : {userInfo: UserCredential} = useSelector((s: any) => s.auth);
+        let { userInfo }: { userInfo: UserCredential } = useSelector((s: any) => s.auth);
 
         const filtered = query === ''
             ? traderTypes
@@ -72,10 +74,40 @@ export default function Register() {
 
         }
 
-        async function submitContent(trader: Trader){
-            
-            let res = await api.TraderManage.traderOperate(userInfo.token, new Operation('add', JSON.stringify(trader)));
-            console.log(res);
+        async function submitContent(trader: Trader) {
+            let cont: Trader | null = null;
+            let exc = null
+            try{
+                if(submit == 1) return;
+                setSubmit(1);
+                let traderMod = trader;
+                traderMod.locationJson = '{"location":  []}';
+                traderMod.preferJson = '{"prefers":  []}';
+                let res = await api.TraderManage.traderOperate(userInfo.token, new Operation('add', JSON.stringify(traderMod)));
+                console.log(res);
+                cont = JSON.parse(res.content) as Trader;
+            } catch(ex: any){
+                if(ex.message.includes('555')){
+                    console.log("555: maybe caused by duplicated submit");
+                } else {
+                    console.log(ex);
+                    exc = ex.message;
+                }
+            }finally{
+                if(cont) {
+                    setCreatedUser(cont);
+                    console.log(cont, ' axx')
+                    navigate("/auth/register/done");
+                }
+                else {
+                    setShowAlert(
+                        {
+                            show: true,
+                            msg: exc ?? 'Unknown'
+                        }
+                    )
+                }
+            }
         }
 
         function submitHandler(e: React.FormEvent<HTMLFormElement>) {
@@ -89,7 +121,7 @@ export default function Register() {
                 name: (document.getElementById("reg-name")! as HTMLInputElement).value!,
                 contact: (document.getElementById("contact")! as HTMLInputElement).value!,
 
-                birth: (document.getElementById("birth")! as HTMLInputElement).value == "" ? 0 : 
+                birth: (document.getElementById("birth")! as HTMLInputElement).value == "" ? 0 :
                     (document.getElementById("birth")! as HTMLInputElement).value,
 
                 typeEnum: selected.enum
