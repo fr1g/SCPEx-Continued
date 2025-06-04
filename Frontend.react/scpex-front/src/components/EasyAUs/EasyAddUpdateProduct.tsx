@@ -8,6 +8,7 @@ import { inputClassNames } from "../../env";
 import { parseNumber, selectableGeneralStatus } from "../../tools/misc";
 import { api } from "../../axios";
 import { Category } from "../../models/Category";
+import TitledInput from "../Fragments/TitledInput";
 
 
 
@@ -35,26 +36,26 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
             try {
                 const catsReqd = await api.Stock.listCat();
                 const rawCats = JSON.parse(catsReqd.content!) as Category[];
-                const cats = rawCats.map(c => 
+                const cats = rawCats.map(c =>
                     new Selectable(c.id, c.name, JSON.stringify(c))
                 );
-                
+
                 setCategories(cats);
-                
+
                 // 设置默认选中项
                 const defaultCat = item?.category ?? cats[0];
                 if (defaultCat) {
                     setCat(defaultCat);
                     changeHandler('category', defaultCat);
                 }
-                
+
             } catch (error) {
                 console.error('Failed to load categories:', error);
             }
         };
-        
+
         loadCategories();
-    }, []); 
+    }, []);
 
     useEffect(() => {
         if (selectableCategories.length > 0 && !selectedCat) {
@@ -71,7 +72,7 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
         changeHandler('status', value.id, true)
     }
 
-    function setCatty(val: any){
+    function setCatty(val: any) {
         setCat(val);
         changeHandler('category', val);
     }
@@ -79,42 +80,32 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
 
 
     return <>
+    
         <form action="" className=" grid grid-cols-1 md:grid-cols-3 gap-1">
-            <Input className={inputClassNames} placeholder="id" type="number" onChange={(e) => changeHandler('id', e.target.value, true)} />
-            <Input className={inputClassNames} placeholder="amount" type="number" onChange={(e) => changeHandler('amount', e.target.value, true)} />
-            <Input className={inputClassNames} placeholder="singlePrice" type="number" onChange={(e) => changeHandler('singlePrice', e.target.value, true)} />
-            <Input className={inputClassNames} placeholder="discount" type="number" onChange={(e) => changeHandler('discount', e.target.value, true)} />
-
-            <Input className={inputClassNames} placeholder="name" type="text" onChange={(e) => changeHandler('name', e.target.value)} />
-            <Input className={inputClassNames} placeholder="barcode" type="text" onChange={(e) => changeHandler('barcode', e.target.value)} />
-            <Input className={inputClassNames} placeholder="size" type="text" onChange={(e) => changeHandler('size', e.target.value)} />
-            <Input className={inputClassNames} placeholder="feature" type="text" onChange={(e) => changeHandler('feature', e.target.value)} />
-            <Input className={inputClassNames} placeholder="warehouse" type="text" onChange={(e) => changeHandler('warehouse', e.target.value)} />
-
-            <WrappedComboBox className="w-full m-0!" enums={statusEnums} selectedIndex={item?.status ?? 0} getter={selectedEnum} setter={setSelectedEnum_} />
-
-            <div>
-                {JSON.stringify(selectedEnum)}
+            <div className="grid grid-cols-2 gap-1 ">
+                <TitledInput title="ID" className={inputClassNames} placeholder="Keep empty to create" type="number" onChange={(e) => changeHandler('id', e.target.value, true)} />
+                <TitledInput className={inputClassNames} placeholder="amount" type="number" onChange={(e) => changeHandler('amount', e.target.value, true)} />
+            </div>
+            <div className="grid grid-cols-2 gap-1 ">
+                <TitledInput className={inputClassNames} placeholder="singlePrice" type="number" onChange={(e) => changeHandler('singlePrice', e.target.value, true)} />
+                <TitledInput className={inputClassNames} placeholder="discount" type="number" onChange={(e) => changeHandler('discount', e.target.value, true)} />
             </div>
 
-            <WrappedComboBox className="w-full m-0!"
+            <TitledInput className={inputClassNames} placeholder="name" type="text" onChange={(e) => changeHandler('name', e.target.value)} />
+            <TitledInput className={inputClassNames} placeholder="barcode" type="text" onChange={(e) => changeHandler('barcode', e.target.value)} />
+            <TitledInput className={inputClassNames} placeholder="size" type="text" onChange={(e) => changeHandler('size', e.target.value)} />
+            <TitledInput className={inputClassNames} placeholder="feature" type="text" onChange={(e) => changeHandler('feature', e.target.value)} />
+            <TitledInput className={inputClassNames} placeholder="warehouse" type="text" onChange={(e) => changeHandler('warehouse', e.target.value)} />
+
+            <WrappedComboBox title="Status" className="w-full m-0!" enums={statusEnums} selectedIndex={item?.status ?? 0} getter={selectedEnum} setter={setSelectedEnum_} />
+ 
+            <WrappedComboBox title="Category" className="w-full m-0!"
                 enums={selectableCategories ?? []}
                 selectedIndex={selectedCat == null ? selectableCategories.indexOf(selectedCat!) : 0}
                 getter={selectedCat}
-                setter={setCatty} 
+                setter={setCatty}
             />
-            <div>
-                {JSON.stringify(selectedCat)}
-            </div>
-
-            <div>
-                {JSON.stringify(selectableCategories[0])}
-            </div>
-
-            <Input className={inputClassNames} placeholder="note" type="text" onChange={(e) => changeHandler('note', e.target.value)} />
-
-            <Input className={inputClassNames} placeholder="id" type="text" onChange={(e) => changeHandler('id', e.target.value)} />
-            <Input className={inputClassNames} placeholder="id" type="text" onChange={(e) => changeHandler('id', e.target.value)} />
+            <TitledInput className={inputClassNames} placeholder="note" type="text" onChange={(e) => changeHandler('note', e.target.value)} />
 
         </form>
     </>
