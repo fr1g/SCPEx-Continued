@@ -1,14 +1,18 @@
 package com.demo.playground.scpex.Controllers.Rest;
 
+import com.demo.playground.scpex.Models.Employee;
 import com.demo.playground.scpex.Models.Pojo.OperationRequest;
 import com.demo.playground.scpex.Models.Pojo.PageRequest;
+import com.demo.playground.scpex.Models.Pojo.User;
 import com.demo.playground.scpex.Models.Trader;
 import com.demo.playground.scpex.Services.Logics.TraderManagement;
 import com.demo.playground.scpex.Services.TraderSvc;
+import com.demo.playground.scpex.Services.UserDetailSvc;
 import com.demo.playground.scpex.Shared.NullReferenceException;
 import com.demo.playground.scpex.Shared.Response;
 import com.demo.playground.scpex.Shared.SharedStatic;
 import com.demo.playground.scpex.utils.AuthHelper;
+import com.demo.playground.scpex.utils.JwtHelper;
 import com.demo.playground.scpex.utils.MD5Helper;
 import com.demo.playground.scpex.utils.ResponseHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +35,10 @@ public class TraderManagementController {
 
     @Autowired
     TraderManagement _t;
+    @Autowired
+    private JwtHelper jwtHelper;
+    @Autowired
+    private UserDetailSvc userDetailSvc;
 
     @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_REGISTRAR', 'PERMISSION_MANAGE_CUSTOMERS', 'PERMISSION_MANAGE_USERS')")
     @PostMapping("/{id}")
@@ -85,6 +93,7 @@ public class TraderManagementController {
     @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_REGISTRAR', 'PERMISSION_MANAGE_CUSTOMERS', 'PERMISSION_MANAGE_USERS')")
     @PostMapping("/op")
     public ResponseEntity<String> traderControls(
+            @RequestHeader(name = "Authorization") String token,
             @RequestBody
             String info//,
     ) {
@@ -94,16 +103,24 @@ public class TraderManagementController {
             var target = SharedStatic.jsonHandler.fromJson(or.payloadJson(), Trader.class);
             var isAlreadyExist = _s.isThisExist(target.getId());
             if(
-                    target.getRegistrar() == null ||
+                    or.operation() != "add" &&
+                    (target.getRegistrar() == null ||
                     target.getRegistrar().getId() < 0 ||
-                    !_s.isRegistrarExist(target.getRegistrar().getId())
+                    !_s.isRegistrarExist(target.getRegistrar().getId()))
                     // not exist
             ){
 
                 return ResponseHelper.Return(new Response(406, "Registrar is null or not exist"));
             }
+
+            if(!jwtHelper.validateToken(token)) return ResponseHelper.Return(new Response(403, "invalid token"));
+            var revealedUserName = jwtHelper.getUsernameFromToken(token);
+            var revealedUser = (Employee)userDetailSvc.loadUserByUsername(revealedUserName);
+
+
             switch (or.operation()){
                 case "add":
+                    target.setRegistrar(revealedUser);
                     return _t.createTrader(target, isAlreadyExist);
 
                 case "upd":

@@ -38,9 +38,11 @@ public class PresetDataMockingProcessor {
             if(!employee.existsById(1L))
                 employee.save(Employee.builder().birth((new Date())).type(Type.ADMIN).contact("_root").name("Root Super User").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter(inConfigDefaultPasswd)).note("preset default super user").build());
 
+            Category cat;
             if(!category.existsById(1L))
-                category.saveAndFlush(new Category("Unsorted Category", "The default category by system"));
-
+                cat = category.saveAndFlush(new Category("Unsorted Category", "The default category by system"));
+            else
+                cat = category.findById(1L).get();
 
             if(!SharedStatic.usingMockData) return;
             else{
@@ -60,6 +62,7 @@ public class PresetDataMockingProcessor {
                 p.setAmount(1);
                 p.setStatus(GeneralStatus.APPROVED);
                 p.setDiscount(1);
+                p.setCategory(cat);
                 p.setName("Testing product");
                 product.save(p);
 

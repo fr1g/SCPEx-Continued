@@ -4,7 +4,7 @@ export default class User {
     id: number;
     name: string;
     contact: string;
-    type: UserType;
+    type: UserType | number;
     status: GeneralStatus;
     createdDate: Date | number | string;
     birth: Date | number | string;
@@ -15,7 +15,7 @@ export default class User {
         id: number,
         name: string,
         contact: string,
-        type: UserType,
+        type: UserType | number,
         status: GeneralStatus,
         createdDate: Date | number | string,
         birth: Date | number | string,

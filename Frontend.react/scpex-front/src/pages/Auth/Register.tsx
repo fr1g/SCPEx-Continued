@@ -10,6 +10,10 @@ import { clsx } from 'clsx';
 import Markdown from 'react-markdown';
 import { useSelector } from "react-redux";
 import { isatty } from "tty";
+import Trader from "../../models/UserType/Trader";
+import { GeneralStatus } from "../../models/GeneralEnum";
+import { api } from "../../axios";
+import { Operation } from "../../models/Operation";
 
 
 // difference of register 
@@ -39,7 +43,7 @@ export default function Register() {
         const [query, setQuery] = useState('');
         let [agree, setAgree] = useState(false);
 
-        let {userInfo} = useSelector((s: any) => s.auth);
+        let { userInfo } : {userInfo: UserCredential} = useSelector((s: any) => s.auth);
 
         const filtered = query === ''
             ? traderTypes
@@ -48,14 +52,14 @@ export default function Register() {
             });
 
         let isAdmin = true; // test
-        if(userInfo == null) isAdmin = false;
-        if(userInfo.userClass == "admin" || userInfo.userClass == "registrar") isAdmin = true;
+        if (userInfo == null) isAdmin = false;
+        if (userInfo.userClass == "admin" || userInfo.userClass == "registrar") isAdmin = true;
         else isAdmin = false;
 
         // let isVerificated = false;
         // if(!isAdmin && !isVerificated) 
 
-        
+
 
         function afterProcess() {
             // send request
@@ -68,7 +72,11 @@ export default function Register() {
 
         }
 
-
+        async function submitContent(trader: Trader){
+            
+            let res = await api.TraderManage.traderOperate(userInfo.token, new Operation('add', JSON.stringify(trader)));
+            console.log(res);
+        }
 
         function submitHandler(e: React.FormEvent<HTMLFormElement>) {
             e.preventDefault();
@@ -80,11 +88,20 @@ export default function Register() {
             let essentials = {
                 name: (document.getElementById("reg-name")! as HTMLInputElement).value!,
                 contact: (document.getElementById("contact")! as HTMLInputElement).value!,
-                birth: (document.getElementById("birth")! as HTMLInputElement).value!,
+
+                birth: (document.getElementById("birth")! as HTMLInputElement).value == "" ? 0 : 
+                    (document.getElementById("birth")! as HTMLInputElement).value,
+
                 typeEnum: selected.enum
             }
 
-            console.log(essentials);
+            // console.log(essentials);
+            let newTrader = new Trader(0, essentials.name, essentials.contact, essentials.typeEnum, GeneralStatus.APPROVED, Date.now(), essentials.birth, "creatingNewUser",
+                0, `Created by: ${(JSON.parse(localStorage.credential) as UserCredential).id}`);
+
+            console.log(newTrader);
+            submitContent(newTrader);
+
         }
 
         if (!isAdmin)

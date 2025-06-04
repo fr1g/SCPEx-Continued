@@ -26,4 +26,12 @@ public class AuthHelper {
     public static int randomGenerator(int mix){
         return (int)(Math.floor((Math.random() * Math.random() + Math.random() * mix) * 256));
     }
+
+    public static String unbear(String raw){
+        String refl = raw;
+        if(refl.startsWith("Bearer "))
+            refl = refl.substring(7);
+
+        return refl;
+    }
 }

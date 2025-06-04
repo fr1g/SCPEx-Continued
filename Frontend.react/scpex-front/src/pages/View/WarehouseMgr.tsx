@@ -70,6 +70,9 @@ export default function WarehouseMgr(){
         </div>
         <i>{JSON.stringify(curr)}</i>
         <EAUProducts setItem={setCurr} item={curr} />
+        <div>
+            {JSON.stringify(pageContent)}
+        </div>
         <PageableList page={pageContent}></PageableList>
     </>
 }
