@@ -43,7 +43,10 @@ export default function WarehouseMgr() {
     async function refresh(page = 0) {
 
         try {
-            console.log(pr)
+            await setTimeout(() => {
+                console.log("%cI FUCKING DONT KNOW WHY I MAKE IT DELAY THEN THE PROBLEM GONE", "color: red; font-size: larger; font-weight: bold")
+            }, 100);
+            console.log(pr, 'prpr')
             let products = await api.Stock.search(pr, page);
             console.log('should run now', products)
             setPageContent(JSON.parse(products.content))
@@ -53,6 +56,7 @@ export default function WarehouseMgr() {
             }
             else console.error(error);
         }
+        setStateHasChanged(_ => !_)
 
     }
 
