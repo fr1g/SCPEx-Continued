@@ -56,6 +56,12 @@ public class PresetDataMockingProcessor {
                 trader.save(Trader.builder().name("Bin Nsibi").birth((new Date())).contact("31313-73788466").passwd(encrypter("111111")).status(GeneralStatus.APPROVED).preferJson("{\"prefers\": []}").type(Type.CUSTOMER).registrar(relatedChulmann).build());
                 trader.save(Trader.builder().name("Said al-abdulah").birth((new Date())).contact("31313@7884.com").passwd(encrypter("111111")).status(GeneralStatus.APPROVED).preferJson("{\"prefers\": []}").type(Type.SELLER).registrar(relatedChulmann).build());
 
+                Product p = new Product();
+                p.setAmount(1);
+                p.setStatus(GeneralStatus.APPROVED);
+                p.setDiscount(1);
+                p.setName("Testing product");
+                product.save(p);
 
 //                product.save((Product) (ProductInfo.build().));
 //                var rh = (new ReduxHelper<Trader>(trader, Trader.class));
