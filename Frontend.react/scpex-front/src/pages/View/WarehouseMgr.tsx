@@ -5,14 +5,15 @@ import Selectable from "../../models/Selectable";
 
 import { slices } from "../../tools/ReduceHelper";
 import Pageable from "../../models/Pageable";
-import { useSelector } from "react-redux";
-import { insufficientHandler, isCredTrader } from "../../tools/AuthTools";
+import { useDispatch, useSelector } from "react-redux";
+import { doInvalidCredentialAction, insufficientHandler, isCredTrader } from "../../tools/AuthTools";
 import { UserCredential } from "../../models/UserCredential";
 import { useNavigate } from "react-router";
 import PageRequest from "../../models/PageRequest";
 import { api } from "../../axios";
 import EAUProducts from "../../components/EasyAUs/EasyAddUpdateProduct";
 import { Product } from "../../models/Product";
+import { Category } from "../../models/Category";
 
 const changeSelected = slices.warehouseOperations.actions.changeSelection;
 const updateSelectables = slices.warehouseOperations.actions.updateSelectables;
@@ -29,12 +30,26 @@ export default function WarehouseMgr(){
     const [curr, setCurr] = useState<Product | null>(null);
     const {userInfo} : {userInfo: UserCredential} = useSelector((s: any) => s.auth);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    async function getPageItems(page = 0){
+
+    // refresh logics
+    let products: any[];
+
+    
+    async function refresh(page = 0){
         let pr = new PageRequest();
 
-        let res = await api.Stock.search(pr, page);
-        console.log(res)
+        try {
+            products = await api.Stock.search(pr, page);
+            console.log('should run now')
+        } catch (error: any) {
+            if(error.message.includes("401")){
+                doInvalidCredentialAction(dispatch, navigate);
+            }
+            else console.error(error);
+        }
+
     }
 
     useEffect(() => {
@@ -42,7 +57,7 @@ export default function WarehouseMgr(){
         if(isCredTrader(userInfo))
             insufficientHandler(navigate)
 
-        getPageItems();
+        refresh();
 
 
     }, []);

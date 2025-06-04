@@ -1,5 +1,5 @@
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Icon from "./Fragments/Icon";
 import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
@@ -25,6 +25,10 @@ export default function WrappedComboBox({ enums, className, selectedIndex = 0, o
         : enums.filter((item) => {
             return item.name.toLowerCase().includes(query.toLowerCase());
         });
+
+    useEffect(() => {
+        setSelected(getter ?? enums[selectedIndex]);
+    }, [enums])
 
 
     return <>

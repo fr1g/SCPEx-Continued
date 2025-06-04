@@ -120,13 +120,13 @@ export default {
         else return data;
     },
 
-    listCat: async (token: string): Promise<any>  => { // this is all list without pagination
+    listCat: async (): Promise<any>  => { // this is all list without pagination
 
         let data, config = {
             method: 'post',
-            url: base + '/api/warehouse/cat/list/',
+            url: base + '/api/warehouse/cat/list',
             headers: {
-                'Authorization': bear(token)
+                // 'Authorization': bear(token)
             }
         };
 

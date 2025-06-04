@@ -136,7 +136,7 @@ public class WarehouseManagementController {
         }
     }
 
-    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')")
+//    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')")
     @PostMapping("/cat/{id}")
     public ResponseEntity<String> getCat(@PathVariable("id") long id) {
         try{
@@ -148,7 +148,7 @@ public class WarehouseManagementController {
         }
     }
 
-    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')")
+//    @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')")
     @PostMapping("/cat/list")
     public ResponseEntity<String> listCat() {
         try{

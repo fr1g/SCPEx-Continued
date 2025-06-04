@@ -49,11 +49,15 @@ export async function checkToken(credential: UserCredential): Promise<boolean> {
 export function invalidCredentialHandler(error: Error | any, dispatchFunction: Function, navigateFunction: Function, handleKeywords = ['401']) {
 
     if (handleKeywords.some((e: string) => error.message.includes(e))) {
-        dispatchFunction(s.auths.actions.loginFailure(null));
-        localStorage.removeItem('credential');
-        localStorage.jumpMessage = "Please login.";
-        navigateFunction('/auth/login');
+        doInvalidCredentialAction(dispatchFunction, navigateFunction)
     }
+}
+
+export function doInvalidCredentialAction(dispatchFunction: Function, navigateFunction: Function){
+    dispatchFunction(s.auths.actions.loginFailure(null));
+    localStorage.removeItem('credential');
+    localStorage.jumpMessage = "Please login.";
+    navigateFunction('/auth/login');
 }
 
 export function insufficientHandler(navigateFunction: Function, message = "You don't have the permission to do so."){

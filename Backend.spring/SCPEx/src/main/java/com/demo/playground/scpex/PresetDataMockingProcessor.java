@@ -39,7 +39,7 @@ public class PresetDataMockingProcessor {
 
             if(!category.existsById(1L))
                 category.saveAndFlush(new Category("Unsorted Category", "The default category by system"));
-            
+
 
             if(!SharedStatic.usingMockData) return;
             else{

@@ -54,12 +54,21 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(
                         r ->   r // /api/products
+                                .requestMatchers(HttpMethod.OPTIONS, "/**")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.POST, "/error")
+                                .permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/auth/**")
                                 .permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/auth/login")
                                 .permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/products/**")
                                 .permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/warehouse/cat/list")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/warehouse/find")
+                                .permitAll()
+                                ///api/warehouse/cat/list/
                                 .anyRequest()
                                 .authenticated()
                 )
@@ -90,6 +99,7 @@ public class SecurityConfig {
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return (request, response, accessDeniedException) -> {
+            System.out.println("Hit the ADH");
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403
             response.getWriter().write("{\"error\": \"Forbidden\", \"message\": \"You don't have permission to access this resource\"}");
