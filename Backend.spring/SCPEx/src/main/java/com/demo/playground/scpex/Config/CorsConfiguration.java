@@ -16,6 +16,7 @@ public class CorsConfiguration { //} implements WebMvcConfigurer {
             "http://localhost:8080",
             "http://127.0.0.1:8080",
             "http://localhost:5173", // vite
+            "http://localhost:5174", // vite
     };
 
     // 1. 创建供 Spring Security 使用的 CORS 配置源

@@ -4,6 +4,7 @@ import com.demo.playground.scpex.Models.Category;
 import com.demo.playground.scpex.Models.Employee;
 import com.demo.playground.scpex.Models.Enums.GeneralStatus;
 import com.demo.playground.scpex.Models.Enums.Type;
+import com.demo.playground.scpex.Models.Pojo.ProductInfo;
 import com.demo.playground.scpex.Models.Product;
 import com.demo.playground.scpex.Models.Trader;
 import com.demo.playground.scpex.Repositories.*;
@@ -56,6 +57,7 @@ public class PresetDataMockingProcessor {
                 trader.save(Trader.builder().name("Said al-abdulah").birth((new Date())).contact("31313@7884.com").passwd(encrypter("111111")).status(GeneralStatus.APPROVED).preferJson("{\"prefers\": []}").type(Type.SELLER).registrar(relatedChulmann).build());
 
 
+//                product.save((Product) (ProductInfo.build().));
 //                var rh = (new ReduxHelper<Trader>(trader, Trader.class));
 //                System.out.println(rh);
 
