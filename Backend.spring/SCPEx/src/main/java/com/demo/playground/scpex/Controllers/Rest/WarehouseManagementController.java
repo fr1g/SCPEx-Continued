@@ -13,6 +13,7 @@ import com.demo.playground.scpex.Services.UserDetailSvc;
 import com.demo.playground.scpex.Shared.NullReferenceException;
 import com.demo.playground.scpex.Shared.Response;
 import com.demo.playground.scpex.Shared.SharedStatic;
+import com.demo.playground.scpex.utils.AuthHelper;
 import com.demo.playground.scpex.utils.JwtHelper;
 import com.demo.playground.scpex.utils.ResponseHelper;
 import com.google.gson.Gson;
@@ -130,8 +131,9 @@ public class WarehouseManagementController {
 
     @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')")
     @PostMapping("/cat/new")
-    public ResponseEntity<String> newCat(@RequestBody String body, @RequestHeader(name = "Authorization") String token) {
+    public ResponseEntity<String> newCat(@RequestBody String body, @RequestHeader(name = "Authorization") String tokenRaw) {
         try{
+            var token = AuthHelper.unbear(tokenRaw);
             var operator = (Employee)_u.loadUserByUsername(jwtHelper.getUsernameFromToken(token));
             var newItem = _w.addCategory(SharedStatic.jsonHandler.fromJson(body, Category.class), operator);
 
@@ -168,8 +170,9 @@ public class WarehouseManagementController {
 
     @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')") //
     @PostMapping("/cat/disable/{id}")
-    public ResponseEntity<String> giveUpCat(@PathVariable("id") long id, @RequestHeader(name = "Authorization") String token) {
+    public ResponseEntity<String> giveUpCat(@PathVariable("id") long id, @RequestHeader(name = "Authorization") String tokenRaw) {
         try{
+            var token = AuthHelper.unbear(tokenRaw);
             var original = _r_c.findById(id).orElseThrow(() -> new NullReferenceException("No such product CAT"));
             var operator = (Employee)_u.loadUserByUsername(jwtHelper.getUsernameFromToken(token));
             _w.disableCategory(original, operator);

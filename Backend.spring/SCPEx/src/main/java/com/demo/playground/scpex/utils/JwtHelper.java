@@ -39,9 +39,8 @@ public class JwtHelper {
     }
 
     public boolean validateToken(String rawToken) {
-        String token = rawToken;
-        if(token.contains("Bearer "))
-            token = token.substring(7);
+        var token = AuthHelper.unbear(rawToken);
+
         if(invalidated.containsValue(token))
             return false;
 
@@ -59,8 +58,7 @@ public class JwtHelper {
 
 
     public void invalidateToken(String token) {
-        var realToken = token;
-        if(token.startsWith("Bearer")) realToken = token.substring(7);
+        var realToken = AuthHelper.unbear(token);
         if(validateToken(realToken)) {
             invalidated.put((new Date()).getTime(), realToken);
         } else throw new NullReferenceException("No record on the token");

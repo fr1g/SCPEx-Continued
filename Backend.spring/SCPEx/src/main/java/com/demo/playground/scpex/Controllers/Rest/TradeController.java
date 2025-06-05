@@ -55,8 +55,9 @@ public class TradeController {
 
     @PostMapping("/trades/query/{page}")
     @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')")
-    public ResponseEntity<String> queryTrades(@RequestHeader(name = "Authorization") String token, @RequestBody String pageReq, @PathVariable("page") int pageNum){
+    public ResponseEntity<String> queryTrades(@RequestHeader(name = "Authorization") String tokenRaw, @RequestBody String pageReq, @PathVariable("page") int pageNum){
         try {
+            var token = AuthHelper.unbear(tokenRaw);
             var revealedUser = (User)_us.loadUserByUsername(jwtHelper.getUsernameFromToken(token));
             if(!revealedUser.isTrader()) return ResponseHelper.Return(new Response(403, "This is not a trader."));
 

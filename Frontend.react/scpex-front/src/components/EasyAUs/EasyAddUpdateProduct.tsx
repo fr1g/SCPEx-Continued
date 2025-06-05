@@ -46,10 +46,7 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
     const [isUpdate, setIsUpdate] = useState(false);
 
     async function submitHandler(){
-        // await setTimeout(() => { }, 100);
-        // console.log("%cTRIGGERED SUBMIT", "font-size: 900, font-weight: bold")
         let prep = item;
-        // console.log('committing', prep, `isUpdating: ${isUpdate}`);
         console.log(prep, 'preparing')
         let res: any;
         try {
