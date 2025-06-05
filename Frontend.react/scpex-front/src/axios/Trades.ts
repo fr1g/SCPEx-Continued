@@ -232,6 +232,10 @@ export default {
 
     updateEntireCart: async (token: string, cart: Product[]): Promise<any>  => {
         
+        let prep = {
+            prefers: cart
+        }
+
         let data, config = {
            method: 'post',
            url: base + '/api/trade/cart/update',
@@ -239,7 +243,7 @@ export default {
               'Authorization': bear(token), 
               'Content-Type': 'application/json'
            },
-           data : JSON.stringify(cart)
+           data : JSON.stringify(prep)
         };
         
         let err: Error | null = null;

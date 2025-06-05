@@ -37,6 +37,7 @@ export default function TraderMgr() {
       new Date(), // createdDate
       new Date(), // birth
       "", // passwd
+      0, // TODO may cause error, let's bless the backend
       "", // note
     );
   };

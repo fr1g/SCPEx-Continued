@@ -11,6 +11,12 @@ public class JsonManualArrayPushHelper {
         var jsonArray = jsonObj.getAsJsonArray(targetArrayName);
         var newJsonObj = JsonParser.parseString(newObject).getAsJsonObject();
         jsonArray.add(newJsonObj);
-        return g.toJson(jsonObj);
+//        jsonObj.
+        var generated = g.toJson(jsonObj);
+        System.out.println(generated);
+        System.out.println(g.toJson(jsonArray));
+        System.out.println("=======");
+//        return "{\"prefers\": "+ generated +"}";
+        return generated;
     }
 }

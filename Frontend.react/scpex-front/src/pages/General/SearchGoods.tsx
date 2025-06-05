@@ -19,6 +19,7 @@ import { getTotals } from "../../tools/misc";
 export default function SearchGoods() {
     const [results, setResults] = useState<ListItem[]>([]);
     const [isNoResult, setIsNoResult] = useState(false);
+    const [init, setInit] = useState(false);
     const [page, setPage] = useState(0);
     const [keyword, setKeyword] = useState("");
     const [sortingField, setSortingField] = useState<"name" | "singlePrice" | "amount">("name");
@@ -47,13 +48,14 @@ export default function SearchGoods() {
                 setIsNoResult(false);
                 results = content.content.map((item: any) => {
                     return <ListItem title={item.name} cover={item.image} price={item.singlePrice} detail={item.description} extra={<BasicStatistics category={item.category?.name ?? '-'} sold={'-'} instock={item.amount} />} onClick={() => {
-                        navigate(`/view/warehouse/${item.id}`);
+                        navigate(`/product/${item.id}`);
                     }} /> as unknown as ListItem;
                 });
                 setResults(results);
                 setPage(content.pageable.pageNumber);
                 setTotalPages(getTotals(content));
             }
+            setInit(true);
         } catch (error: any) {
             if (error.message.includes("401")) {
                 doInvalidCredentialAction(dispatch, navigate);
@@ -158,7 +160,8 @@ export default function SearchGoods() {
                         </Button>
                     </div>
                 }
-                {!(totalPages > 0 && !isNoResult) &&
+                {/* no result AND have keyword */}
+                {(!(totalPages > 0 && !isNoResult) && keyword != "" && init) &&
                     <div className="text-center">
                         No Result for that...
                     </div>

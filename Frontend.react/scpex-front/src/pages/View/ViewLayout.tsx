@@ -6,6 +6,8 @@ import WarehouseMgr from "./WarehouseMgr";
 import EmployeeMgr from "./EmployeeMgr";
 import TraderMgr from "./TraderMgr";
 import ViewNavigation from "./ViewNavigation";
+import AddressBook from "./addressBook";
+import CartPage from "../General/Cart";
 
 export default function ViewLayout({cancelMf} : {cancelMf?: boolean}) {
   return (
@@ -19,10 +21,10 @@ export default function ViewLayout({cancelMf} : {cancelMf?: boolean}) {
             <Route path="/trader-management" element={<TraderMgr />} />
             <Route path="/trdm" element={<TraderMgr />} />
 
-            <Route path="/cart-management" />
+            <Route path="/cart-management" element={<CartPage />} />
             <Route path="/warehouse" element={<WarehouseMgr />} />
             <Route path="/contract-negotiations" />
-            <Route path="/address-book" />
+            <Route path="/address-book" element={<AddressBook />} />
             <Route path="/trades-tracker" />
 
             <Route index element={<div>Select your management above.</div>} />

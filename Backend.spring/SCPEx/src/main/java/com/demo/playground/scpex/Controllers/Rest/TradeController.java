@@ -208,9 +208,11 @@ public class TradeController {
             var revealedUser = (User)_us.loadUserByUsername(jwtHelper.getUsernameFromToken(token));
             if(!revealedUser.isTrader()) return ResponseHelper.Return(new Response(403, "This is not a trader."));
 
+            System.out.println(tuple);
+
             long[] parsedTuple = new long[2]; // [productId, quantity]
             int index = 0;
-            for(var x : tuple.split(",")){
+            for(var x : tuple.replaceAll("\"", "").split(",")){
                 parsedTuple[index] = Long.parseLong(x.trim());
                 index++;
             }
@@ -220,6 +222,7 @@ public class TradeController {
 
 
         }catch (Exception ex){
+            ex.printStackTrace();
             return ResponseHelper.Return(new Response(403, "User cart not found, or other exception.", ex.getMessage()));
 
         }
