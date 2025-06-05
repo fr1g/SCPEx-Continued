@@ -9,7 +9,7 @@ export default function Button(
         console.log('the button has disabled.', id)
     }
 
-    useEffect(() => {console.log("Button state has changed: ", id)});
+    // useEffect(() => {console.log("Button state has changed: ", id)});
 
     useEffect(() => {console.log('button refreshed caused by watch: ', id)}, [watch])
 

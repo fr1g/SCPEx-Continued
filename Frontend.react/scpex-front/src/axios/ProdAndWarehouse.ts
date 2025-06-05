@@ -17,7 +17,7 @@ export default {
             data: JSON.stringify(page)
         };
 
-        console.log(config, 'cfg')
+        // console.log(config, 'cfg')
 
         let err: Error | null = null;
 

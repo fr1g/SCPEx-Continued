@@ -46,7 +46,7 @@ export default function WarehouseMgr() {
             await setTimeout(() => {
                 console.log("%cI FUCKING DONT KNOW WHY I MAKE IT DELAY THEN THE PROBLEM GONE", "color: red; font-size: larger; font-weight: bold")
             }, 100);
-            console.log(pr, 'prpr')
+            // console.log(pr, 'prpr')
             let products = await api.Stock.search(pr, page);
             console.log('should run now', products)
             setPageContent(JSON.parse(products.content))
@@ -99,12 +99,6 @@ export default function WarehouseMgr() {
         })
         refresh(pageNum);
     }
-    
-    useEffect(() => {
-        setStateHasChanged(_ => !_);
-        setPageContent(pageContent);
-        console.log("SSHC")
-    }, [pageContent])
 
     return <>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-1.5 md:gap-3.5">

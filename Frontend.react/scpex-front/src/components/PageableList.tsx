@@ -26,12 +26,6 @@ export default function PageableList({ page, askNewPage }: { page: Pageable | nu
     }
 
     useEffect(() => {
-        console.log(
-            "XXX the list refreshed."
-        ); setInternalPage(page);
-    });
-
-    useEffect(() => {
         // setInternalPage({...page})
         setInternalPage(page);
     }, [page]);
@@ -51,26 +45,9 @@ export default function PageableList({ page, askNewPage }: { page: Pageable | nu
             })}
         </List>
         <div className="PAGINATOR   grid grid-cols-3 gap-3 p-3" >
-            <Button watch={s} onClick={() => { toPage(internalPage?.pageable.pageNumber! - 1) }} className="rounded-lg" disable={internalPage?.pageable.pageNumber == 0 || askNewPage == undefined} >{ ( internalPage?.pageable.pageNumber == 0 || askNewPage == undefined ) ? 'NOMORE' : (<Icon pua="e76b" />)}</Button>
+            <Button watch={s} onClick={() => { toPage(internalPage?.pageable.pageNumber! - 1) }} className="rounded-lg" disable={internalPage?.pageable.pageNumber == 0 || askNewPage == undefined} >{(internalPage?.pageable.pageNumber == 0 || askNewPage == undefined) ? 'NOMORE' : (<Icon pua="e76b" />)}</Button>
             <Input className={`bg-gray-500/30 border-2 border-white    ${inputClassNames}`} onBlur={(e) => { console.log(e) }} />
-            <Button watch={s} onClick={() => { toPage(internalPage?.pageable.pageNumber! + 1) }} className="rounded-lg" disable={((internalPage?.pageable.pageNumber ?? 0) >= ((getTotals(internalPage!) ?? 0) - 1)) || askNewPage == undefined} >{( ((internalPage?.pageable.pageNumber ?? 0) >= ((getTotals(internalPage!) ?? 0) - 1)) || askNewPage == undefined ) ? 'NOMORE' : (<Icon pua="e76c" />)}</Button>
-        </div>
-        {/* 
-            key problem:
-                the internalPage (or even the page content list) cannot refresh in time
-                after their refresh, the buttons wont change their state in time.
-                
-            
-        */}
-        <div>
-            <div>{
-
-                
-                console.log((internalPage?.pageable.pageNumber ?? 0)) ?? internalPage?.pageable.pageNumber
-            }</div>
-            {
-                console.log(((getTotals(internalPage!) ?? 0) - 1)) ?? typeof getTotals(internalPage!)
-            }
+            <Button watch={s} onClick={() => { toPage(internalPage?.pageable.pageNumber! + 1) }} className="rounded-lg" disable={((internalPage?.pageable.pageNumber ?? 0) >= ((getTotals(internalPage!) ?? 0) - 1)) || askNewPage == undefined} >{(((internalPage?.pageable.pageNumber ?? 0) >= ((getTotals(internalPage!) ?? 0) - 1)) || askNewPage == undefined) ? 'NOMORE' : (<Icon pua="e76c" />)}</Button>
         </div>
     </>
 }
