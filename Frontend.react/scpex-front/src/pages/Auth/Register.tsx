@@ -55,7 +55,7 @@ export default function Register() {
 
         let isAdmin = true; // test
         if (userInfo == null) isAdmin = false;
-        if (userInfo.userClass == "admin" || userInfo.userClass == "registrar") isAdmin = true;
+        else if ((userInfo.userClass == "admin" || userInfo.userClass == "registrar")) isAdmin = true;
         else isAdmin = false;
 
         // let isVerificated = false;
@@ -103,7 +103,7 @@ export default function Register() {
                     setShowAlert(
                         {
                             show: true,
-                            msg: exc ?? 'Unknown'
+                            msg: exc ?? 'Maybe you\'ve registered before.',
                         }
                     )
                 }

@@ -89,7 +89,30 @@ export default {
         if(err) throw err;
         else return data;
 
-    }
+    },
+    resetPasswd: async (token: string, targetUid: number, info: 'e' | 't'): Promise<any>  => {
+
+        let data, config = {
+            method: 'post',
+            url: base + '/api/auth/reset/' + targetUid,
+            headers: {
+                'Authorization': bear(token)
+            },
+            data: info
+        };
+
+        let err: Error | null = null;
+
+        await axios(config)
+            .then((response) => {
+                data = response.data;
+            })
+            .catch(error => err = error);
+
+        if(err) throw err;
+        else return data;
+
+    },
 
 
 }

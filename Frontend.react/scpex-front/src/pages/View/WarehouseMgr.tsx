@@ -19,6 +19,7 @@ import { Input } from "@headlessui/react";
 import Button from "../../components/Fragments/Button";
 import { inputClassNames } from "../../env";
 import Icon from "../../components/Fragments/Icon";
+import { getById } from "../../tools/misc";
 
 const changeSelected = slices.warehouseOperations.actions.changeSelection;
 const updateSelectables = slices.warehouseOperations.actions.updateSelectables;
@@ -100,6 +101,17 @@ export default function WarehouseMgr() {
         refresh(pageNum);
     }
 
+    function setCurr_(val: Product){
+        // console.log(val);
+        setCurr(val);
+    }
+
+    function innerClickHandler(e: any) {
+        let clickedItemId = parseInt(e.nativeEvent.target.id!);
+        // console.log(clickedItemId, 'ICH-ciid');
+        setCurr_(getById(clickedItemId, pageContent!.content));
+    }
+
     return <>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-1.5 md:gap-3.5">
             <div className="col-span-1 md:col-span-3">
@@ -114,7 +126,7 @@ export default function WarehouseMgr() {
                     <Button className="block! px-3.5! rounded-lg!" onClick={commitSearch} ><Icon pua="e721" /></Button>
                 </div>
                 <br />
-                <PageableList page={pageContent} askNewPage={getNewPage} ></PageableList>
+                <PageableList page={pageContent} askNewPage={getNewPage} contentClickEvent={innerClickHandler} ></PageableList>
             </div>
             <div>
                 <h1 className="text-3xl font-semibold">Cats: </h1>

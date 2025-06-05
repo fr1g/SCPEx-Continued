@@ -31,3 +31,10 @@ export const selectableGeneralStatus = [
         new Selectable(4, GeneralStatus[4]),
         new Selectable(5, GeneralStatus[5]),
     ]
+
+export function getById(id: number, anyArr: any[]){
+    for(let x of anyArr)
+        if(x.id! == id) return x;
+
+    return null;
+}

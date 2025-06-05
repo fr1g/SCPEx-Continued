@@ -1,13 +1,10 @@
 package com.demo.playground.scpex.Controllers.Rest;
 
-import com.demo.playground.scpex.Models.ContractNegotiation;
+import com.demo.playground.scpex.Models.*;
 import com.demo.playground.scpex.Models.Enums.GeneralStatus;
 import com.demo.playground.scpex.Models.Enums.Type;
 import com.demo.playground.scpex.Models.Pojo.PageRequest;
 import com.demo.playground.scpex.Models.Pojo.User;
-import com.demo.playground.scpex.Models.Trade;
-import com.demo.playground.scpex.Models.Trader;
-import com.demo.playground.scpex.Models.Transaction;
 import com.demo.playground.scpex.Repositories.RepoCN;
 import com.demo.playground.scpex.Services.Logics.TraderUsage;
 import com.demo.playground.scpex.Services.Logics.TransactionProcedure;
@@ -16,6 +13,7 @@ import com.demo.playground.scpex.Services.TransactionSvc;
 import com.demo.playground.scpex.Services.UserDetailSvc;
 import com.demo.playground.scpex.Shared.NullReferenceException;
 import com.demo.playground.scpex.Shared.Response;
+import com.demo.playground.scpex.utils.AuthHelper;
 import com.demo.playground.scpex.utils.JwtHelper;
 import com.demo.playground.scpex.utils.ResponseHelper;
 import com.google.gson.Gson;
@@ -24,6 +22,8 @@ import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 
 @RestController
@@ -50,6 +50,8 @@ public class TradeController {
 
     @Autowired
     TransactionSvc _trans;
+    @Autowired
+    private UserDetailSvc userDetailSvc;
 
     @PostMapping("/trades/query/{page}")
     @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')")
@@ -82,8 +84,9 @@ public class TradeController {
 
     @PostMapping("/cn/create")
     @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')")
-    public ResponseEntity<String> createContractNegotiation(@RequestHeader(name = "Authorization") String token, @RequestBody String cnJson) {
+    public ResponseEntity<String> createContractNegotiation(@RequestHeader(name = "Authorization") String tokenRaw, @RequestBody String cnJson) {
         try {
+            String token = AuthHelper.unbear(tokenRaw);
             var revealedUser = (User)_us.loadUserByUsername(jwtHelper.getUsernameFromToken(token));
             if(revealedUser.isCustomer())
                 throw new PermissionDeniedDataAccessException("This is not for normal customer. ", new Exception("[NSP] No sufficient permission "));
@@ -99,8 +102,10 @@ public class TradeController {
 
     @PostMapping("/cn/list/{pageNum}")
     @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY', 'PERMISSION_PURCHASE')") // maybe the creator also?
-    public ResponseEntity<String> getPagedCNs(@RequestHeader(name = "Authorization") String token, @RequestBody String pageReqJson, @PathVariable("pageNum") int pageNum) {
+    public ResponseEntity<String> getPagedCNs(@RequestHeader(name = "Authorization") String tokenRaw, @RequestBody String pageReqJson, @PathVariable("pageNum") int pageNum) {
         try {
+            String token = AuthHelper.unbear(tokenRaw);
+
             var revealedUser = (User)_us.loadUserByUsername(jwtHelper.getUsernameFromToken(token));
             if((revealedUser.isCustomer() || !revealedUser.isTrader() && !(revealedUser.getType().equals(Type.WAREHOUSE) || revealedUser.getType().equals(Type.ADMIN))))
                 // is !(warehouse, seller, admin) // todo if something bad happened, try to replace with it.
@@ -130,11 +135,18 @@ public class TradeController {
     }
 
     @PostMapping("/cn/cancel/{cnId}")
-    @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')")
-    public ResponseEntity<String> cancelCN(@PathVariable long cnId) {
+    @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE', 'PERMISSION_MANAGE_INVENTORY')")
+    public ResponseEntity<String> cancelCN(@RequestHeader(name = "Authorization") String tokenRaw, @PathVariable long cnId) {
         try{
+            String token = AuthHelper.unbear(tokenRaw);
+            if(!jwtHelper.validateToken(token)) return ResponseHelper.Return(new Response(403, "invalid token"));
+            var revealedUserName = jwtHelper.getUsernameFromToken(token);
+            var revealedUser = (User)userDetailSvc.loadUserByUsername(revealedUserName);
+
             var operating = _cn.findById(cnId).orElseThrow(() -> new NullReferenceException("No such item. "));
             operating.setStatus(GeneralStatus.CANCELED);
+            if( ! (revealedUser.isTrader() && !revealedUser.isCustomer()) /* not seller */ )
+                operating.setDescription( operating.getDescription() + " ... (At " + (new Date()) + ", cancelled by " + revealedUserName + ", ID: " + revealedUser.getId() + ")");
             _cn.saveAndFlush(operating);
             return ResponseHelper.Return(new Response(200, "done"));
         }catch (Exception ex){
@@ -145,9 +157,11 @@ public class TradeController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')")
-    public ResponseEntity<String> createTrade(@RequestHeader(name = "Authorization") String token, @RequestBody String chosenAddressJson){
+    public ResponseEntity<String> createTrade(@RequestHeader(name = "Authorization") String tokenRaw, @RequestBody String chosenAddressJson){
         //  using current cart to create trade
         try{
+            String token = AuthHelper.unbear(tokenRaw);
+
             var revealedUser = (User)_us.loadUserByUsername(jwtHelper.getUsernameFromToken(token));
             if(!revealedUser.isTrader()) return ResponseHelper.Return(new Response(403, "This is not a trader."));
 
@@ -168,8 +182,10 @@ public class TradeController {
 
     @PostMapping("/addr")
     @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')") // maybe, not allowing admins to reveal customers' location is the best
-    public ResponseEntity<String> updateAddress(@RequestHeader(name = "Authorization") String token, @RequestBody String addressJson){
+    public ResponseEntity<String> updateAddress(@RequestHeader(name = "Authorization") String tokenRaw, @RequestBody String addressJson){
         try{
+            String token = AuthHelper.unbear(tokenRaw);
+
             var revealedUser = (User)_us.loadUserByUsername(jwtHelper.getUsernameFromToken(token));
             if(!revealedUser.isTrader()) return ResponseHelper.Return(new Response(403, "This is not a trader."));
 
@@ -182,10 +198,12 @@ public class TradeController {
     // in product's page
     @PostMapping("/cart/add")
     @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')")
-    public ResponseEntity<String> addToCart(@RequestHeader(name = "Authorization") String token,
+    public ResponseEntity<String> addToCart(@RequestHeader(name = "Authorization") String tokenRaw,
                                             @RequestBody String tuple){
         // the operation inside the product info page, add in touch.
         try{
+            String token = AuthHelper.unbear(tokenRaw);
+
             var revealedUser = (User)_us.loadUserByUsername(jwtHelper.getUsernameFromToken(token));
             if(!revealedUser.isTrader()) return ResponseHelper.Return(new Response(403, "This is not a trader."));
 
@@ -209,9 +227,11 @@ public class TradeController {
     // in cart management page
     @PostMapping("/cart/update")
     @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')")
-    public ResponseEntity<String> updateCart(@RequestHeader(name = "Authorization") String token,
+    public ResponseEntity<String> updateCart(@RequestHeader(name = "Authorization") String tokenRaw,
                                              @RequestBody String newPrefersJson){
         try {
+            String token = AuthHelper.unbear(tokenRaw);
+
             var revealedUser = (User)_us.loadUserByUsername(jwtHelper.getUsernameFromToken(token));
             // well, actually, this MUST BE a user type of trader...
             if(!revealedUser.isTrader()) return ResponseHelper.Return(new Response(403, "This is not a trader."));

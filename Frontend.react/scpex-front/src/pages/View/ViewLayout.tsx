@@ -24,6 +24,8 @@ export default function ViewLayout({cancelMf} : {cancelMf?: boolean}) {
             <Route path="/contract-negotiations" />
             <Route path="/address-book" />
             <Route path="/trades-tracker" />
+
+            <Route index element={<div>Select your management above.</div>} />
           </Routes>
         </div>
       </Paper>

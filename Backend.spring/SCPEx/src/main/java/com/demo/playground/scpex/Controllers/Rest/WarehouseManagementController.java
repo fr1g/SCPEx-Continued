@@ -89,10 +89,12 @@ public class WarehouseManagementController {
         try {
             OperationRequest or = SharedStatic.jsonHandler.fromJson(info, OperationRequest.class);
             var target = SharedStatic.jsonHandler.fromJson(or.payloadJson(), Product.class);
-            var isAlreadyExist = _s.isThisExist(target.getId());
+            var isAlreadyExist = target.getId() != null ? _s.isThisExist(target.getId()) : false;
 
             switch (or.operation()){
                 case "add":
+                    if(target.getId() == null)
+                        target.setId(0L);
                     return ResponseHelper.Return(new Response(200, "success", SharedStatic.jsonHandler.toJson(_w.createProduct(target))));
 
                 case "upd":

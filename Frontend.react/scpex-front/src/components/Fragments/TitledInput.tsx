@@ -4,10 +4,11 @@ import { ReactNode } from "react";
 
 
 
-export default function TitledInput({className, placeholder, type, onChange, title, children, Class, titleClass} : {
+export default function TitledInput({className, placeholder, type, value, onChange, title, children, Class, titleClass} : {
     className?: string, 
     placeholder?: string, 
     type?: string, 
+    value?: string | number,
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,  // 改为可选属性
     title?: string, 
     children?: ReactNode, 
@@ -19,6 +20,7 @@ export default function TitledInput({className, placeholder, type, onChange, tit
         <Input 
             className={className} 
             placeholder={placeholder} 
+            value={value}
             title={title} 
             type={type} 
             onChange={onChange}  // 直接透传onChange
