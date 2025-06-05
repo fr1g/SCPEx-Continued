@@ -39,8 +39,11 @@ public class PresetDataMockingProcessor {
                 employee.save(Employee.builder().birth((new Date())).type(Type.ADMIN).contact("_root").name("Root Super User").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter(inConfigDefaultPasswd)).note("preset default super user").build());
 
             Category cat;
-            if(!category.existsById(1L))
-                cat = category.saveAndFlush(new Category("Unsorted Category", "The default category by system"));
+            if(!category.existsById(1L)){
+                cat = new Category("Unsorted Category", "The default category by system");
+                cat.setStatus(GeneralStatus.APPROVED);
+                cat = category.saveAndFlush(cat);
+            }
             else
                 cat = category.findById(1L).get();
 

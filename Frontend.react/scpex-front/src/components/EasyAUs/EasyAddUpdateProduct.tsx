@@ -5,14 +5,15 @@ import Selectable from "../../models/Selectable";
 import { GeneralStatus } from "../../models/GeneralEnum";
 import { useEffect, useState } from "react";
 import { inputClassNames } from "../../env";
-import { parseNumber, selectableGeneralStatus } from "../../tools/misc";
+import { getById, parseNumber, selectableGeneralStatus } from "../../tools/misc";
 import { api } from "../../axios";
 import { Category } from "../../models/Category";
 import TitledInput from "../Fragments/TitledInput";
 import Button from "../Fragments/Button";
 import { UserCredential } from "../../models/UserCredential";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Operation } from "../../models/Operation";
+import { slices } from "../../tools/ReduceHelper";
 
 
 
@@ -23,6 +24,11 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
             ...item,
             [key]: parseAsNumber ? parseNumber(val, parseAsNumber) : val
         };
+        console.log(raw, 'raw');
+        if(key.toLowerCase().includes('category') && val && val.info)
+            raw.category = JSON.parse(val.info);
+
+        
         setItem(raw);
     }
 
@@ -35,13 +41,16 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
 
     const initCat = item == null ? selectableCategories![0] : item.category;
     const [selectedCat, setCat] = useState<Selectable | null>(null);  // 初始化为null
+    const dispatch = useDispatch();
 
     const [isUpdate, setIsUpdate] = useState(false);
 
     async function submitHandler(){
-        await setTimeout(() => { }, 100);
+        // await setTimeout(() => { }, 100);
+        // console.log("%cTRIGGERED SUBMIT", "font-size: 900, font-weight: bold")
         let prep = item;
-        console.log('committing', prep, `isUpdating: ${isUpdate}`);
+        // console.log('committing', prep, `isUpdating: ${isUpdate}`);
+        console.log(prep, 'preparing')
         let res: any;
         try {
             if(isUpdate){
@@ -52,6 +61,7 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
             }
         } catch (error) {
             console.log(error)
+            dispatch(slices.globalModal.actions.showModal({title: "Unexpected", message: `${error}`}));
         }
     }
 
@@ -91,9 +101,9 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
     }, [selectableCategories, item?.category]);
 
     useEffect(() => {
-        console.log(item, 'recv of new item');
+        // console.log(item, 'recv of new item');
         // console.log(item!.id, isUpdate)
-        if( item == undefined || item!.id == undefined){
+        if( item == undefined || item!.id == undefined || item!.id == 0 || `${item!.id}` == '' || (document.getElementById('inputID')! as HTMLInputElement).value! == ''){
             setIsUpdate(false)
         }else{
             setIsUpdate(true);
@@ -106,7 +116,8 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
 
             // 同步状态选择
             // const matchedStatus = statusEnums.find(e => e.id === item.status);
-            setSelectedEnum(statusEnums[item.status]);
+            setSelectedEnum(statusEnums[parseInt(GeneralStatus[item.status])]);
+            console.log(item, statusEnums[parseInt(GeneralStatus[item.status])], getById(item.category?.id ?? 0, selectableCategories), 'changedSelection')
         }
     }, [item]);
 
@@ -135,7 +146,7 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
             singlePrice: undefined,
             discount: 1,
             status: 0,
-            category: selectableCategories[0].info || null
+            category: selectableCategories[0].info ? JSON.parse(selectableCategories[0].info) : null
         } as unknown as Product;
         
         setItem(emptyProduct);
@@ -143,6 +154,8 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
         // 强制重置组合框选择
         setSelectedEnum(statusEnums[0]);
         setCat(selectableCategories[0] || null);
+
+        console.log(item, 'SET CLEAR FOR CREATING')
     }
 
 
@@ -151,7 +164,7 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
 
         <form action="" className=" grid grid-cols-1 md:grid-cols-3 gap-1" onSubmit={(e) => {e.preventDefault()}}>
             <div className="grid grid-cols-2 gap-1 ">
-                <TitledInput value={item?.id ?? ''} title="ID" className={inputClassNames} placeholder="Keep empty to create" type="number" onChange={(e) => changeHandler('id', e.target.value, true)} />
+                <TitledInput id="inputID" value={item?.id ?? ''} title="ID" className={inputClassNames} placeholder="Keep empty to create" type="number" onChange={(e) => changeHandler('id', e.target.value, true)} />
                 <TitledInput value={item?.amount ?? ''} className={inputClassNames} placeholder="amount" type="number" onChange={(e) => changeHandler('amount', e.target.value, true)} />
             </div>
             <div className="grid grid-cols-2 gap-1 ">
@@ -165,9 +178,9 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
             <TitledInput value={item?.feature ?? ''} className={inputClassNames} placeholder="feature" type="text" onChange={(e) => changeHandler('feature', e.target.value)} />
             <TitledInput value={item?.warehouse ?? ''} className={inputClassNames} placeholder="warehouse" type="text" onChange={(e) => changeHandler('warehouse', e.target.value)} />
 
-            <WrappedComboBox title="Status" className="w-full m-0!" enums={statusEnums} selectedIndex={item?.status ?? 0} getter={selectedEnum} setter={setSelectedEnum_} />
+            <WrappedComboBox title={`Status ${item?.status ?? 'null'}`} className="w-full m-0!" enums={statusEnums} selectedIndex={item?.status ?? 0} getter={selectedEnum} setter={setSelectedEnum_} />
 
-            <WrappedComboBox title="Category" className="w-full m-0!"
+            <WrappedComboBox title={`Category ${item?.category?.name ?? 'null'}`} className="w-full m-0!"
                 enums={selectableCategories ?? []}
                 selectedIndex={selectedCat == null ? selectableCategories.indexOf(selectedCat!) : 0}
                 getter={selectedCat}

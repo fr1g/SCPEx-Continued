@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 
 
 
-export default function TitledInput({className, placeholder, type, value, onChange, title, children, Class, titleClass} : {
+export default function TitledInput({className, placeholder, type, value, onChange, title, children, Class, titleClass, id} : {
     className?: string, 
     placeholder?: string, 
     type?: string, 
@@ -13,11 +13,13 @@ export default function TitledInput({className, placeholder, type, value, onChan
     title?: string, 
     children?: ReactNode, 
     Class?: string, 
-    titleClass?: string
+    titleClass?: string,
+    id?: string
 }){
     return <div className={Class}>
         <h5 className={titleClass ?? "italic text-xl"}>{title ?? placeholder}</h5>
         <Input 
+            id={id}
             className={className} 
             placeholder={placeholder} 
             value={value}

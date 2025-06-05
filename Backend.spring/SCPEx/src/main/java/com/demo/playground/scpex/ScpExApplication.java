@@ -1,10 +1,13 @@
 package com.demo.playground.scpex;
 
 import com.demo.playground.scpex.Models.*;
+import com.demo.playground.scpex.Models.Enums.GeneralStatus;
+import com.demo.playground.scpex.Models.Enums.Type;
 import com.demo.playground.scpex.Models.Pojo.OperationRequest;
 import com.demo.playground.scpex.Models.Pojo.ProductInfo;
 import com.demo.playground.scpex.Shared.SharedStatic;
 import com.demo.playground.scpex.utils.GsonDateHelper;
+import com.demo.playground.scpex.utils.GsonGeneralStatusAdapter;
 import com.demo.playground.scpex.utils.GsonOperationRequestHelper;
 import com.demo.playground.scpex.utils.GsonTraderVirtualEmployeeHelper;
 import com.google.gson.GsonBuilder;
@@ -22,6 +25,8 @@ public class ScpExApplication {
         var builder = new GsonBuilder();
         builder
                 .registerTypeAdapter(Date.class, new GsonDateHelper())
+                .registerTypeAdapter(GeneralStatus.class, new GsonGeneralStatusAdapter<GeneralStatus>())
+                .registerTypeAdapter(Type.class, new GsonGeneralStatusAdapter<Type>())
                 .registerTypeAdapter(OperationRequest.class, new GsonOperationRequestHelper())
                 .registerTypeAdapter(Trader.class, new GsonTraderVirtualEmployeeHelper())
         ;

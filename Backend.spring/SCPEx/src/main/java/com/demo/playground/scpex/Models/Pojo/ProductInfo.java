@@ -7,6 +7,7 @@ import lombok.Data;
 
 @Data
 @MappedSuperclass
+@Deprecated
 public class ProductInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,11 @@ public class ProductInfo {
 
     public String barcode;
     public double singlePrice;
+
+
+    @Column(name = "version", insertable = false, updatable = false)
+    private Long version;
+
 
     public Category getCategory() {
         return category;

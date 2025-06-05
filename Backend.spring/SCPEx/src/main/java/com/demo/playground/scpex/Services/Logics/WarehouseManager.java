@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -38,8 +39,12 @@ public class WarehouseManager {
         return result;
     }
 
+    @Transactional
     public Product createProduct(Product product) {
-        return _p.save(product);
+//        product.setVersion(null); // 清除任何可能的版本值
+        var _product = product;
+        _product.setId(null);
+        return _p.saveAndFlush(_product);
     }
 
     public Category addCategory(Category newCat, Employee operator) {

@@ -87,14 +87,19 @@ public class WarehouseManagementController {
     ) {
         // IN: JSON, of OperationRequest
         try {
+
             OperationRequest or = SharedStatic.jsonHandler.fromJson(info, OperationRequest.class);
             var target = SharedStatic.jsonHandler.fromJson(or.payloadJson(), Product.class);
+
+            Category cat = _r_c.findById(target.category.getId()).orElseThrow(() -> new NullReferenceException("No such category."));
+            target.setCategory(cat);
+
             var isAlreadyExist = target.getId() != null ? _s.isThisExist(target.getId()) : false;
 
             switch (or.operation()){
                 case "add":
-                    if(target.getId() == null)
-                        target.setId(0L);
+//                    if(target.getId() == null)
+//                        target.setId(0L);
                     return ResponseHelper.Return(new Response(200, "success", SharedStatic.jsonHandler.toJson(_w.createProduct(target))));
 
                 case "upd":

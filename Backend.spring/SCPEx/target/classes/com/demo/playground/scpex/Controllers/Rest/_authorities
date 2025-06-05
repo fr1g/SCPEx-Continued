@@ -1,0 +1,21 @@
+// this file defines each privilege nodes.
+
+ADMIN:
+    PERMISSION_MANAGE_USERS
+    PERMISSION_MANAGE_INVENTORY
+    PERMISSION_MANAGE_REGISTRAR
+
+WAREHOUSE:
+    PERMISSION_MANAGE_INVENTORY
+
+REGISTRAR:
+    PERMISSION_MANAGE_REGISTRAR
+
+CUSTOMER, SELLER:
+    PERMISSION_PURCHASE
+    // treat as same, but customer wont be able to apply CN.
+
+others:
+    none // (able to search items)
+
+// @RequestHeader(name = "Authorization") String token
