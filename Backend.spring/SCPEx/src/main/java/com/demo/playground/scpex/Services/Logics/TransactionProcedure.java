@@ -51,6 +51,14 @@ public class TransactionProcedure {
         });
     }
 
+    public Page<Trade>getPagedTrades(Pageable pageable) {
+        var result = _trade.findAll(pageable);
+        return result.map(x -> {
+            x.setTrader((Trader)x.getTrader().secure());
+            return x;
+        });
+    }
+
     // okay why not use trader typed acquirer? what was i thought bout'?
     public Page<Transaction> getPagedTransactions(Pageable pageable, Long requiringTradeId, Long acquirer) {
         var target = _trade.findById(requiringTradeId).orElseThrow(() -> new NullReferenceException("No trade found with id " + requiringTradeId));

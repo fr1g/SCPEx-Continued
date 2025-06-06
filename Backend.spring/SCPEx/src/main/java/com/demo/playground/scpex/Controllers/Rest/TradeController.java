@@ -19,6 +19,7 @@ import com.demo.playground.scpex.utils.ResponseHelper;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.PermissionDeniedDataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -54,15 +55,21 @@ public class TradeController {
     private UserDetailSvc userDetailSvc;
 
     @PostMapping("/trades/query/{page}")
-    @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE')")
+    @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE', 'PERMISSION_MANAGE_INVENTORY')")
     public ResponseEntity<String> queryTrades(@RequestHeader(name = "Authorization") String tokenRaw, @RequestBody String pageReq, @PathVariable("page") int pageNum){
         try {
             var token = AuthHelper.unbear(tokenRaw);
             var revealedUser = (User)_us.loadUserByUsername(jwtHelper.getUsernameFromToken(token));
-            if(!revealedUser.isTrader()) return ResponseHelper.Return(new Response(403, "This is not a trader."));
 
             var page = (new Gson()).fromJson(pageReq, PageRequest.class);
-            var res = (new Gson()).toJson(_logic.getPagedTrades(page.toPageable(pageNum), (Trader)revealedUser));
+
+            String res;
+            if(revealedUser.isCustomer())
+                res = (new Gson()).toJson(_logic.getPagedTrades(page.toPageable(pageNum), (Trader)revealedUser));
+            else if(revealedUser.getType().equals(Type.ADMIN) || revealedUser.getType().equals(Type.WAREHOUSE))
+                res = (new Gson()).toJson(_logic.getPagedTrades(page.toPageable(pageNum)));
+            
+            else throw new NullReferenceException("Not correct role.");
 
             return ResponseHelper.Return(new Response(200, "done", res));
         }catch (Exception ex){
