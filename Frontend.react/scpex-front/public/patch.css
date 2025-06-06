@@ -148,6 +148,27 @@ a.nav-link {
 
 
 
+.narrow::-webkit-scrollbar {
+    width: 6px; /* 滚动条宽度 */
+    background-color: rgba(0,0,0,0); /* 透明背景 */
+}
+
+.narrow::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.1); /* 半透明轨道 */
+    border-radius: 3px;
+}
+
+.narrow::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.3); /* 半透明滑块 */
+    border-radius: 3px;
+}
+
+/* 适用于Firefox等非WebKit浏览器 */
+.narrow {
+    scrollbar-width: thin; /* 窄滚动条 */
+    scrollbar-color: rgba(255,255,255,0.3) rgba(0,0,0,0); /* 滑块颜色 + 透明轨道 */
+}
+
 .disabled {
     opacity: .6 !important;
     pointer-events: none !important;

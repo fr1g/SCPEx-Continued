@@ -34,7 +34,7 @@ public class NecessaryDataProcessor {
                                 .contact("o")
                                 .name("internal superuser")
                                 .status(GeneralStatus.APPROVED)
-                                .JobTitle("SU")
+                                .jobTitle("SU")
                                 .passwd("{gabxd}0")
                                 .note("no note")
                                 .id(0L)

@@ -15,7 +15,8 @@ import java.util.Date;
 public class ContractNegotiation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long CNID;
+    @Column(name = "id")
+    Long id;
 
     String title;
     String description;

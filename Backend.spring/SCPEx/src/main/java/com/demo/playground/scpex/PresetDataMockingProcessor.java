@@ -36,7 +36,7 @@ public class PresetDataMockingProcessor {
     ) {
         return args -> {
             if(!employee.existsById(1L))
-                employee.save(Employee.builder().birth((new Date())).type(Type.ADMIN).contact("_root").name("Root Super User").status(GeneralStatus.APPROVED).JobTitle("general").passwd(encrypter(inConfigDefaultPasswd)).note("preset default super user").build());
+                employee.save(Employee.builder().birth((new Date())).type(Type.ADMIN).contact("_root").name("Root Super User").status(GeneralStatus.APPROVED).jobTitle("general").passwd(encrypter(inConfigDefaultPasswd)).note("preset default super user").build());
 
             Category cat;
             if(!category.existsById(1L)){
@@ -50,8 +50,8 @@ public class PresetDataMockingProcessor {
             if(!SharedStatic.usingMockData) return;
             else{
 
-                employee.save(Employee.builder().birth((new Date())).type(Type.WAREHOUSE).contact("1919810").name("Example Banned Schumal").status(GeneralStatus.CANCELED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
-                employee.save(Employee.builder().birth((new Date())).type(Type.REGISTRAR).contact("233435").name("Example Refuse Banned Schumal").status(GeneralStatus.REJECTED).JobTitle("general").passwd(encrypter("123456")).note("no note").build());
+                employee.save(Employee.builder().birth((new Date())).type(Type.WAREHOUSE).contact("1919810").name("Example Banned Schumal").status(GeneralStatus.CANCELED).jobTitle("general").passwd(encrypter("123456")).note("no note").build());
+                employee.save(Employee.builder().birth((new Date())).type(Type.REGISTRAR).contact("233435").name("Example Refuse Banned Schumal").status(GeneralStatus.REJECTED).jobTitle("general").passwd(encrypter("123456")).note("no note").build());
 
                 Employee relatedChulmann = employee.findById(1L).orElse(null), relatedJaager = employee.findById(1L).orElse(null);
 

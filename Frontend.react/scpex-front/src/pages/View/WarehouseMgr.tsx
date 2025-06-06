@@ -51,6 +51,8 @@ export default function WarehouseMgr() {
             let products = await api.Stock.search(pr, page);
             console.log('should run now', products)
             setPageContent(JSON.parse(products.content))
+
+            setPageNum(page); // ?
         } catch (error: any) {
             if (error.message.includes("401")) {
                 doInvalidCredentialAction(dispatch, navigate);
@@ -63,17 +65,16 @@ export default function WarehouseMgr() {
 
     useEffect(() => {
         setPr((_: PageRequest) => {
-            _.PageSize = 2; // testing.
+            _.PageSize = 5; // testing.
             _.SearchField = "name";
+            _.SortingField = "name";
             return _;
         });
-    
 
         if (isCredTrader(userInfo))
             insufficientHandler(navigate)
 
         refresh();
-
 
     }, []);
 
@@ -89,7 +90,9 @@ export default function WarehouseMgr() {
 
     function getNewPage(inPageNum: number){
         setPageNum(inPageNum);
-        refresh(inPageNum); // 改为立即使用新页码
+        refresh(inPageNum).then(() => {
+            setCurr(null); // ?
+        }); // 改为立即使用新页码
     }
 
     function commitSearch(){
@@ -118,7 +121,12 @@ export default function WarehouseMgr() {
                 <h1 className="text-3xl font-semibold">In Stock: </h1>
 
                 {/* <i>{JSON.stringify(curr)}</i> */}
-                <EAUProducts setItem={setCurr} item={curr} />
+                <EAUProducts setItem={setCurr} item={curr} onSuccess={
+                    () => {
+                        setPageNum(0);
+                        refresh(0);
+                    }
+                } />
                 <br /> 
                 <div className="flex w-full flex-col? gap-3">
                     <Input onChange={(e) => {setST(e.target.value)}} className={"grow block! " + inputClassNames} placeholder="Search by name" />
@@ -131,7 +139,7 @@ export default function WarehouseMgr() {
             <div>
                 <h1 className="text-3xl font-semibold">Cats: </h1>
 
-                <EAUCategory st={stateHasChanged} stc={setStateHasChanged} />
+                <EAUCategory  />
             </div>
         </div>
     </>

@@ -78,7 +78,7 @@ public class EmployeeManagementController {
         try {
             OperationRequest or = SharedStatic.jsonHandler.fromJson(info, OperationRequest.class);
             var target = SharedStatic.jsonHandler.fromJson(or.payloadJson(), Employee.class);
-            var isAlreadyExist = _s.isThisExist(target.getId());
+            var isAlreadyExist = target.getId() != null && _s.isThisExist(target.getId());
 
             switch (or.operation()){
                 case "add":

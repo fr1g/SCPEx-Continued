@@ -17,7 +17,7 @@ import { slices } from "../../tools/ReduceHelper";
 
 
 
-export default function EAUProducts({ item, setItem }: { item: Product | null, setItem: Function }) {
+export default function EAUProducts({ item, setItem, onSuccess }: { item: Product | null, setItem: Function, onSuccess?: Function }) {
 
     function changeHandler(key: string, val: any, parseAsNumber: true | 'int' | 'double' | false = false) {
         let raw = {
@@ -25,17 +25,17 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
             [key]: parseAsNumber ? parseNumber(val, parseAsNumber) : val
         };
         console.log(raw, 'raw');
-        if(key.toLowerCase().includes('category') && val && val.info)
+        if (key.toLowerCase().includes('category') && val && val.info)
             raw.category = JSON.parse(val.info);
 
-        
+
         setItem(raw);
     }
 
     const statusEnums = selectableGeneralStatus;
     const [selectableCategories, setCategories] = useState<Selectable[]>([]);
 
-    const {userInfo} : {userInfo: UserCredential | null} = useSelector((s: any) => s.auth); 
+    const { userInfo }: { userInfo: UserCredential | null } = useSelector((s: any) => s.auth);
 
     const [selectedEnum, setSelectedEnum] = useState(statusEnums[item?.status ?? 0]);
 
@@ -45,20 +45,23 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
 
     const [isUpdate, setIsUpdate] = useState(false);
 
-    async function submitHandler(){
+    async function submitHandler() {
         let prep = item;
         console.log(prep, 'preparing')
         let res: any;
         try {
-            if(isUpdate){
+            if (isUpdate) {
                 res = await api.Stock.prodOps(userInfo!.token, new Operation('upd', JSON.stringify(prep)));
-            }else{
+            } else {
                 prep!.id = 0;
                 res = await api.Stock.prodOps(userInfo!.token, new Operation('add', JSON.stringify(prep)));
             }
+            if (onSuccess) {
+                onSuccess();
+            }
         } catch (error) {
             console.log(error)
-            dispatch(slices.globalModal.actions.showModal({title: "Unexpected", message: `${error}`}));
+            dispatch(slices.globalModal.actions.showModal({ title: "Unexpected", message: `${error}` }));
         }
     }
 
@@ -68,9 +71,14 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
             try {
                 const catsReqd = await api.Stock.listCat();
                 const rawCats = JSON.parse(catsReqd.content!) as Category[];
-                const cats = rawCats.map(c =>
-                    new Selectable(c.id, c.name, JSON.stringify(c))
-                );
+                const cats: Selectable[] = [];
+
+                for(let c of rawCats){
+                    // let n = 
+                    if(GeneralStatus[c.status] == 'REJECTED') continue;
+                    
+                    cats.push(new Selectable(c.id, c.name, JSON.stringify(c)));
+                }
 
                 setCategories(cats);
 
@@ -100,9 +108,9 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
     useEffect(() => {
         // console.log(item, 'recv of new item');
         // console.log(item!.id, isUpdate)
-        if( item == undefined || item!.id == undefined || item!.id == 0 || `${item!.id}` == '' || (document.getElementById('inputID')! as HTMLInputElement).value! == ''){
+        if (item == undefined || item!.id == undefined || item!.id == 0 || `${item!.id}` == '' || (document.getElementById('inputID')! as HTMLInputElement).value! == '') {
             setIsUpdate(false)
-        }else{
+        } else {
             setIsUpdate(true);
         }
         // 当item变化时同步表单状态
@@ -130,7 +138,7 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
         changeHandler('category', val);
     }
 
-    function spareNewEmpty(){
+    function spareNewEmpty() {
         // setIsUpdate(false);
         const emptyProduct = {
             id: undefined,
@@ -145,9 +153,9 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
             status: 0,
             category: selectableCategories[0].info ? JSON.parse(selectableCategories[0].info) : null
         } as unknown as Product;
-        
+
         setItem(emptyProduct);
-        
+
         // 强制重置组合框选择
         setSelectedEnum(statusEnums[0]);
         setCat(selectableCategories[0] || null);
@@ -159,7 +167,7 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
 
     return <>
 
-        <form action="" className=" grid grid-cols-1 md:grid-cols-3 gap-1" onSubmit={(e) => {e.preventDefault()}}>
+        <form action="" className=" grid grid-cols-1 md:grid-cols-3 gap-1" onSubmit={(e) => { e.preventDefault() }}>
             <div className="grid grid-cols-2 gap-1 ">
                 <TitledInput id="inputID" value={item?.id ?? ''} title="ID" className={inputClassNames} placeholder="Keep empty to create" type="number" onChange={(e) => changeHandler('id', e.target.value, true)} />
                 <TitledInput value={item?.amount ?? ''} className={inputClassNames} placeholder="amount" type="number" onChange={(e) => changeHandler('amount', e.target.value, true)} />
@@ -185,17 +193,17 @@ export default function EAUProducts({ item, setItem }: { item: Product | null, s
             />
 
             {/* <TitledInput Class="md:col-span-2 col-span-1 block" className={inputClassNames + ' md:col-span-2 col-span-1 block'} placeholder="note" type="text" onChange={(e) => changeHandler('note', e.target.value)} /> */}
-            <Textarea className={inputClassNames + ' md:col-span-2 col-span-1 block min-h-[50px]'}  placeholder="Product Details (note: markdown)" onChange={(e) => changeHandler('note', e.target.value)}  >
+            <Textarea className={inputClassNames + ' md:col-span-2 col-span-1 block min-h-[50px]'} placeholder="Product Details (note: markdown)" onChange={(e) => changeHandler('note', e.target.value)}  >
 
             </Textarea>
             <div className="grid items-end">
                 <div>
                     Updating: {isUpdate ? 'yes' : 'no'}
                 </div>
-            <div id="controls" className="grid grid-cols-2 gap-2 max-h-[31px]">
-                <Button onClick={spareNewEmpty} >Create</Button>
-                <Button onClick={submitHandler} >Submit</Button>
-            </div>
+                <div id="controls" className="grid grid-cols-2 gap-2 max-h-[31px]">
+                    <Button onClick={spareNewEmpty} >Create</Button>
+                    <Button onClick={submitHandler} >Submit</Button>
+                </div>
             </div>
         </form>
     </>

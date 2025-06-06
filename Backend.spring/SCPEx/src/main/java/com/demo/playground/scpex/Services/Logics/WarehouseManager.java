@@ -56,8 +56,17 @@ public class WarehouseManager {
 
     public void disableCategory(Category cat, Employee operator) {
         var modified = _c.findById(cat.getId()).orElseThrow(() -> new NullReferenceException("no such existing cat"));
-        modified.setNote(modified.getNote() + "$$$ disabled: " + " by " + operator.getName() + ", id: " + operator.getId() + " at time: " + (new Date()).getTime());
-        modified.setStatus(GeneralStatus.REJECTED);
+
+        if(cat.getId() == 1L) return;
+
+        if(modified.getStatus().equals(GeneralStatus.REJECTED)) {
+            modified.setNote(modified.getNote().split("@@@")[0] + "@@@ enabled: " + " by " + operator.getName() + ", id: " + operator.getId() + " at time: " + (new Date()).getTime());
+            modified.setStatus(GeneralStatus.APPROVED);
+        }else{
+            modified.setNote(modified.getNote() + "@@@ disabled: " + " by " + operator.getName() + ", id: " + operator.getId() + " at time: " + (new Date()).getTime());
+            modified.setStatus(GeneralStatus.REJECTED);
+        }
+
         _c.saveAndFlush(modified);
     }
 

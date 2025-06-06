@@ -16,7 +16,7 @@ import java.util.Date;
 public class Transaction implements IModelClass{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long Id;
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "record_id")
@@ -41,7 +41,7 @@ public class Transaction implements IModelClass{
     private String note;
 
     public Long getId(){
-        return this.Id;
+        return this.id;
     }
 
 

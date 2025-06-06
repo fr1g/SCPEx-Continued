@@ -7,9 +7,10 @@ import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import Paper from "../../components/Fragments/Paper";
 import { GeneralStatus, TradeStatus } from "../../models/GeneralEnum";
 import { isCredTrader } from "../../tools/AuthTools";
+import Button from "../../components/Fragments/Button";
 
 interface Transaction {
-    Id: number;
+    id: number;
     product: {
         id: number;
         name: string;
@@ -83,29 +84,68 @@ interface PageData {
     };
 }
 
-export default function OrderTracker({killPaperOutwrap} : {killPaperOutwrap?: boolean}) {
+export default function OrderTracker({ killPaperOutwrap }: { killPaperOutwrap?: boolean }) {
     const { userInfo }: { userInfo: UserCredential } = useSelector((s: any) => s.auth);
     const [pageData, setPageData] = useState<PageData | null>(null);
     const [loading, setLoading] = useState(true);
-    const [selectedOrder, setSelectedOrder] = useState<OrderItem | null>(null);
+    const [selectedTrade, setSelectedTrade] = useState<OrderItem | null>(null);
+    const [selectedOrder, setSelectedOrder] = useState<Transaction | null>(null);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+    const [stateControl, setStateControl] = useState(true);
     const [currentPage, setCurrentPage] = useState(0);
 
     useEffect(() => {
         fetchOrders();
     }, [currentPage]);
 
-    const fetchOrders = async () => {
+    const fetchOrders_ = async () => {
         try {
             const pageRequest = new PageRequest();
             pageRequest.PageSize = 10; // 设置每页显示一条数据
             const response = await api.Trade.getTrades(currentPage, pageRequest, userInfo.token);
             const data = JSON.parse(response.content) as PageData;
             setPageData(data);
+            setStateControl(false);
         } catch (error) {
             console.error('Failed to fetch orders:', error);
         } finally {
+            setStateControl(true);
+            setLoading(false);
+        }
+    };
+
+    const fetchOrders = async () => {
+        try {
+            const pageRequest = new PageRequest();
+            pageRequest.PageSize = 10;
+            const response = await api.Trade.getTrades(currentPage, pageRequest, userInfo.token);
+            const data = JSON.parse(response.content) as PageData;
+            
+            // 强制更新选中订单的交易数据
+            setPageData(prev => {
+                if (prev && selectedTrade) {
+                    const updatedContent = data.content.map(order => 
+                        order.trade.id === selectedTrade.trade.id ? 
+                        { ...order, transactions: data.content.find(o => o.trade.id === selectedTrade.trade.id)?.transactions || [] }
+                        : order
+                    );
+                    return { ...data, content: updatedContent };
+                }
+                return data;
+            });
+            
+            // 同步更新selectedTrade状态
+            if (selectedTrade) {
+                const freshTrade = data.content.find(t => t.trade.id === selectedTrade.trade.id);
+                freshTrade && setSelectedTrade(freshTrade);
+            }
+            
+            setStateControl(false);
+        } catch (error) {
+            console.error('Failed to fetch orders:', error);
+        } finally {
+            setStateControl(true);
             setLoading(false);
         }
     };
@@ -113,7 +153,10 @@ export default function OrderTracker({killPaperOutwrap} : {killPaperOutwrap?: bo
     const handleStatusChange = async (newStatus: string) => {
         if (!selectedOrder) return;
         try {
-            await api.Trade.updateTransaction(userInfo.token, selectedOrder.trade.id, newStatus);
+            await setTimeout(() => { }, 100);
+
+            console.log(userInfo.token, selectedOrder.id, newStatus)
+            await api.Trade.updateTransaction(userInfo.token, selectedOrder.id, newStatus);
             setIsStatusModalOpen(false);
             fetchOrders(); // 刷新订单列表
         } catch (error) {
@@ -163,7 +206,7 @@ export default function OrderTracker({killPaperOutwrap} : {killPaperOutwrap?: bo
                                         Created: {new Date(order.trade.dateCreated).toLocaleString()}
                                     </p>
                                 </div>
-                                
+
                                 <div className="flex items-center space-x-4">
                                     <p className="text-lg font-semibold">
                                         ${order.trade.totalPrice.toFixed(2)}
@@ -171,25 +214,14 @@ export default function OrderTracker({killPaperOutwrap} : {killPaperOutwrap?: bo
                                     <div className="flex space-x-2">
                                         <button
                                             onClick={() => {
-                                                setSelectedOrder(order);
+                                                setSelectedTrade(order);
                                                 setIsDetailModalOpen(true);
                                             }}
                                             className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600"
                                         >
                                             Details
                                         </button>
-                                        {
-                                            userInfo && !isCredTrader(userInfo) && (
-                                        <button
-                                            onClick={() => {
-                                                setSelectedOrder(order);
-                                                setIsStatusModalOpen(true);
-                                            }}
-                                            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
-                                        >
-                                                Update Status
-                                            </button>
-                                        )}
+
                                     </div>
                                 </div>
                             </div>
@@ -232,22 +264,22 @@ export default function OrderTracker({killPaperOutwrap} : {killPaperOutwrap?: bo
                     <div className="fixed inset-0 flex items-center justify-center p-4">
                         <DialogPanel className="mx-auto max-w-2xl w-full rounded-lg bg-white dark:bg-gray-800 p-6 shadow-xl">
                             <DialogTitle className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-4">
-                                Order Details #{selectedOrder?.trade.id}
+                                Order Details #{selectedTrade?.trade.id}
                             </DialogTitle>
-                            
-                            {selectedOrder && (
+
+                            {selectedTrade && (
                                 <div className="space-y-6">
                                     <div>
                                         <h3 className="font-semibold mb-2">Customer Information</h3>
-                                        <p>Name: {selectedOrder.trade.trader.name}</p>
-                                        <p>Contact: {selectedOrder.trade.trader.contact}</p>
+                                        <p>Name: {selectedTrade.trade.trader.name}</p>
+                                        <p>Contact: {selectedTrade.trade.trader.contact}</p>
                                     </div>
 
                                     <div>
                                         <h3 className="font-semibold mb-2">Delivery Address</h3>
                                         {(() => {
                                             try {
-                                                const addresses = JSON.parse(selectedOrder.trade.trader.locationJson);
+                                                const addresses = JSON.parse(selectedTrade.trade.trader.locationJson);
                                                 return addresses.map((address: any, index: number) => (
                                                     <div key={index} className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                                         <p className="font-medium">{address.logisticReceiver}</p>
@@ -262,23 +294,45 @@ export default function OrderTracker({killPaperOutwrap} : {killPaperOutwrap?: bo
                                     </div>
 
                                     <div>
-                                        <h3 className="font-semibold mb-2">Items</h3>
+                                        <h3 className="font-semibold mb-2 clear-both">
+                                            Items
+                                            <span className="float-right">
+                                                <Button onClick={() => { fetchOrders() }} >
+                                                    refresh
+                                                </Button>
+                                            </span>
+                                        </h3>
                                         <div className="space-y-4">
-                                            {selectedOrder.transactions.map((transaction) => (
-                                                <div key={transaction.Id} className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                            {stateControl && selectedTrade.transactions.map((transaction) => (
+                                                <div key={transaction.id} className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                                     <div>
                                                         <p className="font-medium">{transaction.product.name}</p>
                                                         <p className="text-sm text-gray-500 dark:text-gray-400">
                                                             Quantity: {transaction.amount}
                                                         </p>
                                                     </div>
-                                                    <div className="text-right">
-                                                        <p className="font-medium">
-                                                            ${(transaction.price * transaction.amount * transaction.discount).toFixed(2)}
-                                                        </p>
-                                                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                            Status: {transaction.status}
-                                                        </p>
+                                                    <div className="text-right gap-3 grid md:flex">
+                                                        <div>
+                                                            <p className="font-medium">
+                                                                ${(transaction.price * transaction.amount * transaction.discount).toFixed(2)}
+                                                            </p>
+                                                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                                Status: {transaction.status}
+                                                            </p>
+                                                        </div>
+                                                        {
+                                                            userInfo && !isCredTrader(userInfo) && (
+                                                                <Button paddingless
+                                                                    onClick={() => {
+                                                                        setSelectedOrder(transaction);
+                                                                        console.log(transaction, 333)
+                                                                        setIsStatusModalOpen(true);
+                                                                    }}
+                                                                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                                                                >
+                                                                    Update Status
+                                                                </Button>
+                                                            )}
                                                     </div>
                                                 </div>
                                             ))}
@@ -288,7 +342,7 @@ export default function OrderTracker({killPaperOutwrap} : {killPaperOutwrap?: bo
                                     <div className="flex justify-between items-center pt-4 border-t">
                                         <p className="text-lg font-semibold">Total</p>
                                         <p className="text-2xl font-bold text-blue-600">
-                                            ${selectedOrder.trade.totalPrice.toFixed(2)}
+                                            ${selectedTrade.trade.totalPrice.toFixed(2)}
                                         </p>
                                     </div>
                                 </div>
@@ -309,10 +363,10 @@ export default function OrderTracker({killPaperOutwrap} : {killPaperOutwrap?: bo
                             <DialogTitle className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-4">
                                 Update Order Status
                             </DialogTitle>
-                            
+
                             <div className="space-y-4">
                                 <select
-                                    value={selectedOrder?.trade.status || ''}
+                                    value={selectedOrder?.status || ''}
                                     onChange={(e) => handleStatusChange(e.target.value)}
                                     className="w-full px-4 py-2 text-sm font-medium rounded-md bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 >
@@ -333,7 +387,7 @@ export default function OrderTracker({killPaperOutwrap} : {killPaperOutwrap?: bo
                                     <button
                                         onClick={() => {
                                             if (selectedOrder) {
-                                                handleStatusChange(selectedOrder.trade.status);
+                                                handleStatusChange(selectedOrder.status);
                                             }
                                         }}
                                         className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"

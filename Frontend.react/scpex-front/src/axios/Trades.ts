@@ -105,17 +105,16 @@ export default {
 
     },
 
-    updateCoNe: async (newObj: any, token: string): Promise<any>  => {
+    apprCoNe: async (target: number, token: string): Promise<any>  => {
 
 
         let data, config = {
             method: 'post',
-            url: base + '/api/trade/cn/update',
+            url: base + '/api/trade/cn/approve/' + target,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': bear(token)
             },
-            data: JSON.stringify(newObj)
         };
 
         let err: Error | null = null;

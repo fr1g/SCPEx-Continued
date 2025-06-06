@@ -130,39 +130,57 @@ public class TradeController {
             var pageable = (new Gson()).fromJson(pageReqJson, PageRequest.class).toPageable(pageNum);
             var result = ((revealedUser.isTrader()) ? _cn.findAllOfSeller(revealedUser.getId(), pageable) : _cn.findAll(pageable)).map(x -> {
                 // todo maybe cause error: else not need to secure, maybe the returned data never contains any need-to-secure stuff?
-                ((ContractNegotiation)x).setSender((Trader) ((ContractNegotiation)x).getSender().secure());
+                var t = (Trader) ((ContractNegotiation)x).getSender().secure();
+                t.setRegistrar((Employee) t.getRegistrar().secure());
+                ((ContractNegotiation)x).setSender(t);
                 return x;
             });
             return ResponseHelper.Return(new Response(200, "Result Presented", (new Gson()).toJson(result)));
         }catch (Exception ex){
+            ex.printStackTrace();
             return ResponseHelper.Return(new Response(403, "Not allowed. ", ex.getMessage()));
         }
     }
 
-    @PostMapping("/cn/update")
+    @PostMapping("/cn/approve/{id}")
     @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')")
-    public ResponseEntity<String> updateCN(@RequestBody String cnJson) {
+    public ResponseEntity<String> updateCN(@RequestHeader(name = "Authorization") String tokenRaw, @PathVariable long id) {
         try{
-            _cn.saveAndFlush(new Gson().fromJson(cnJson, ContractNegotiation.class));
+            // too easy controller won't use service
+            String token = AuthHelper.unbear(tokenRaw);
+            if(!jwtHelper.validateToken(token)) return ResponseHelper.Return(new Response(403, "invalid token"));
+            var revealedUserName = jwtHelper.getUsernameFromToken(token);
+            var revealedUser = (User)userDetailSvc.loadUserByUsername(revealedUserName);
+
+            var operating = _cn.findById(id).orElseThrow(() -> new NullReferenceException("No such item. "));
+
+            operating.setStatus(GeneralStatus.APPROVED);
+            operating.setDescription( operating.getDescription() + " ... (At " + (new Date()) + ", cancelled by " + revealedUserName + ", ID: " + revealedUser.getId() + ")");
+
+
+            _cn.saveAndFlush(operating);
             return ResponseHelper.Return(new Response(200, "done"));
         }catch (Exception ex){
             return ResponseHelper.Return(new Response(403, "Sth wrong happened. ", ex.getMessage()));
         }
     }
 
-    @PostMapping("/cn/cancel/{cnId}")
+    @PostMapping("/cn/cancel/{id}")
     @PreAuthorize("hasAnyAuthority('PERMISSION_PURCHASE', 'PERMISSION_MANAGE_INVENTORY')")
-    public ResponseEntity<String> cancelCN(@RequestHeader(name = "Authorization") String tokenRaw, @PathVariable long cnId) {
+    public ResponseEntity<String> cancelCN(@RequestHeader(name = "Authorization") String tokenRaw, @PathVariable long id) {
         try{
             String token = AuthHelper.unbear(tokenRaw);
             if(!jwtHelper.validateToken(token)) return ResponseHelper.Return(new Response(403, "invalid token"));
             var revealedUserName = jwtHelper.getUsernameFromToken(token);
             var revealedUser = (User)userDetailSvc.loadUserByUsername(revealedUserName);
 
-            var operating = _cn.findById(cnId).orElseThrow(() -> new NullReferenceException("No such item. "));
-            operating.setStatus(GeneralStatus.CANCELED);
-            if( ! (revealedUser.isTrader() && !revealedUser.isCustomer()) /* not seller */ )
-                operating.setDescription( operating.getDescription() + " ... (At " + (new Date()) + ", cancelled by " + revealedUserName + ", ID: " + revealedUser.getId() + ")");
+            var operating = _cn.findById(id).orElseThrow(() -> new NullReferenceException("No such item. "));
+            if(!operating.getStatus().equals(GeneralStatus.CANCELED)){
+                operating.setStatus(GeneralStatus.CANCELED);
+                if( ! (revealedUser.isTrader() && !revealedUser.isCustomer()) /* not seller */ )
+                    operating.setDescription( operating.getDescription() + " ... (At " + (new Date()) + ", cancelled by " + revealedUserName + ", ID: " + revealedUser.getId() + ")");
+            } else operating.setStatus(GeneralStatus.PENDING);
+
             _cn.saveAndFlush(operating);
             return ResponseHelper.Return(new Response(200, "done"));
         }catch (Exception ex){

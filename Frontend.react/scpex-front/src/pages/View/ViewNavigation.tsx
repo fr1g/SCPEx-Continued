@@ -9,13 +9,13 @@ export default function ViewNavigation() {
     const {userInfo} : {userInfo: UserCredential} = useSelector((s: any) => s.auth );
 
     const navItems = [
-        (isOneOf(userInfo.userClass, [ 'warehouse', 'admin', ]) && { path: "/view/warehouse", label: "货物管理" }),
-        (isOneOf(userInfo.userClass, [ 'admin', ]) && { path: "/view/employee-management", label: "员工管理" }),
-        (isOneOf(userInfo.userClass, [ 'admin', ]) && { path: "/view/trader-management", label: "用户管理" }),
-        (isOneOf(userInfo.userClass, [ 'customer', ]) && { path: "/view/cart-management", label: "购物车管理" }),
-        (isOneOf(userInfo.userClass, [ 'warehouse', 'admin', 'seller']) && { path: "/view/contract-negotiations", label: "合同谈判" }),
-        (isOneOf(userInfo.userClass, [ 'customer', ]) && { path: "/view/address-book", label: "地址簿" }),
-        (isOneOf(userInfo.userClass, [ 'warehouse', 'customer', 'admin' ]) && { path: "/view/trades-tracker", label: "交易跟踪" }),
+        (isOneOf(userInfo.userClass, [ 'warehouse', 'admin', ]) && { path: "/view/warehouse", label: "Warehouse" }),
+        (isOneOf(userInfo.userClass, [ 'admin', ]) && { path: "/view/employee-management", label: "Employee" }),
+        (isOneOf(userInfo.userClass, [ 'admin', ]) && { path: "/view/trader-management", label: "Trader" }),
+        (isOneOf(userInfo.userClass, [ 'customer', ]) && { path: "/view/cart-management", label: "Cart" }),
+        (isOneOf(userInfo.userClass, [ 'warehouse', 'admin', 'seller']) && { path: "/view/contract-negotiations", label: "Contr, Nego." }),
+        (isOneOf(userInfo.userClass, [ 'customer', ]) && { path: "/view/address-book", label: "Addr Book" }),
+        (isOneOf(userInfo.userClass, [ 'warehouse', 'customer', 'admin' ]) && { path: "/view/trades-tracker", label: "Trace" }),
     ];
 
     return (

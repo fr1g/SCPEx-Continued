@@ -1,7 +1,7 @@
 import { GeneralStatus, UserType } from "../GeneralEnum";
 
 export default class User {
-    id: number;
+    id: number | null;
     name: string;
     contact: string;
     type: UserType | number;
@@ -12,7 +12,7 @@ export default class User {
     note?: string;
 
     constructor(
-        id: number,
+        id: number | null,
         name: string,
         contact: string,
         type: UserType | number,

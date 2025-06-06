@@ -11,45 +11,47 @@ import { UserCredential } from "../../models/UserCredential";
 import { useNavigate } from "react-router";
 import PageRequest from "../../models/PageRequest";
 import { api } from "../../axios";
-import Trader from "../../models/UserType/Trader";
 import { Input } from "@headlessui/react";
 import { inputClassNames } from "../../env";
 import { Operation } from "../../models/Operation";
 import { UserType, GeneralStatus } from "../../models/GeneralEnum";
+import { getById } from "../../tools/misc";
+import Button from "../../components/Fragments/Button";
+import Trader from "../../models/UserType/Trader";
+import Employee from "../../models/UserType/Employee";
 
 export default function TraderMgr() {
     const [pageContent, setPageContent] = useState<Pageable | null>(null);
     const [currentTrader, setCurrentTrader] = useState<Trader | null>(null);
-    const { userInfo }: { userInfo: UserCredential } = useSelector(
+    const [pageNum, setPageNum] = useState(0);
+    const [generatedPassword, setGeneratedPassword] = useState<string | null>("");
+    const { userInfo }: { userInfo: UserCredential | null } = useSelector(
         (s: any) => s.auth,
     );
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    // 初始化一个空的用户对象
     const createEmptyTrader = () => {
         const now = new Date();
-        let nt = new Trader(
-            0, // id
+        return new Trader(
+            0,
             "", // name
             "", // contact
-            UserType.CUSTOMER, // type
-            GeneralStatus.PENDING, // status
+            UserType.REGISTRAR, // type
+            GeneralStatus.APPROVED, // status
             now.getTime(), // createdDate - 使用时间戳
             now.getTime(), // birth - 使用时间戳
             "", // passwd
-            0, // registrar - TODO may cause error, let's bless the backend
+            1,
             "", // note
         );
-        nt.locationJson = "";
-        nt.preferJson = "";
-
-
-        return nt;
     };
 
     async function refresh(page = 0) {
+        if (!userInfo) return;
+
         const pr = new PageRequest();
+        pr.PageSize = 10;
         try {
             const result = await api.TraderManage.getListedTraders(
                 userInfo.token,
@@ -59,63 +61,61 @@ export default function TraderMgr() {
             if (result.code === 200 && result.content) {
                 const rawPageData = JSON.parse(result.content) as Pageable;
 
-                // 转换用户状态和类型字符串为枚举值
-                const convertedContent = rawPageData.content.map((trader: any) => {
-                    // 状态转换
-                    if (typeof trader.status === "string") {
-                        switch (trader.status) {
+                const convertedContent = rawPageData.content.map((emp: any) => {
+                    if (typeof emp.status === "string") {
+                        switch (emp.status) {
                             case "PENDING":
-                                trader.status = GeneralStatus.PENDING;
+                                emp.status = GeneralStatus.PENDING;
                                 break;
                             case "APPROVED":
-                                trader.status = GeneralStatus.APPROVED;
+                                emp.status = GeneralStatus.APPROVED;
                                 break;
                             case "REJECTED":
-                                trader.status = GeneralStatus.REJECTED;
+                                emp.status = GeneralStatus.REJECTED;
                                 break;
                             case "ONTHEWAY":
-                                trader.status = GeneralStatus.ONTHEWAY;
+                                emp.status = GeneralStatus.ONTHEWAY;
                                 break;
                             case "CANCELED":
-                                trader.status = GeneralStatus.CANCELED;
+                                emp.status = GeneralStatus.CANCELED;
                                 break;
                             case "FULFILLED":
-                                trader.status = GeneralStatus.FULFILLED;
+                                emp.status = GeneralStatus.FULFILLED;
                                 break;
                             default:
-                                trader.status = GeneralStatus.UNKNOWN;
+                                emp.status = GeneralStatus.UNKNOWN;
                                 break;
                         }
                     }
 
                     // 用户类型转换
-                    if (typeof trader.type === "string") {
-                        switch (trader.type) {
+                    if (typeof emp.type === "string") {
+                        switch (emp.type) {
                             case "DEFAULT":
-                                trader.type = UserType.DEFAULT;
+                                emp.type = UserType.DEFAULT;
                                 break;
                             case "SELLER":
-                                trader.type = UserType.SELLER;
+                                emp.type = UserType.SELLER;
                                 break;
                             case "CUSTOMER":
-                                trader.type = UserType.CUSTOMER;
+                                emp.type = UserType.CUSTOMER;
                                 break;
                             case "ADMIN":
-                                trader.type = UserType.ADMIN;
+                                emp.type = UserType.ADMIN;
                                 break;
                             case "WAREHOUSE":
-                                trader.type = UserType.WAREHOUSE;
+                                emp.type = UserType.WAREHOUSE;
                                 break;
                             case "REGISTRAR":
-                                trader.type = UserType.REGISTRAR;
+                                emp.type = UserType.REGISTRAR;
                                 break;
                             default:
-                                trader.type = UserType.DEFAULT;
+                                emp.type = UserType.DEFAULT;
                                 break;
                         }
                     }
 
-                    return trader;
+                    return emp;
                 });
 
                 setPageContent({
@@ -123,33 +123,49 @@ export default function TraderMgr() {
                     content: convertedContent,
                 });
             }
-        } catch (error: unknown) {
-            if (error instanceof Error && error.message.includes("401")) {
+        } catch (error: any) {
+            if (error.message.includes("401")) {
                 doInvalidCredentialAction(dispatch, navigate);
-            } else console.error("加载用户数据失败:", error);
+            } else console.error("FAILED:", error);
         }
     }
 
-    // 执行增删改操作
-    async function performOperation(operation: "add" | "upd" | "del") {
+    function getNewPage(inPageNum: number) {
+        setPageNum(inPageNum);
+        refresh(inPageNum);
+    }
+
+    function innerClickHandler(e: any) {
+        setGeneratedPassword(null);
+        let clickedItemId = parseInt(e.nativeEvent.target.id!);
+        const selectedTrader = getById(clickedItemId, pageContent!.content);
+        if (selectedTrader) {
+            setCurrentTrader(selectedTrader);
+        }
+    }
+
+    // 执行增删改OP 
+    async function performOperation(operation: "upd" | "del") {
+        if (!userInfo) {
+            alert("用户未登录");
+            return;
+        }
+
         if (!currentTrader) {
-            alert("请先填写用户信息");
+            alert("请先填写员工信息");
             return;
         }
 
         try {
             const traderToSend = { ...currentTrader };
 
-            // 对于添加操作，确保id为0
-            if (operation === "add") {
-                traderToSend.id = 0;
-            }
-
             // 将日期转换为时间戳，因为后端期望数字格式
             if (traderToSend.createdDate instanceof Date) {
                 traderToSend.createdDate = traderToSend.createdDate.getTime();
             } else if (typeof traderToSend.createdDate === "string") {
-                traderToSend.createdDate = new Date(traderToSend.createdDate).getTime();
+                traderToSend.createdDate = new Date(
+                    traderToSend.createdDate,
+                ).getTime();
             }
 
             if (traderToSend.birth instanceof Date) {
@@ -158,43 +174,90 @@ export default function TraderMgr() {
                 traderToSend.birth = new Date(traderToSend.birth).getTime();
             }
 
+            if (traderToSend.contact == "" || traderToSend.name == "") throw new Error("Need CONTACT and NAME");
+            traderToSend.registrar = (traderToSend.registrar as unknown as Employee).id ?? 1;
+            console.log(traderToSend)
             const op = new Operation(operation, JSON.stringify(traderToSend));
-            const result = await api.TraderManage.traderOperate(userInfo.token, op);
+            const result = await api.TraderManage.traderOperate(
+                userInfo.token,
+                op,
+            );
 
             if (result.code === 200) {
-                alert("操作成功！");
-                refresh();
-                if (operation === "add") {
-                    setCurrentTrader(createEmptyTrader());
-                }
+                // 如果是添加员工且后端返回了生成的 PASSWD 
+
+                alert("OP success");
+
+
+                refresh(pageNum);
+
             } else {
-                alert(`操作失败: ${result.title || "未知错误"}`);
+                alert(`OP FAILED1: ${result.title || "unknown"}`);
             }
-        } catch (error: unknown) {
-            console.error("操作失败:", error);
-            alert(`操作失败: ${error instanceof Error ? error.message : "未知错误"}`);
+        } catch (error: any) {
+            console.error("OP FAILED:", error);
+            alert(`Error: ${error.message || "unknown"} ... Maybe missing necessary data`);
+        }
+    }
+
+    // reset  PASSWD 功能
+    async function resetPassword() {
+        if (!userInfo) {
+            alert("用户未登录");
+            return;
+        }
+
+        if (!currentTrader || !currentTrader.id) {
+            alert("请先选择一个员工");
+            return;
+        }
+
+        try {
+            // 根据提示，reset  PASSWD 需要传入"e"指定是员工
+            const result = await api.Auth.resetPasswd(
+                userInfo.token,
+                currentTrader.id,
+                "t",
+            );
+
+            if (result.code === 200 && result.content) {
+                const newPassword = result.title;
+                console.log(result)
+                setGeneratedPassword(newPassword);
+                alert(` PASSWD RESET: ${newPassword}`);
+            } else {
+                alert(`failed to reset passwd: ${result.title || "unknown"}`);
+            }
+        } catch (error: any) {
+            console.error("reset  PASSWD FAILED:", error);
+            alert(`reset  PASSWD FAILED: ${error.message || "unknown"}`);
         }
     }
 
     useEffect(() => {
+        if (!userInfo) {
+            navigate("/auth/login");
+            return;
+        }
+
         if (isCredTrader(userInfo)) insufficientHandler(navigate);
 
         refresh();
         setCurrentTrader(createEmptyTrader());
-    }, []);
+    }, [userInfo, navigate]);
 
     return (
         <>
-            <h1 className="text-3xl font-semibold">用户管理</h1>
+            <h1 className="text-3xl font-semibold">Trader management</h1>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
-                {/* 用户信息表单 */}
+                {/* 员工信息表单 */}
                 <div>
-                    <h2 className="text-xl font-semibold mb-4">用户信息</h2>
+                    <h2 className="text-xl font-semibold mb-4">Info</h2>
                     <div className="space-y-3">
                         <Input
                             className={inputClassNames}
-                            placeholder="用户ID"
+                            placeholder="ID"
                             type="number"
                             value={currentTrader?.id || ""}
                             onChange={e =>
@@ -205,7 +268,7 @@ export default function TraderMgr() {
                         />
                         <Input
                             className={inputClassNames}
-                            placeholder="姓名"
+                            placeholder="name"
                             type="text"
                             value={currentTrader?.name || ""}
                             onChange={e =>
@@ -216,7 +279,7 @@ export default function TraderMgr() {
                         />
                         <Input
                             className={inputClassNames}
-                            placeholder="联系方式"
+                            placeholder="contact"
                             type="text"
                             value={currentTrader?.contact || ""}
                             onChange={e =>
@@ -225,36 +288,9 @@ export default function TraderMgr() {
                                 )
                             }
                         />
-                        <select
-                            className={inputClassNames}
-                            value={currentTrader?.type || UserType.CUSTOMER}
-                            onChange={e =>
-                                setCurrentTrader(prev =>
-                                    prev ? { ...prev, type: parseInt(e.target.value) } : null,
-                                )
-                            }
-                        >
-                            <option value={UserType.CUSTOMER}>客户</option>
-                            <option value={UserType.SELLER}>卖家</option>
-                        </select>
                         <Input
                             className={inputClassNames}
-                            placeholder="密码"
-                            type="password"
-                            value={
-                                currentTrader?.passwd === "hidden"
-                                    ? ""
-                                    : currentTrader?.passwd || ""
-                            }
-                            onChange={e =>
-                                setCurrentTrader(prev =>
-                                    prev ? { ...prev, passwd: e.target.value } : null,
-                                )
-                            }
-                        />
-                        <Input
-                            className={inputClassNames}
-                            placeholder="备注"
+                            placeholder="note"
                             type="text"
                             value={currentTrader?.note || ""}
                             onChange={e =>
@@ -265,49 +301,67 @@ export default function TraderMgr() {
                         />
                     </div>
 
-                    <div className="flex gap-2 mt-4">
-                        <button
-                            onClick={() => performOperation("add")}
-                            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                        >
-                            添加用户
-                        </button>
-                        <button
+                    <div className="flex gap-2 mt-4 flex-wrap">
+                        <Button paddingless
                             onClick={() => performOperation("upd")}
-                            className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                            disabled={!currentTrader?.id}
+                            className="bg-yellow-500 text-white hover:bg-yellow-600 px-3 py-2"
+                            disable={!currentTrader?.id}
                         >
-                            更新用户
-                        </button>
-                        <button
+                            Update
+                        </Button>
+                        <Button paddingless
+                            onClick={resetPassword}
+                            className="bg-purple-500 text-white hover:bg-purple-600 px-3 py-2"
+                            disable={!currentTrader?.id}
+                        >
+                            reset  PASSWD
+                        </Button>
+                        <Button paddingless
                             onClick={() => setCurrentTrader(createEmptyTrader())}
-                            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                            className="bg-gray-500 text-white hover:bg-gray-600 px-3 py-2"
                         >
-                            清空表单
-                        </button>
+                            clear form
+                        </Button>
                     </div>
+
+                    {generatedPassword && (
+                        <div className="mt-4 p-3 bg-green-100 border border-green-400 rounded">
+                            <p className="text-green-700">
+                                <strong>generated PASSWD ：</strong>
+                                <Button onClick={() => { window.navigator.clipboard.writeText(generatedPassword) }} >{generatedPassword} (click to copy)</Button>
+                            </p>
+                        </div>
+                    )}
                 </div>
 
-                {/* 用户列表 */}
+                {/* 员工列表 */}
                 <div>
-                    <h2 className="text-xl font-semibold mb-4">用户列表</h2>
-                    <button
-                        onClick={() => refresh()}
-                        className="mb-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                        刷新列表
-                    </button>
-                    <PageableList page={pageContent} />
+
+                    <h2 className="text-xl font-semibold mb-4 clear-both">
+                        List
+                        <Button paddingless
+                            onClick={() => refresh(pageNum)}
+                            className="mb-2 bg-blue-500 text-white hover:bg-blue-600 float-right text-base! font-medium!"
+                        >
+                            refresh
+                        </Button>
+                    </h2>
+
+                    <PageableList
+                        page={pageContent}
+                        askNewPage={getNewPage}
+                        contentClickEvent={innerClickHandler}
+                    />
                 </div>
             </div>
 
-            {/* 当前用户信息调试显示 */}
+            {/* 当前员工信息调试显示 */}
             <div className="mt-6">
                 <details>
                     <summary className="cursor-pointer text-sm text-gray-600">
-                        调试信息
+                        debug
                     </summary>
-                    <pre className="text-xs bg-gray-100 p-2 rounded mt-2">
+                    <pre className="text-xs bg-gray-100/10 p-2 rounded mt-2">
                         {JSON.stringify(currentTrader, null, 2)}
                     </pre>
                 </details>

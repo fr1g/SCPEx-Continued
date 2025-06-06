@@ -40,21 +40,21 @@ export default function PageableList({ page, askNewPage, contentClickEvent = (e:
 
 
 
-    function pageJumpHandler(e: any){
+    function pageJumpHandler(e: any) {
         let valRaw = e.target.value;
         e.target.value = null;
-        if(isNaN(valRaw) || valRaw == '') return;
+        if (isNaN(valRaw) || valRaw == '') return;
         let val = parseInt(valRaw);
-        if(val <= 0) return;
+        if (val <= 0) return;
         toPage(val - 1) // to 0-based
         console.log(val);
-    } 
+    }
 
     return <>
 
         <List>
             {page.content.map((self) => {
-                return <ListItem onlyTopEvent={!(contentClickEvent == null)} title={self.name} key={self.id} id={self.id} onClick={(e) => contentClickEvent(e)} />
+                return <ListItem extra={self.note ?? ` ${(self.sender && self.sender.name) ?? ''}`} detail={(self.id ? `ID: ${self.id} | ` : "") + (self.category ? `Cat: ${self.category.name ?? "unk"} \n` : "") + (self.singlePrice ? ` Price: ${self.singlePrice} ` : "") + (self.amount ? ` x${self.amount} ` : "") + `<${(self.status ?? '')}>`} onlyTopEvent={!(contentClickEvent == null)} title={self.name ?? self.title} key={self.id ?? self.id} id={self.id} onClick={(e) => contentClickEvent(e)} />
             })}
         </List>
         <div className="PAGINATOR   grid grid-cols-3 gap-3 p-3" >

@@ -17,7 +17,7 @@ import java.util.List;
 @SuperBuilder
 public class Employee extends User implements IModelClass{
 
-    public String JobTitle;
+    public String jobTitle;
 
     @OneToMany(mappedBy = "registrar")
     @jakarta.annotation.Nullable

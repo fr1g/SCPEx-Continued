@@ -1,14 +1,14 @@
 import { GeneralStatus } from "./GeneralEnum";
 
 export class Category {
-    id: number;
+    id: number | null;
     name: string;
     zone: string;
     note: string;
     status: GeneralStatus;
 
     constructor(
-        id: number,
+        id: number | null,
         name: string,
         zone: string,
         note: string,
