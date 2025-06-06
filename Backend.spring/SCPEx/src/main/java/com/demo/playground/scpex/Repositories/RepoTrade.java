@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface RepoTrade extends JpaRepository<Trade, Long> {
-    @Query("select t from Trade t where t.trader = :target")
+    @Query("select t from Trade t where t.trader.id = :target")
     Page<Trade> findAllOfTrader(Pageable pageable, @Param("target") Long traderId);
 
 }

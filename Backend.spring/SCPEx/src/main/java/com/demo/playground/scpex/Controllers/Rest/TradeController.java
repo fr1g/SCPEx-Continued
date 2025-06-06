@@ -68,7 +68,7 @@ public class TradeController {
                 res = (new Gson()).toJson(_logic.getPagedTrades(page.toPageable(pageNum), (Trader)revealedUser));
             else if(revealedUser.getType().equals(Type.ADMIN) || revealedUser.getType().equals(Type.WAREHOUSE))
                 res = (new Gson()).toJson(_logic.getPagedTrades(page.toPageable(pageNum)));
-            
+
             else throw new NullReferenceException("Not correct role.");
 
             return ResponseHelper.Return(new Response(200, "done", res));
