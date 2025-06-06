@@ -142,6 +142,10 @@ a.nav-link {
     user-select: none !important;
 }
 
+.subXhidden>div{
+    overflow-x: hidden;
+}
+
 
 
 .disabled {

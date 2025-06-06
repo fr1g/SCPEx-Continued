@@ -79,12 +79,18 @@ public class TransactionProcedure {
 
     }
 
-    public Page<Trade>getPagedTrades(Pageable pageable) {
+    public Page<TradeDTO>getPagedTrades(Pageable pageable) {
         var result = _trade.findAll(pageable);
-        return result.map(x -> {
-            x.setTrader((Trader)x.getTrader().secure());
+        result = result.map(x -> {
+            var it = (Trader)x.getTrader().secure();
+            it.setRegistrar((Employee) it.getRegistrar().secure());
+            x.setTrader(it);
             return x;
         });
+
+        var rr = convertTradePage(result);
+
+        return rr;
     }
 
     // okay why not use trader typed acquirer? what was i thought bout'?

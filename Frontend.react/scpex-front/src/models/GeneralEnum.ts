@@ -5,3 +5,7 @@ export enum UserType{
 export enum GeneralStatus{
     PENDING, APPROVED, REJECTED, ONTHEWAY, CANCELED, FULFILLED, UNKNOWN
 }
+
+export const TradeStatus = [
+    "PENDING", "APPROVED", "REJECTED", "ONTHEWAY", "CANCELED", "FULFILLED", "UNKNOWN"
+]

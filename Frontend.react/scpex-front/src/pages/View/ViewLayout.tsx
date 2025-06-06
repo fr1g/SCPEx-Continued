@@ -13,9 +13,9 @@ import OrderTracker from "./OrderTracker.tsx";
 export default function ViewLayout({cancelMf} : {cancelMf?: boolean}) {
   return (
     <>
-      <Paper className="w-full" mfStyle={cancelMf ? {} : undefined}>
+      <Paper className="w-full!  overflow-x-hidden! " mfStyle={cancelMf ? {} : undefined}>
         <ViewNavigation  />
-        <div>
+        <div className="subXhidden">
           <Routes>
             <Route path="/employee-management" element={<EmployeeMgr />} />
             <Route path="/empm" element={<EmployeeMgr />} />
@@ -26,7 +26,7 @@ export default function ViewLayout({cancelMf} : {cancelMf?: boolean}) {
             <Route path="/warehouse" element={<WarehouseMgr />} />
             <Route path="/contract-negotiations" />
             <Route path="/address-book" element={<AddressBook />} />
-            <Route path="/trades-tracker" element={<OrderTracker />} />
+            <Route path="/trades-tracker" element={<OrderTracker killPaperOutwrap />} />
 
             <Route index element={<div>Select your management above.</div>} />
           </Routes>
