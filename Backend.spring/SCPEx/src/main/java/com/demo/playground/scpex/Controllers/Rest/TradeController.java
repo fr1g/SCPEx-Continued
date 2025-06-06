@@ -64,10 +64,14 @@ public class TradeController {
             var page = (new Gson()).fromJson(pageReq, PageRequest.class);
 
             String res;
-            if(revealedUser.isCustomer())
-                res = (new Gson()).toJson(_logic.getPagedTrades(page.toPageable(pageNum), (Trader)revealedUser));
-            else if(revealedUser.getType().equals(Type.ADMIN) || revealedUser.getType().equals(Type.WAREHOUSE))
-                res = (new Gson()).toJson(_logic.getPagedTrades(page.toPageable(pageNum)));
+            if(revealedUser.isCustomer()) {
+                var got = _logic.getPagedTrades(page.toPageable(pageNum), (Trader)revealedUser);
+                res = (new Gson()).toJson(got);
+            }
+            else if(revealedUser.getType().equals(Type.ADMIN) || revealedUser.getType().equals(Type.WAREHOUSE)) {
+                var got = _logic.getPagedTrades(page.toPageable(pageNum));
+                res = (new Gson()).toJson(got);
+            }
 
             else throw new NullReferenceException("Not correct role.");
 
@@ -83,6 +87,7 @@ public class TradeController {
         try {
             var newState = (new Gson()).fromJson(newTransactionStateJson, Transaction.class);
             if(!_trans.isThisExist(targetId)) throw new NullReferenceException("No such transaction");
+            newState.setDateUpdated((new Date()));
             _trans.update(newState);
             return ResponseHelper.Return(new Response(200, "done"));
         }catch (Exception ex){

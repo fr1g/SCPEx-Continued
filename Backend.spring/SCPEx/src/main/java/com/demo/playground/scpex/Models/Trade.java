@@ -19,7 +19,7 @@ public class Trade implements IModelClass{
 
     @OneToMany(mappedBy = "trade")
     @Nullable
-    transient private List<Transaction> transactions;
+    private List<Transaction> transactions;
 
     @ManyToOne
     @JoinColumn(name = "trader_id")

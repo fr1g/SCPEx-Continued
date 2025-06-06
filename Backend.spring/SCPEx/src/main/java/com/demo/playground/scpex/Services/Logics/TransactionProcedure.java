@@ -1,10 +1,8 @@
 package com.demo.playground.scpex.Services.Logics;
 
+import com.demo.playground.scpex.Models.*;
 import com.demo.playground.scpex.Models.Enums.GeneralStatus;
-import com.demo.playground.scpex.Models.Product;
-import com.demo.playground.scpex.Models.Trade;
-import com.demo.playground.scpex.Models.Trader;
-import com.demo.playground.scpex.Models.Transaction;
+import com.demo.playground.scpex.Models.Pojo.TradeDTO;
 import com.demo.playground.scpex.Repositories.RepoProduct;
 import com.demo.playground.scpex.Repositories.RepoTrade;
 import com.demo.playground.scpex.Repositories.RepoTrader;
@@ -15,11 +13,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionProcedure {
@@ -39,16 +40,43 @@ public class TransactionProcedure {
     @Autowired
     RepoProduct _p;
 
+    public static Page<TradeDTO> convertTradePage(Page<Trade> tradePage) {
+        // 将 Trade 列表转换为 TradeDTO 列表
+        List<TradeDTO> dtoList = tradePage.getContent().stream()
+                .map(n -> {
+                    var x = n;
+                    var l = n.getTransactions();
+                    x.setTransactions(null);
+                    var r = new TradeDTO(x, l);
+                    return r;
+                })
+                .collect(Collectors.toList());
+
+        // 创建新的 Page 对象，保留原始分页信息
+        return new PageImpl<>(
+                dtoList,
+                tradePage.getPageable(),
+                tradePage.getTotalElements()
+        );
+    }
     /*
           get paged of transactions under the trade
           related todo: GETTING ONE'S TRADES(BASIC INFO) AND PAGED RELATED TRANSACTIONS(MAIN)
      */
-    public Page<Trade>getPagedTrades(Pageable pageable, Trader acquirer) {
+    public Page<TradeDTO>getPagedTrades(Pageable pageable, Trader acquirer) {
         var result = _trade.findAllOfTrader(pageable, acquirer.secure().getId());
-        return result.map(x -> {
-            x.setTrader((Trader)x.getTrader().secure());
+
+        result = result.map(x -> {
+            var it = (Trader)x.getTrader().secure();
+            it.setRegistrar((Employee) it.getRegistrar().secure());
+            x.setTrader(it);
             return x;
         });
+
+        var rr = convertTradePage(result);
+
+        return rr;
+
     }
 
     public Page<Trade>getPagedTrades(Pageable pageable) {
@@ -104,6 +132,10 @@ public class TransactionProcedure {
         trade.setTrader(trader);
         var convertedCart = new ArrayList<Transaction>();
         var finalPrice = 0d;
+        trade.setStatus(GeneralStatus.PENDING);
+        trade.setDateCreated((new Date()));
+        var preGivenTrade = _trade.save(trade);
+
         for(var item : purchasingCart){
             var mirroredProduct = (new Gson()).fromJson(item, Product.class);
             var revealedProduct = _p.findById(mirroredProduct.getId()).orElseThrow(() -> new NullReferenceException("[PrNF] Product not found")); // if the product sent is invalid, refuse it.
@@ -125,19 +157,22 @@ public class TransactionProcedure {
             // the logic of logistic info, scalable with json (?)
             transaction.setLogisticLink(logisticInfo);
 
+            transaction.setTrade(preGivenTrade);
+
             var saved = _trans.save(transaction);
 
             convertedCart.add(saved);
 
             finalPrice += transactionPrice;
 
+
+
         }
 
-        trade.setTransactions(convertedCart);
-        trade.setTotalPrice(finalPrice);
-        trade.setStatus(GeneralStatus.PENDING);
+//        preGivenTrade.setTransactions(convertedCart);
+        preGivenTrade.setTotalPrice(finalPrice);
 
-        return _trade.save(trade);
+        return _trade.saveAndFlush(preGivenTrade);
 
     }
 

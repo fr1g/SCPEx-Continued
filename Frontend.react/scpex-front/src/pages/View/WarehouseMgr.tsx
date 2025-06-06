@@ -119,7 +119,7 @@ export default function WarehouseMgr() {
 
                 {/* <i>{JSON.stringify(curr)}</i> */}
                 <EAUProducts setItem={setCurr} item={curr} />
-                <br />
+                <br /> 
                 <div className="flex w-full flex-col? gap-3">
                     <Input onChange={(e) => {setST(e.target.value)}} className={"grow block! " + inputClassNames} placeholder="Search by name" />
                     <Button className="block! px-3.5! rounded-lg!" onClick={switchAscDesc} ><Icon pua="e8ab" className="rotate-90" /></Button>

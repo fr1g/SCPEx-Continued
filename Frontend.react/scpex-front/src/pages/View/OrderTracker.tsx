@@ -66,6 +66,7 @@ export default function OrderTracker() {
 
             // 调用现有的getTrades API
             const result = await api.Trade.getTrades(page, pr, userInfo.token);
+            console.log(result);
 
             if (result.code === 200 && result.content) {
                 const pageData = JSON.parse(result.content) as Pageable;
