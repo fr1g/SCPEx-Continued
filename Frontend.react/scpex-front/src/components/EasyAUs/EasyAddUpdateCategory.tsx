@@ -116,6 +116,7 @@ export default function EAUCategory() {
                             <p className="text-sm text-gray-600">{category.zone}</p>
                             <div>
                                 <details>
+                                    <summary>full info</summary>
                                     <p className="text-sm text-gray-500 mt-1">{category.note}</p>
                                 </details>
                             </div>

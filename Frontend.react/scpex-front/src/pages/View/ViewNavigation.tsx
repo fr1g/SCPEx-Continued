@@ -19,7 +19,7 @@ export default function ViewNavigation() {
     ];
 
     return (
-        <nav className="bg-gray-100 dark:bg-gray-400/20 p-4 mb-6 rounded-lg">
+        <nav className="bg-gray-100 dark:bg-gray-400/20 p-4 mb-6 rounded-lg md:mt-6">
             <h2 className="text-lg font-semibold mb-3">Managements</h2>
             <div className="flex flex-wrap gap-2">
                 {navItems.map(item => item ? (

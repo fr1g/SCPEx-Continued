@@ -51,7 +51,13 @@ public class WarehouseManager {
         var modified = newCat;
         modified.setStatus(GeneralStatus.APPROVED);
         modified.setNote(("Category created by " + operator.getName() + ", id: " + operator.getId() + " at time: " + (new Date()).getTime()));
-        return _c.saveAndFlush(modified);
+        try{
+            modified = _c.saveAndFlush(modified);
+        }catch(Exception e){
+            modified.setNote("");
+            modified = _c.saveAndFlush(modified);
+        }
+        return modified;
     }
 
     public void disableCategory(Category cat, Employee operator) {
@@ -59,6 +65,20 @@ public class WarehouseManager {
 
         if(cat.getId() == 1L) return;
 
+        modified = appendNote(operator, modified);
+
+        try {
+            _c.saveAndFlush(modified);
+        }catch (Exception e){
+            modified.setNote("");
+            modified = appendNote(operator, modified);
+            _c.saveAndFlush(modified);
+        }
+
+
+    }
+
+    protected Category appendNote(Employee operator, Category modified) {
         if(modified.getStatus().equals(GeneralStatus.REJECTED)) {
             modified.setNote(modified.getNote().split("@@@")[0] + "@@@ enabled: " + " by " + operator.getName() + ", id: " + operator.getId() + " at time: " + (new Date()).getTime());
             modified.setStatus(GeneralStatus.APPROVED);
@@ -66,8 +86,7 @@ public class WarehouseManager {
             modified.setNote(modified.getNote() + "@@@ disabled: " + " by " + operator.getName() + ", id: " + operator.getId() + " at time: " + (new Date()).getTime());
             modified.setStatus(GeneralStatus.REJECTED);
         }
-
-        _c.saveAndFlush(modified);
+        return modified;
     }
 
 }

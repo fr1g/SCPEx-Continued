@@ -121,26 +121,26 @@ export default function OrderTracker({ killPaperOutwrap }: { killPaperOutwrap?: 
             pageRequest.PageSize = 10;
             const response = await api.Trade.getTrades(currentPage, pageRequest, userInfo.token);
             const data = JSON.parse(response.content) as PageData;
-            
+
             // 强制更新选中订单的交易数据
             setPageData(prev => {
                 if (prev && selectedTrade) {
-                    const updatedContent = data.content.map(order => 
-                        order.trade.id === selectedTrade.trade.id ? 
-                        { ...order, transactions: data.content.find(o => o.trade.id === selectedTrade.trade.id)?.transactions || [] }
-                        : order
+                    const updatedContent = data.content.map(order =>
+                        order.trade.id === selectedTrade.trade.id ?
+                            { ...order, transactions: data.content.find(o => o.trade.id === selectedTrade.trade.id)?.transactions || [] }
+                            : order
                     );
                     return { ...data, content: updatedContent };
                 }
                 return data;
             });
-            
+
             // 同步更新selectedTrade状态
             if (selectedTrade) {
                 const freshTrade = data.content.find(t => t.trade.id === selectedTrade.trade.id);
                 freshTrade && setSelectedTrade(freshTrade);
             }
-            
+
             setStateControl(false);
         } catch (error) {
             console.error('Failed to fetch orders:', error);
@@ -261,7 +261,7 @@ export default function OrderTracker({ killPaperOutwrap }: { killPaperOutwrap?: 
                     className="relative z-50"
                 >
                     <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-                    <div className="fixed inset-0 flex items-center justify-center p-4">
+                    <div className="fixed inset-0 flex items-center justify-center text-black dark:text-white p-4">
                         <DialogPanel className="mx-auto max-w-2xl w-full rounded-lg bg-white dark:bg-gray-800 p-6 shadow-xl">
                             <DialogTitle className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-4">
                                 Order Details #{selectedTrade?.trade.id}
@@ -279,14 +279,12 @@ export default function OrderTracker({ killPaperOutwrap }: { killPaperOutwrap?: 
                                         <h3 className="font-semibold mb-2">Delivery Address</h3>
                                         {(() => {
                                             try {
-                                                const addresses = JSON.parse(selectedTrade.trade.trader.locationJson);
-                                                return addresses.map((address: any, index: number) => (
-                                                    <div key={index} className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                                        <p className="font-medium">{address.logisticReceiver}</p>
-                                                        <p className="text-sm text-gray-500 dark:text-gray-400">Contact: {address.contact}</p>
-                                                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{address.fullAddress}</p>
-                                                    </div>
-                                                ));
+                                                const address = JSON.parse(selectedTrade.transactions[0].logisticLink);
+                                                return <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                                    <p className="font-medium">{address.logisticReceiver}</p>
+                                                    <p className="text-sm text-gray-500 dark:text-gray-400">Contact: {address.contact}</p>
+                                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{address.fullAddress}</p>
+                                                </div>;
                                             } catch (error) {
                                                 return <p className="text-gray-500 dark:text-gray-400">No address information available</p>;
                                             }
@@ -302,7 +300,7 @@ export default function OrderTracker({ killPaperOutwrap }: { killPaperOutwrap?: 
                                                 </Button>
                                             </span>
                                         </h3>
-                                        <div className="space-y-4">
+                                        <div className="space-y-2 pt-2">
                                             {stateControl && selectedTrade.transactions.map((transaction) => (
                                                 <div key={transaction.id} className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                                     <div>

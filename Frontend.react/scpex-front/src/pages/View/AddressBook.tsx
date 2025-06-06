@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Dialog } from '@headlessui/react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { api } from '../../axios';
 import { useSelector } from 'react-redux';
 import { UserCredential } from '../../models/UserCredential';
+import TitledInput from '../../components/Fragments/TitledInput';
+import { inputClassNames } from '../../env';
 
 interface Address {
     logisticReceiver: string;
@@ -106,12 +108,12 @@ export default function AddressBook() {
                 {addresses.map((addr, index) => (
                     <div
                         key={index}
-                        className="border p-4 rounded-lg flex justify-between items-center"
+                        className="border p-4 rounded-lg flex justify-between items-center bg-slate-500/20"
                     >
                         <div>
-                            <h3 className="font-semibold">{addr.logisticReceiver}</h3>
-                            <p className="text-gray-600">Contact: {addr.contact}</p>
-                            <p className="text-gray-600">Address: {addr.fullAddress}</p>
+                            <h3 className="font-bold text-xl">{addr.logisticReceiver}</h3>
+                            <p className="text-gray-600/80 dark:text-gray-100/70 font-semibold text-lg">Contact: {addr.contact}</p>
+                            <p className="text-gray-600/70 dark:text-gray-100/50 italic">Address: {addr.fullAddress}</p>
                         </div>
                         <button
                             onClick={() => handleDeleteAddress(index)}
@@ -130,43 +132,40 @@ export default function AddressBook() {
             <Dialog
                 open={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
+                transition
                 className="relative z-50"
             >
                 <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
                 <div className="fixed inset-0 flex items-center justify-center p-4">
-                    <Dialog.Panel className="bg-white rounded-lg p-6 w-full max-w-md">
-                        <Dialog.Title className="text-lg font-medium mb-4">
+                    <DialogPanel className="bg-white dark:bg-slate-700 text-black dark:text-white rounded-lg p-6 w-full max-w-md">
+                        <DialogTitle className="text-lg font-medium mb-4">
                             Add New Address
-                        </Dialog.Title>
+                        </DialogTitle>
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">
-                                    Receiver Name
-                                </label>
-                                <input
+                                <TitledInput
                                     type="text"
+                                    title='Recv Name'
                                     value={newAddress.logisticReceiver}
                                     onChange={(e) =>
                                         setNewAddress({ ...newAddress, logisticReceiver: e.target.value })
                                     }
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    className={inputClassNames}
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">
-                                    Contact
-                                </label>
-                                <input
+                                <TitledInput
                                     type="text"
+                                    title='Contact'
                                     value={newAddress.contact}
                                     onChange={(e) =>
                                         setNewAddress({ ...newAddress, contact: e.target.value })
                                     }
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    className={inputClassNames}
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">
+                                <label className="block text-sm font-medium ">
                                     Full Address
                                 </label>
                                 <textarea
@@ -174,7 +173,7 @@ export default function AddressBook() {
                                     onChange={(e) =>
                                         setNewAddress({ ...newAddress, fullAddress: e.target.value })
                                     }
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    className={inputClassNames}
                                     rows={3}
                                 />
                             </div>
@@ -182,7 +181,7 @@ export default function AddressBook() {
                         <div className="mt-6 flex justify-end space-x-3">
                             <button
                                 onClick={() => setIsAddModalOpen(false)}
-                                className="px-4 py-2 text-gray-700 hover:text-gray-900"
+                                className="px-4 py-2 text-red-800 hover:text-red-900 font-semibold"
                             >
                                 Cancel
                             </button>
@@ -193,7 +192,7 @@ export default function AddressBook() {
                                 Add
                             </button>
                         </div>
-                    </Dialog.Panel>
+                    </DialogPanel>
                 </div>
             </Dialog>
 

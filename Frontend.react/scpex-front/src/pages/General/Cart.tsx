@@ -4,7 +4,7 @@ import { UserCredential } from "../../models/UserCredential";
 import { api } from "../../axios";
 import PageRequest from "../../models/PageRequest";
 import { Product } from "../../models/Product";
-import { RadioGroup } from "@headlessui/react";
+import { Radio, RadioGroup, RadioGroupOption } from "@headlessui/react";
 import { Link } from "react-router";
 import Toast from "../../components/Fragments/Toast";
 import { slices } from "../../tools/ReduceHelper";
@@ -110,14 +110,14 @@ export default function CartPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+            <div className="min-h-screen text-black dark:text-white bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen py-15 bg-gray-50 dark:bg-gray-900 py-8 px-3 md:px-5 lg:px-7">
+        <div className="min-h-screen md:py-15 text-black dark:text-white bg-gray-50 dark:bg-gray-900 py-8 px-3 md:px-5 lg:px-7">
             <Toast ref={toastRef} />
             <div className="max-w-7xl mx-auto px-4">
                 <h1 className="text-2xl font-bold mb-8">Shopping Cart</h1>
@@ -194,14 +194,14 @@ export default function CartPage() {
                                     </Link>
                                 </div>
                             ) : (
-                                <RadioGroup value={selectedAddress} onChange={setSelectedAddress}>
-                                    <div className="space-y-4">
+                                <RadioGroup className={'transition-all'} value={selectedAddress} onChange={setSelectedAddress}>
+                                    <div className="space-y-4 transition-all">
                                         {addresses.map((address, index) => (
-                                            <RadioGroup.Option
+                                            <Radio
                                                 key={index}
                                                 value={address}
                                                 className={({ checked }) =>
-                                                    `relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none ${
+                                                    `relative transition-all flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none ${
                                                         checked
                                                             ? 'bg-blue-50 dark:bg-blue-900 border-2 border-blue-500'
                                                             : 'bg-white dark:bg-gray-700'
@@ -251,7 +251,7 @@ export default function CartPage() {
                                                         </div>
                                                     </div>
                                                 )}
-                                            </RadioGroup.Option>
+                                            </Radio>
                                         ))}
                                     </div>
                                 </RadioGroup>
@@ -270,10 +270,10 @@ export default function CartPage() {
                             <button
                                 onClick={handleCheckout}
                                 disabled={!selectedAddress}
-                                className={`w-full py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                                className={`w-full transition shadow-md hover:shadow-lg py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                                     selectedAddress
                                         ? 'bg-blue-600 text-white hover:bg-blue-700'
-                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        : 'bg-gray-300/30 text-gray-500 cursor-not-allowed'
                                 }`}
                             >
                                 {selectedAddress ? 'Submit Order' : 'Select a Delivery Address'}

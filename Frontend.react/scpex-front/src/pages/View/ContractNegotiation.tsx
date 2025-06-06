@@ -12,6 +12,9 @@ import { useNavigate } from "react-router";
 import PageableList from "../../components/PageableList";
 import Button from "../../components/Fragments/Button";
 import { slices } from "../../tools/ReduceHelper";
+import { getById, isOneOf } from "../../tools/misc";
+import TitledInput from "../../components/Fragments/TitledInput";
+import { AxiosError } from "axios";
 
 export default function ContractNegotiation() {
     function createEmptyContract() {
@@ -33,6 +36,7 @@ export default function ContractNegotiation() {
     );
     const [currentContract, setCurrentContract] = useState<ContractNegotiationModel>(createEmptyContract());
     const [pageContent, setPageContent] = useState<Pageable | null>(null);
+    const [selected, set] = useState<number | null>(null)
     const navigate = useNavigate();
 
     // console.log(userInfo)
@@ -45,7 +49,7 @@ export default function ContractNegotiation() {
                 userInfo.token,
                 pr,
             );
-            console.log(result.content)
+            // console.log(result.content)
             if (result.code === 200 && result.content) {
                 const pageData = JSON.parse(result.content) as Pageable;
                 setPageContent(pageData);
@@ -79,26 +83,89 @@ export default function ContractNegotiation() {
         }
     }, [currentContract, userInfo.token]);
 
+    function handleCLick(e: any){
+        let _ = (e.target as HTMLElement).id
+        // console.log(_);
+        try {
+            set(parseInt(_));
+        } catch (error) {
+            set(null);
+        }
+
+    }
+
+    async function doUpdate(id: number, act: "swcl" | "appr"){
+        let res: any;
+        try {
+            if(act == 'appr'){
+
+                res = await api.Trade.apprCoNe(id, userInfo.token);
+    
+            }else{
+    
+                res = await api.Trade.cancelCoNe(id, userInfo.token);
+    
+            }
+        } catch (error: any) {
+            const ex = error as AxiosError;
+            let parsed = ex.response && (ex.response?.data as any);
+            console.log(parsed.content)
+            if(parsed.content && `${parsed.content}`.toLowerCase().includes("could"))
+                dispatch(slices.globalModal.actions.showModal({visible: true, message: "Error occured: maybe Reached the update limit."}))
+        }
+
+        // console.log(res);
+        if(res)
+            refresh();
+    }
+
+    function renderFormatted(cn: ContractNegotiationModel): React.ReactNode{
+
+        return <div>
+            <p><span>Title:</span> {cn.title} ({cn.id})</p>
+            <p className="truncate"><span>Desc:</span> {cn.description}</p>
+            <p><span>Sender:</span> {cn.sender?.name ?? "unknown"}({cn.sender?.id ?? -1})</p>
+            <p><span>Date:</span> {cn.dateCreated}</p>
+
+            <div className="mt-1">
+                <p>Operations</p>
+                {cn.id ? <div className="flex gap-2">
+                    <Button paddingless onClick={() => {doUpdate(cn.id!, "appr")}} >Approve it</Button>
+                    <Button paddingless onClick={() => {doUpdate(cn.id!, "swcl")}} >Switch Close</Button>
+                </div> : <div>...</div>}
+            </div>
+        </div>
+    }
+
     return (
         <>
             <h1 className="text-3xl font-semibold">Contract Negotiation</h1>
 
+            {
+                isOneOf(userInfo.userClass, ['admin', 'warehouse']) && <div className="grid grid-cols-1 gap-3 mt-1">
+                    <p>Management on ID: {selected ?? 'nothing'}</p>
+                    <div>
+                        {pageContent && selected ? renderFormatted(getById(selected, pageContent!.content) as ContractNegotiationModel) : 'choose one...'}
+                    </div>
+                </div>
+            }
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
                 <div className={` ${userInfo.userClass.toLowerCase() == 'seller' ? '' : 'hidden'}  `}>
-                    <h2 className="text-xl font-semibold mb-4">标题</h2>
+                    <h2 className="text-xl font-semibold mb-4">Start a new CN</h2>
                     <div className="space-y-3">
-                        <Input
+                        <TitledInput
                             className={inputClassNames}
-                            placeholder="标题"
+                            placeholder="Title"
                             type="text"
                             value={currentContract.title || ""}
                             onChange={e =>
                                 setCurrentContract(prev => ({ ...prev, title: e.target.value }))
                             }
                         />
-                        <Input
+                        <TitledInput
                             className={inputClassNames}
-                            placeholder="描述"
+                            placeholder="Description"
                             type="text"
                             value={currentContract.description || ""}
                             onChange={e =>
@@ -112,13 +179,13 @@ export default function ContractNegotiation() {
                             onClick={() => createContract()}
                             className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
                         >
-                            提交
+                            Submit
                         </button>
                         <button
                             onClick={() => setCurrentContract(createEmptyContract())}
                             className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
                         >
-                            清空表单
+                            Clear Form
                         </button>
                     </div>
                 </div>
@@ -135,7 +202,7 @@ export default function ContractNegotiation() {
                     </h2>
                     <div className="min-h-[63px] my-3">
 
-                        <PageableList page={pageContent} />
+                        <PageableList page={pageContent} contentClickEvent={handleCLick} />
 
                     </div>
                 </div>

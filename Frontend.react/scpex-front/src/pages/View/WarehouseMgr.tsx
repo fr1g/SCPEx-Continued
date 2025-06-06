@@ -92,7 +92,7 @@ export default function WarehouseMgr() {
         setPageNum(inPageNum);
         refresh(inPageNum).then(() => {
             setCurr(null); // ?
-        }); // 改为立即使用新页码
+        }); 
     }
 
     function commitSearch(){
