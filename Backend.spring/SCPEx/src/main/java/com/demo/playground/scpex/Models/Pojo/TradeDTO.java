@@ -9,6 +9,7 @@ import java.util.List;
 public class TradeDTO {
     public Trade trade;
     public List<Transaction> transactions;
+
     public TradeDTO(Trade trade, List<Transaction> transactions) {
         this.trade = trade;
         var filtered = new ArrayList<Transaction>();

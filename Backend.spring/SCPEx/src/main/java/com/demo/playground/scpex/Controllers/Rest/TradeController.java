@@ -83,12 +83,15 @@ public class TradeController {
     // todo: update transaction by id; else.
     @PostMapping("/trades/update/{transactionId}")
     @PreAuthorize("hasAnyAuthority('PERMISSION_MANAGE_INVENTORY')") // only warehouse and admin.
-    public ResponseEntity<String> updateTransaction(@RequestBody String newTransactionStateJson, @PathVariable("transactionId") long targetId) {
+    public ResponseEntity<String> updateTransaction(@RequestBody String indexText, @PathVariable("transactionId") long targetId) {
         try {
-            var newState = (new Gson()).fromJson(newTransactionStateJson, Transaction.class);
-            if(!_trans.isThisExist(targetId)) throw new NullReferenceException("No such transaction");
-            newState.setDateUpdated((new Date()));
-            _trans.update(newState);
+            var parsedIndex = (int)Double.parseDouble(indexText.replaceAll("\"", "").replaceAll("'", "").trim());
+            _logic.updateTransaction(targetId, parsedIndex);
+//            var newState = (new Gson()).fromJson(newTransactionStateJson, Transaction.class);
+//            if(!_trans.isThisExist(targetId)) throw new NullReferenceException("No such transaction");
+//            newState.setDateUpdated((new Date()));
+//            _trans.update(newState);
+
             return ResponseHelper.Return(new Response(200, "done"));
         }catch (Exception ex){
             return ResponseHelper.Return(new Response(404, "Failed to update.", ex.getMessage()));

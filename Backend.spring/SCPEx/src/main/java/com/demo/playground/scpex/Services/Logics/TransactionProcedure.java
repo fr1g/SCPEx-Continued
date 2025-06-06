@@ -103,6 +103,7 @@ public class TransactionProcedure {
         var newStatus = (GeneralStatus.values()[statusEnumIndex]);
         var targetTransaction = _trans.findById(tid).orElseThrow(() -> new NullReferenceException("Transaction not found"));
         targetTransaction.setStatus(newStatus);
+        targetTransaction.setDateUpdated((new Date()));
         _trans.saveAndFlush(targetTransaction);
         if(targetTransaction.getTrade().isAllStatusSame(newStatus)) { // ?
             targetTransaction.getTrade().setStatus(newStatus);
