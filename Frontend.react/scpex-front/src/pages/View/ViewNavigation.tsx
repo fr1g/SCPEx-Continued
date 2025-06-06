@@ -15,7 +15,7 @@ export default function ViewNavigation() {
         (isOneOf(userInfo.userClass, [ 'customer', ]) && { path: "/view/cart-management", label: "购物车管理" }),
         (isOneOf(userInfo.userClass, [ 'warehouse', 'admin', 'seller']) && { path: "/view/contract-negotiations", label: "合同谈判" }),
         (isOneOf(userInfo.userClass, [ 'customer', ]) && { path: "/view/address-book", label: "地址簿" }),
-        (isOneOf(userInfo.userClass, [ 'warehouse', 'customer', ]) && { path: "/view/trades-tracker", label: "交易跟踪" }),
+        (isOneOf(userInfo.userClass, [ 'warehouse', 'customer', 'admin' ]) && { path: "/view/trades-tracker", label: "交易跟踪" }),
     ];
 
     return (
