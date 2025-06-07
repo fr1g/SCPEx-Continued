@@ -49,6 +49,8 @@ public class Product implements IModelClass{
     private int amount;
     private float discount;
     private String warehouse; // todo also warehouse
+
+    @Column(columnDefinition = "text")
     private String note;
 
 }

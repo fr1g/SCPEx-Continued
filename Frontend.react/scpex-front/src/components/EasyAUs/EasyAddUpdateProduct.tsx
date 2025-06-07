@@ -65,64 +65,155 @@ export default function EAUProducts({ item, setItem, onSuccess }: { item: Produc
         }
     }
 
-    // 初始化分类数据
+    // 修改分类匹配逻辑
+    function ofCat(cat: Category, seleCats: Selectable[]) {
+        return seleCats.find(n => n.id === cat?.id) || seleCats[0];
+    }
+
+    // // 修复分类组合框属性
+    // <WrappedComboBox 
+    //     title={`Category ${item?.category?.name ?? 'null'}`}
+    //     className="w-full m-0!"
+    //     enums={selectableCategories ?? []}
+    //     getter={selectedCat}
+    //     setter={setCatty}
+    // />
+
+    // 修复分类初始化逻辑
+    // useEffect(() => {
+    //     if (selectableCategories.length > 0 && item?.category) {
+    //         const matchedCat = selectableCategories.find(c => c.id === item.category?.id);
+    //         if (matchedCat) {
+    //             setCat(matchedCat);
+    //             changeHandler('category', matchedCat);
+    //         }
+    //     }
+    // }, [selectableCategories, item?.category]);
+
     useEffect(() => {
+        if (selectableCategories.length > 0 && item?.category) {
+            const matchedCat = selectableCategories.find(c => c.id === item.category?.id);
+            if (matchedCat && matchedCat.id !== selectedCat?.id) { // 添加变化检测
+                setCat(matchedCat);
+                changeHandler('category', matchedCat);
+            }
+        }
+    }, [selectableCategories, item?.category]);
+
+    // // 修复输入框同步问题（示例修改一个字段）
+    // <TitledInput 
+    //     value={item?.name ?? ''} 
+    //     className={inputClassNames}
+    //     placeholder="name"
+    //     type="text"
+    //     onChange={(e) => changeHandler('name', e.target.value)}
+    //     key={item?.id || 'new'} // 添加key强制刷新
+    // />
+
+    // useEffect(() => {
+    //     const loadCategories = async () => {
+    //         try {
+    //             await setTimeout(() => {
+
+    //             }, 100)
+    //             const catsReqd = await api.Stock.listCat();
+    //             const rawCats = JSON.parse(catsReqd.content!) as Category[];
+    //             const cats: Selectable[] = [];
+
+    //             for (let c of rawCats) {
+    //                 // let n = 
+    //                 if (GeneralStatus[c.status] == 'REJECTED') continue;
+
+    //                 cats.push(new Selectable(c.id!, c.name, JSON.stringify(c)));
+    //             }
+
+    //             setCategories(cats);
+
+    //             // 设置默认选中项
+    //             const defaultCat = item && ofCat(item?.category, cats);
+    //             if (defaultCat) {
+    //                 setCat(defaultCat);
+    //                 changeHandler('category', defaultCat);
+    //             }
+
+    //         } catch (error) {
+    //             console.error('Failed to load categories:', error);
+    //         }
+    //     };
+
+    //     loadCategories();
+    // }, []);
+
+    useEffect(() => {
+        let isMounted = true;
         const loadCategories = async () => {
             try {
                 const catsReqd = await api.Stock.listCat();
                 const rawCats = JSON.parse(catsReqd.content!) as Category[];
-                const cats: Selectable[] = [];
-
-                for(let c of rawCats){
-                    // let n = 
-                    if(GeneralStatus[c.status] == 'REJECTED') continue;
-                    
-                    cats.push(new Selectable(c.id, c.name, JSON.stringify(c)));
-                }
-
-                setCategories(cats);
-
-                // 设置默认选中项
-                const defaultCat = item?.category ?? cats[0];
-                if (defaultCat) {
-                    setCat(defaultCat);
-                    changeHandler('category', defaultCat);
-                }
-
+                
+                if (!isMounted) return;
+    
+                const cats = rawCats
+                    .filter(c => GeneralStatus[c.status] !== 'REJECTED')
+                    .map(c => new Selectable(c.id!, c.name, JSON.stringify(c)));
+    
+                setCategories(prev => 
+                    JSON.stringify(prev) === JSON.stringify(cats) ? prev : cats
+                );
+    
             } catch (error) {
                 console.error('Failed to load categories:', error);
             }
         };
-
+    
         loadCategories();
+        return () => { isMounted = false };
     }, []);
 
     useEffect(() => {
         if (selectableCategories.length > 0 && !selectedCat) {
-            const defaultSelection = item?.category ?? selectableCategories[0];
+            const defaultSelection = item && ofCat(item?.category, selectableCategories);
             setCat(defaultSelection);
             changeHandler('category', defaultSelection);
         }
     }, [selectableCategories, item?.category]);
 
+    // useEffect(() => {
+
+    //     if (item == undefined || item!.id == undefined || item!.id == 0 || `${item!.id}` == '' || (document.getElementById('inputID')! as HTMLInputElement).value! == '') {
+    //         setIsUpdate(false)
+    //     } else {
+    //         setIsUpdate(true);
+    //     }
+    //     // 当item变化时同步表单状态
+    //     if (item) {
+    //         // 同步分类选择
+    //         // const matchedCategory = selectableCategories.find(c => c.id === item.category?.id);
+    //         setCat(selectableCategories[item.category?.id ?? 0]);
+
+    //         // 同步状态选择
+    //         // const matchedStatus = statusEnums.find(e => e.id === item.status);
+    //         setSelectedEnum(statusEnums[parseInt(GeneralStatus[item.status])]);
+    //         console.log(item, statusEnums[parseInt(GeneralStatus[item.status])], getById(item.category?.id ?? 0, selectableCategories), 'changedSelection')
+    //     }
+    // }, [item]);
+
     useEffect(() => {
-        // console.log(item, 'recv of new item');
-        // console.log(item!.id, isUpdate)
         if (item == undefined || item!.id == undefined || item!.id == 0 || `${item!.id}` == '' || (document.getElementById('inputID')! as HTMLInputElement).value! == '') {
             setIsUpdate(false)
         } else {
             setIsUpdate(true);
         }
-        // 当item变化时同步表单状态
         if (item) {
-            // 同步分类选择
-            // const matchedCategory = selectableCategories.find(c => c.id === item.category?.id);
-            setCat(selectableCategories[item.category?.id ?? 0]);
+            if (selectableCategories.length > 0 && item.category?.id) {
+                const shouldUpdate = !selectedCat || selectedCat.id !== item.category.id;
+                shouldUpdate && setCat(getById(item.category.id, selectableCategories));
+            }
 
-            // 同步状态选择
-            // const matchedStatus = statusEnums.find(e => e.id === item.status);
-            setSelectedEnum(statusEnums[parseInt(GeneralStatus[item.status])]);
-            console.log(item, statusEnums[parseInt(GeneralStatus[item.status])], getById(item.category?.id ?? 0, selectableCategories), 'changedSelection')
+            const statusIndex = statusEnums.findIndex(e => e.id === item.status);
+            if (statusIndex !== -1 && selectedEnum?.id !== statusEnums[statusIndex]?.id) {
+                setSelectedEnum(statusEnums[statusIndex]);
+            }
         }
     }, [item]);
 
@@ -193,7 +284,7 @@ export default function EAUProducts({ item, setItem, onSuccess }: { item: Produc
             />
 
             {/* <TitledInput Class="md:col-span-2 col-span-1 block" className={inputClassNames + ' md:col-span-2 col-span-1 block'} placeholder="note" type="text" onChange={(e) => changeHandler('note', e.target.value)} /> */}
-            <Textarea className={inputClassNames + ' md:col-span-2 col-span-1 block min-h-[50px]'} placeholder="Product Details (note: markdown)" onChange={(e) => changeHandler('note', e.target.value)}  >
+            <Textarea value={item?.note ?? ''} className={inputClassNames + ' md:col-span-2 col-span-1 block min-h-[50px]'} placeholder="Product Details (note: markdown)" onChange={(e) => changeHandler('note', e.target.value)}  >
 
             </Textarea>
             <div className="grid items-end">

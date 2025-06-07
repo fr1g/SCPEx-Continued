@@ -8,7 +8,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider, useLocation } from "react-router";
 import Header from './components/Header.tsx';
 import SearchGoods from './pages/General/SearchGoods.tsx';
-import ProductPage from './pages/General/Product.tsx';
+import ProductPage from './pages/Param/Product.tsx';
 import AuthLayout from './pages/Auth/AuthLayout.tsx';
 import { UserCredential } from './models/UserCredential.ts';
 import { getUserCredential } from './tools/AuthTools.ts'
@@ -26,6 +26,7 @@ import Button from './components/Fragments/Button.tsx';
 import Pheebo from './pages/General/Pheebo.tsx';
 import { Product } from './models/Product.ts';
 import Cart from './pages/General/Cart.tsx';
+import Base64Helper from './pages/General/base64helper.tsx';
 
 
 const UserContext: Context<UserCredential | null> = createContext(getUserCredential());
@@ -39,6 +40,9 @@ const routes = createBrowserRouter([
         { path: '/search', element: <SearchGoods /> },
         { path: '/about', element: <About /> },
         { path: '/pheebo', element: <Pheebo /> },
+
+        { path: '/img', element: <Base64Helper /> },
+
         { path: '/product/:id', element: <ProductPage /> },
         // layouts
         { path: '/auth/*', element: <AuthLayout /> },

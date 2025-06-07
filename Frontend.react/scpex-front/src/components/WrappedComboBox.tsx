@@ -78,7 +78,7 @@ export default function WrappedComboBox({ enums, title, className, selectedIndex
                                     >
                                         {filtered.map((select: Selectable) => (
                                             <ComboboxOption key={(select == null ? 5 : select.id)} value={select} className={` @INFO=${select.info} ||   data-[focus]:bg-blue-100 dark:data-[focus]:bg-slate-500 py-1.5 pr-8 pl-3 w-full border-none bg-white dark:bg-slate-800  text-black dark:text-white`}>
-                                                {select.name} <Icon pua="e73e" forceNoTranslate className={`${select.id == selected.id ? ' translate-y-0.5' : 'hidden!'}`} />
+                                                {select.name} <Icon pua="e73e" forceNoTranslate className={`${(select && selected) && select.id == selected.id ? ' translate-y-0.5' : 'hidden!'}`} />
                                             </ComboboxOption>
                                         ))}
                                     </ComboboxOptions>
