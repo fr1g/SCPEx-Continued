@@ -62,18 +62,6 @@ export default function Register() {
         // if(!isAdmin && !isVerificated) 
 
 
-
-        function afterProcess() {
-            // send request
-            // get answer
-            // show "success"
-            // wait 5 seconds
-            // generate newUser
-            // setCreatedUser(newUser)
-            // navigate to /auth/register/done
-
-        }
-
         async function submitContent(trader: Trader) {
             let cont: Trader | null = null;
             let exc = null
@@ -96,8 +84,12 @@ export default function Register() {
             }finally{
                 if(cont) {
                     setCreatedUser(cont);
-                    console.log(cont, ' axx')
-                    navigate("/auth/register/done");
+                    console.log(cont, ' axw')
+                    navigate("/auth/register/done", { 
+                        state: { 
+                            newUser: cont 
+                        } 
+                    });  // 添加state参数
                 }
                 else {
                     setShowAlert(
@@ -322,7 +314,7 @@ export default function Register() {
     return <>
         <Routes>
             <Route index element={<Registering />} />
-            <Route path="/done" element={<AfterRegister newUser={createdUser!} />} />
+            <Route path="/done" element={<AfterRegister newUserRecv={createdUser!} />} />
         </Routes>
     </>
 }
