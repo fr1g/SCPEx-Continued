@@ -10,8 +10,8 @@ const saga = createSagaMiddleware();
 const store = configureStore(
     {
         reducer: {
-            internal: s.internal.reducer,
-            warehouseOperations: s.warehouseOperations.reducer,
+            // internal: s.internal.reducer,
+            // warehouseOperations: s.warehouseOperations.reducer,
             auth: s.auths.reducer,
             globalModal: s.globalModal.reducer
         },

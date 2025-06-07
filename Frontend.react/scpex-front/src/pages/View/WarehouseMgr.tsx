@@ -21,9 +21,6 @@ import { inputClassNames } from "../../env";
 import Icon from "../../components/Fragments/Icon";
 import { getById } from "../../tools/misc";
 
-const changeSelected = slices.warehouseOperations.actions.changeSelection;
-const updateSelectables = slices.warehouseOperations.actions.updateSelectables;
-
 export default function WarehouseMgr() {
 
     const [pageContent, setPageContent] = useState<Pageable | null>(null);

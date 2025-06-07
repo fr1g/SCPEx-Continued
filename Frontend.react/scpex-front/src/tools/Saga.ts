@@ -8,8 +8,6 @@ import { register } from 'module';
 import { Operation } from '../models/Operation.ts';
 import { title } from 'process';
 
-type AnyAction = {type: string, [key: string]: any}
-
 const methods = {
     login: async function(info: LoginDataTransfer){
         console.log("fired login method inside")
@@ -26,21 +24,6 @@ const methods = {
 }
 
 export const sagas = {
-    actInternal: function*(): any{
-        try {
-            let current: any = yield select((state) => state.internal.bucket) as unknown as any;
-            // yield 1
-            yield call(() => console.log(current))
-        } catch (error) {
-            yield call(() => console.log("Error happened during SAGAS/ACTINTERNAL/"))
-        }
-    },
-
-    warehouse: { // combined
-        updateSelectables: function* (): any{
-            yield call(() => console.log("?"))
-        }
-    },
 
     auth:{
         login: function* (act: any): any{
@@ -90,31 +73,14 @@ export const sagas = {
 }
 
 export const actionListeners = {
-    watchInternal: function*(){
-        yield takeEvery("internal/update", sagas.actInternal)
-    },
-
-    watchWarehouseUpdateSelectables: function* (){
-        yield takeEvery("warehouse/updateSelectables", sagas.warehouse.updateSelectables)
-    }, 
 
     watchLogin: function* (){
         yield takeLatest(s.auths.actions.login.type, sagas.auth.login)
     }
 }
 
-function obj2Arr(obj: any){
-    let buffer: any[] = [];
-    for(let n in obj){
-        buffer.push(obj[n]);
-    }
-    return buffer;
-}
-
 export default function* rootSaga(){
     yield all([
-        actionListeners.watchInternal(),
-        actionListeners.watchWarehouseUpdateSelectables(),
         actionListeners.watchLogin()
     ]);
 }
