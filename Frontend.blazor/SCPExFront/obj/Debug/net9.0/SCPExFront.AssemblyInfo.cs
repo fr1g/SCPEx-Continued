@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SCPExFront")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+623c3578034a1b745e88cab6d2101b055747b228")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e0068ccd98fc2505669b6a9d99078e64590801f3")]
 [assembly: System.Reflection.AssemblyProductAttribute("SCPExFront")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SCPExFront")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

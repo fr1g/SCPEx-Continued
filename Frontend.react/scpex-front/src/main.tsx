@@ -26,7 +26,7 @@ import Button from './components/Fragments/Button.tsx';
 import Pheebo from './pages/General/Pheebo.tsx';
 import { Product } from './models/Product.ts';
 import Cart from './pages/General/Cart.tsx';
-import Base64Helper from './pages/General/base64helper.tsx';
+import Base64Helper from './pages/General/Base64helper';
 
 
 const UserContext: Context<UserCredential | null> = createContext(getUserCredential());
