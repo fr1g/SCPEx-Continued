@@ -32,7 +32,7 @@ export const slices = {
             name: 'globalModal',
             initialState: {
                 visible: false,
-                title: '操作失败',
+                title: 'failed OP',
                 message: '',
             },
             reducers: {

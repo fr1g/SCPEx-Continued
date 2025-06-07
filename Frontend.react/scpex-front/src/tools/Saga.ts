@@ -27,7 +27,6 @@ export const sagas = {
 
     auth:{
         login: function* (act: any): any{
-            // console.log(111);
             try {
                 document.getElementById("LoginButton")?.classList.add("loadingButton");
                 document.getElementById("LoginButton")!.firstElementChild!.innerHTML = "...";

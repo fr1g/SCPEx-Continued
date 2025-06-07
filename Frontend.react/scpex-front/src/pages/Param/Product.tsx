@@ -64,7 +64,7 @@ export default function ProductPage() {
             </div>
 
             {
-                (userInfo.userType == "employee") ?
+                (userInfo && (userInfo?.userType == "employee")) ?
                     (
                         <div className="italic opacity-55">
                             Employee cannot operate on this.

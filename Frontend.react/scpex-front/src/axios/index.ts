@@ -4,7 +4,7 @@ import tmgr from './TraderMgr.ts';
 import prod from './ProdAndWarehouse.ts';
 import trade from './Trades.ts';
 
-export const api = {
+export const api = { 
     Auth: auth,
     EmployeeManage: emgr,
     TraderManage: tmgr,
